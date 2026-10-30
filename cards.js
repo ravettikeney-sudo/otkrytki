@@ -794,10 +794,20 @@ function drawScene(ctx, c){
   if(c.brand && (c.brand.logo || c.brand.name)){ drawBrand(ctx, c.brand); L.area = [L.area[0], L.area[1], L.area[2], Math.min(L.area[3], 1200 - L.area[1])]; }
   return L;
 }
-function drawCard(ctx, c){ const L = drawScene(ctx, c); drawText(ctx, L, c); }
+/* small app watermark in the bottom-right corner; WATERMARK=false (or c.nowm for a future paid version) turns it off */
+let WATERMARK = true;
+function drawWatermark(ctx){
+  ctx.save(); ctx.font = "800 25px Nunito, sans-serif"; const tw = ctx.measureText("Открытки").width, w = tw + 74, h = 50, x = W - w - 24, y = H - h - 24;
+  ctx.shadowColor = "rgba(0,0,0,.18)"; ctx.shadowBlur = 12; ctx.shadowOffsetY = 3; ctx.fillStyle = "rgba(255,255,255,.82)"; rr(ctx, x, y, w, h, 25); ctx.fill(); ctx.shadowColor = "transparent";
+  const ex = x + 14, ey = y + 14; ctx.fillStyle = lin(ctx, ex, ey, ex + 34, ey + 24, ["#ff5f8f", "#ffb347"]); rr(ctx, ex, ey, 34, 23, 5); ctx.fill();
+  ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 2.5; ctx.lineJoin = "round"; ctx.beginPath(); ctx.moveTo(ex + 3, ey + 4); ctx.lineTo(ex + 17, ey + 14); ctx.lineTo(ex + 31, ey + 4); ctx.stroke();
+  ctx.fillStyle = "#e2557a"; ctx.textAlign = "left"; ctx.textBaseline = "middle"; ctx.fillText("Открытки", ex + 44, y + h / 2 + 1);
+  ctx.restore();
+}
+function drawCard(ctx, c, opt = {}){ const L = drawScene(ctx, c); drawText(ctx, L, c); if(opt.wm !== false && WATERMARK && !c.nowm) drawWatermark(ctx); }
 function renderCard(c, scale = 1){
   const cv = document.createElement("canvas"); cv.width = Math.round(W * scale); cv.height = Math.round(H * scale);
-  const ctx = cv.getContext("2d"); if(scale !== 1) ctx.scale(scale, scale); drawCard(ctx, c); return cv;
+  const ctx = cv.getContext("2d"); if(scale !== 1) ctx.scale(scale, scale); drawCard(ctx, c, { wm: scale >= .5 }); return cv;
 }
 function orthodoxEaster(y){ const a = y % 4, b = y % 7, c = y % 19, d = (19 * c + 15) % 30, e = (2 * a + 4 * b - d + 34) % 7; const m = Math.floor((d + e + 114) / 31), day = (d + e + 114) % 31 + 1; const dt = new Date(y, m - 1, day); dt.setDate(dt.getDate() + 13); return dt; }
 function nextDate(h, now = new Date()){

@@ -44,7 +44,7 @@ function videoFrame(ctx, scene, L, c, ps, kind, t, dur){
   drawParticles(ctx, kind, ps, W, H, Math.min(1, t / .6));
   drawText(ctx, JSON.parse(JSON.stringify(L)), c, t);
   const shine = (t % 4) / 4; if(t > 2){ const g = ctx.createLinearGradient(W * (shine * 2 - .5), 0, W * (shine * 2 - .2), H); g.addColorStop(0, "rgba(255,255,255,0)"); g.addColorStop(.5, "rgba(255,255,255,.10)"); g.addColorStop(1, "rgba(255,255,255,0)"); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
-  if(t > dur - 2.2){ ctx.save(); ctx.globalAlpha = Math.min(1, (t - dur + 2.2) / .6) * .85; ctx.font = "700 26px Nunito, sans-serif"; ctx.textAlign = "right"; ctx.fillStyle = "rgba(255,255,255,.9)"; ctx.shadowColor = "rgba(0,0,0,.5)"; ctx.shadowBlur = 8; ctx.fillText("💌 Открытки", W - 30, H - 26); ctx.restore(); }
+  if(WATERMARK && !c.nowm) drawWatermark(ctx);
 }
 /* Records the video. onFrame(canvas) lets the caller show the live preview. */
 async function makeVideo(c, { music = "none", voice = null, onProgress, preview } = {}){

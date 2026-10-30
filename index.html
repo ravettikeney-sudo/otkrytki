@@ -115,6 +115,11 @@ body{overflow-x:hidden}
 .soc a,.soc button{display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:var(--ink);font-size:12.5px;font-weight:700;background:none;border:0;padding:0}
 .soc i{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;color:#fff;font:900 17px Nunito;font-style:normal;background:var(--c);box-shadow:0 6px 16px rgba(0,0,0,.12)}
 .soc a:active i,.soc button:active i{transform:scale(.92)}
+.lnk{margin-top:4px;border-top:1px solid var(--line);padding-top:10px}
+.lnk summary{cursor:pointer;font-weight:800;color:var(--muted);font-size:15px;padding:6px 0;list-style:none}
+.lnk summary::-webkit-details-marker{display:none}
+.lnk summary::after{content:" ▾"}
+.lnk[open] summary::after{content:" ▴"}
 .note{margin:14px 0 0;font-size:13px;color:var(--muted);text-align:center}
 @media (max-width:760px){
   .shx{align-items:flex-end}
@@ -281,7 +286,7 @@ function renderDesigns(){
     box.appendChild(b); };
   own.forEach(add);
   if(rest.length){ const sep = document.createElement("div"); sep.className = "dsep"; sep.textContent = "Все стили →"; box.appendChild(sep); rest.forEach(add); }
-  const step = async () => { if(job !== thumbJob || !queue.length) return; await ensureFonts(card); const [cv, k] = queue.shift(); const ctx = cv.getContext("2d"); ctx.scale(172 / W, 215 / H); drawCard(ctx, { h: card.h, d: k, p: 0, s: 5, n: "", t: "", f: card.f }); setTimeout(step, 0); };
+  const step = async () => { if(job !== thumbJob || !queue.length) return; await ensureFonts(card); const [cv, k] = queue.shift(); const ctx = cv.getContext("2d"); ctx.scale(172 / W, 215 / H); drawCard(ctx, { h: card.h, d: k, p: 0, s: 5, n: "", t: "", f: card.f }, { wm: false }); setTimeout(step, 0); };
   step();
   const sel = box.querySelector('[aria-pressed="true"]'); if(sel) setTimeout(() => sel.scrollIntoView({ block: "nearest", inline: "center" }), 50);
 }
@@ -322,7 +327,7 @@ const SOCIAL = [
 const nativeImg = () => !!(window.OtkApp && window.OtkApp.shareImage);
 async function copyText(s){ try{ await navigator.clipboard.writeText(s); return true; }catch(e){} try{ const ta = document.createElement("textarea"); ta.value = s; ta.style.cssText = "position:fixed;opacity:0"; document.body.appendChild(ta); ta.select(); const ok = document.execCommand("copy"); ta.remove(); return ok; }catch(e){ return false; } }
 function closeShare(){ if(typeof stopVoice === "function") stopVoice(); const b = $("#shx"); if(b){ const u = b.dataset.url; if(u) URL.revokeObjectURL(u); b.remove(); } }
-function sheet({ title, img, link, text, file, b64, fileName, note, extra }){
+function sheet({ title, img, link, text, file, b64, fileName, note, extra, imageOnly }){
   closeShare();
   const U = encodeURIComponent(link), Tx = encodeURIComponent(text);
   const box = document.createElement("div"); box.className = "shx"; box.id = "shx";
@@ -333,9 +338,9 @@ function sheet({ title, img, link, text, file, b64, fileName, note, extra }){
     ${img ? `<div class="shx-prev"><img src="${img}" alt=""></div>` : ""}
     <div class="shx-main">${canSend ? `<button class="big" id="shxGo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>Отправить</button>` : ""}
       ${b64 ? `<button class="big ghost" id="shxSave"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Сохранить</button>` : ""}</div>
-    <p class="shx-lbl">${canSend ? "Или ссылкой через" : "Отправить ссылкой через"}</p>
+    ${imageOnly ? `<details class="lnk"${canSend ? "" : " open"}><summary>Отправить ссылкой</summary><p class="note" style="margin:6px 0 12px">По ссылке открытка красиво раскроется у получателя с анимацией.</p>` : `<p class="shx-lbl">${canSend ? "Или ссылкой через" : "Отправить ссылкой через"}</p>`}
     <div class="soc">${SOCIAL.map(([n, c, ic, mk]) => `<a href="${esc(mk(U, Tx))}" target="_blank" rel="noopener"><i style="--c:${c}">${ic}</i>${n}</a>`).join("")}
-      <button id="shxCopy"><i style="--c:#2f8f83"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></i>Копировать</button></div>
+      <button id="shxCopy"><i style="--c:#2f8f83"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></i>Копировать</button></div>${imageOnly ? "</details>" : ""}
     ${note ? `<p class="note">${esc(note)}</p>` : ""}${extra || ""}
   </div>`;
   if(img && img.startsWith("blob:")) box.dataset.url = img;
@@ -344,8 +349,8 @@ function sheet({ title, img, link, text, file, b64, fileName, note, extra }){
   $("#shxX").onclick = closeShare;
   $("#shxCopy").onclick = async () => toast(await copyText(text + "\n" + link) ? "Скопировано — вставьте в любой чат" : "Не получилось скопировать");
   if($("#shxGo")) $("#shxGo").onclick = async () => {
-    if(b64 && nativeImg()){ window.OtkApp.shareImage(b64, text + "\n" + link); return; }
-    try{ if(canFiles) await navigator.share({ files: [file], text: text + "\n" + link }); else await navigator.share({ title, text, url: link }); }catch(e){ if(e.name !== "AbortError") toast("Не получилось отправить"); }
+    if(b64 && nativeImg()){ window.OtkApp.shareImage(b64, imageOnly ? "" : text + "\n" + link); return; }
+    try{ if(canFiles) await navigator.share(imageOnly ? { files: [file] } : { files: [file], text: text + "\n" + link }); else await navigator.share({ title, text, url: link }); }catch(e){ if(e.name !== "AbortError") toast("Не получилось отправить"); }
   };
   if($("#shxSave")) $("#shxSave").onclick = () => saveImage(b64, fileName, img);
 }
@@ -362,7 +367,7 @@ async function shareCard(c){
   const file = new File([blob], fileName, { type: "image/png" });
   const text = `${c.n.trim() ? c.n.trim() + ", тебе" : "Тебе"} открытка 💌${c.fr.trim() ? " От: " + c.fr.trim() : ""}`;
   sheet({ title: "Отправить открытку", img: URL.createObjectURL(blob), link: cardLink(c), text, file, b64, fileName,
-    note: c.img || brandOf() ? "Фото и логотип уходят только с картинкой. По ссылке откроется открытка без них." : "По ссылке открытка красиво раскроется у получателя, и он сможет сделать свою.", extra: giftsHtml(c.h) });
+    imageOnly: true, note: "", extra: giftsHtml(c.h) });
 }
 function shareApp(){
   sheet({ title: "Рассказать о приложении", img: "og-image.jpg", link: SITE + "download/", text: "Нашла классное приложение: красивые открытки с именем за минуту, бесплатно и без рекламы 💌",
@@ -580,8 +585,8 @@ function videoReady(v, c){
   box.dataset.url = url;
   const toB64 = () => new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result.split(",")[1]); fr.readAsDataURL(v.blob); });
   $("#vSend").onclick = async () => {
-    if(window.OtkApp && window.OtkApp.shareFile){ window.OtkApp.shareFile(await toB64(), v.type, name, text + "\n" + SITE); return; }
-    try{ if(navigator.canShare && navigator.canShare({ files: [file] })) await navigator.share({ files: [file], text }); else throw new Error("nofiles"); }
+    if(window.OtkApp && window.OtkApp.shareFile){ window.OtkApp.shareFile(await toB64(), v.type, name, ""); return; }
+    try{ if(navigator.canShare && navigator.canShare({ files: [file] })) await navigator.share({ files: [file] }); else throw new Error("nofiles"); }
     catch(e){ if(e.name !== "AbortError"){ saveVideo(); toast("Видео сохранено — отправьте его из галереи"); } }
   };
   const saveVideo = async () => { if(window.OtkApp && window.OtkApp.saveFile){ window.OtkApp.saveFile(await toB64(), v.type, name); return; } const a = document.createElement("a"); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); toast("Видео сохранено"); };
