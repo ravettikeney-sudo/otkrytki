@@ -23,6 +23,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Lobster&family=Marck+Script&family=Bad+Script&family=Caveat:wght@500;700&family=Playfair+Display:ital,wght@0,400;1,400;1,700&family=Comfortaa:wght@500;700&family=Amatic+SC:wght@700&family=Kurale&display=swap">
 <script src="cards.js"></script>
+<script src="video.js"></script>
 <style>
 :root{
   --bg:#fff4ec; --bg2:#ffe9ef; --card:#ffffff; --ink:#2d1e2f; --muted:#7a6670; --line:rgba(80,40,60,.12);
@@ -118,6 +119,53 @@ body{overflow-x:hidden}
   .shx-box{width:100%;border-radius:26px 26px 0 0;padding-bottom:calc(22px + env(safe-area-inset-bottom,0px));max-height:94dvh}
 }
 
+/* home extras */
+.cod{display:grid;grid-template-columns:132px 1fr;gap:16px;align-items:center;padding:14px;border-radius:22px;background:var(--card);border:1px solid var(--line);box-shadow:0 8px 24px rgba(120,50,70,.08);margin-top:18px}
+.cod .th{border-radius:14px;overflow:hidden;box-shadow:0 6px 16px rgba(90,30,60,.18)}
+.cod .th canvas{width:100%;display:block}
+.cod small{font-weight:800;color:var(--rose);text-transform:uppercase;letter-spacing:.06em;font-size:12px}
+.cod h3{margin:4px 0 10px;font:400 26px/1.1 Lobster,cursive;color:var(--plum)}
+.cod .pill{background:var(--grad);color:#fff;border:0}
+.bds{display:flex;flex-direction:column;gap:8px}
+.bd{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:var(--card);border:1px solid var(--line)}
+.bd .av{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:22px;background:#fff0f4;flex:none}
+.bd .tx{flex:1;min-width:0}
+.bd .tx b{display:block;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bd .tx small{color:var(--muted);font-weight:600}
+.bd.today{border-color:var(--rose);background:#fff0f4}
+.bd.today small{color:var(--rose);font-weight:800}
+.bd .go{padding:9px 14px;border-radius:12px;border:0;background:var(--grad);color:#fff;font-weight:800;font-size:14px}
+.bd .ed2{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--card);display:grid;place-items:center;flex:none}
+.addbd{padding:13px;border-radius:16px;border:2px dashed rgba(226,85,122,.35);background:transparent;color:var(--rose);font-weight:800;font-size:15px}
+.empty{color:var(--muted);font-size:14px;margin:0 0 8px}
+.form .field select{width:100%;border:1.5px solid var(--line);background:var(--card);border-radius:14px;padding:13px 10px;font-size:17px}
+.two{display:grid;grid-template-columns:1fr 1.4fr 1.2fr;gap:8px}
+.set h4{margin:18px 0 8px;font:900 16px Nunito}
+.set .srow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.set .srow span small{display:block;color:var(--muted);font-size:13px}
+.set input[type=time]{border:1.5px solid var(--line);border-radius:10px;padding:6px 8px;background:var(--card);font-size:16px}
+.set input[type=checkbox]{width:24px;height:24px;accent-color:var(--rose)}
+.logo-prev{width:64px;height:64px;border-radius:14px;border:1.5px dashed var(--line);display:grid;place-items:center;overflow:hidden;background:#fff;flex:none}
+.logo-prev img{max-width:100%;max-height:100%}
+.gifts{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+.gift{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:#fff7ef;border:1px solid #ffd9b8;text-decoration:none;color:var(--ink)}
+.gift i{font-style:normal;font-size:26px}
+.gift b{display:block}
+.gift small{color:var(--muted)}
+.vprev{display:flex;justify-content:center;margin-bottom:14px}
+.vprev canvas,.vprev video{max-height:38dvh;max-width:100%;border-radius:14px;box-shadow:0 10px 26px rgba(90,30,60,.25);background:#000}
+.mus{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.mus button[aria-pressed="true"]{border-color:var(--rose);background:#fff0f4}
+.rec{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:#fff7f9;border:1px solid var(--line);margin-bottom:14px}
+.rec .dotr{width:14px;height:14px;border-radius:50%;background:#ccc}
+.rec.on .dotr{background:#e5383b;animation:bl 1s infinite}
+@keyframes bl{50%{opacity:.3}}
+.rec .tx{flex:1;font-weight:700;font-size:14px}
+.prog{height:10px;border-radius:6px;background:#f6dfe6;overflow:hidden;margin:6px 0 12px}
+.prog i{display:block;height:100%;width:0;background:var(--grad);transition:width .2s}
+.sendbar .wrap{gap:10px}
+.big.vid{flex:0 0 auto;width:auto;padding:17px 18px;background:var(--plum);box-shadow:0 12px 28px rgba(91,42,98,.3)}
+
 /* viewer */
 .vw{position:fixed;inset:0;z-index:15;overflow:auto;background:radial-gradient(800px 600px at 50% 0,#ffd3e1,transparent 70%),linear-gradient(180deg,#fff0f4,#ffe8d6);display:flex;flex-direction:column;align-items:center;padding:calc(18px + env(safe-area-inset-top,0px)) 16px calc(24px + env(safe-area-inset-bottom,0px))}
 .vw h2{font:400 clamp(30px,7vw,44px) Lobster,cursive;color:var(--plum);margin:6px 0 14px;text-align:center}
@@ -140,11 +188,15 @@ body{overflow-x:hidden}
 <header class="top"><div class="wrap">
   <a class="logo" href="./" id="logo"><img src="icon-192.png" alt="">Открытки</a>
   <button class="ibtn" id="back" hidden aria-label="Назад"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <button class="ibtn" id="setBtn" aria-label="Настройки" title="Настройки"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
   <button class="ibtn" id="shareApp" aria-label="Поделиться приложением" title="Поделиться приложением"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e2557a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 13v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg></button>
 </div></header>
 
 <main class="wrap" id="home">
   <section class="hero"><h1>Открытка с именем <em>за минуту</em></h1><p>Выберите праздник, впишите имя — и отправьте в любой мессенджер.</p></section>
+  <div class="cod" id="cod"></div>
+  <div class="h2">🎂 Дни рождения близких</div>
+  <div class="bds" id="bds"></div>
   <div class="h2" id="soonT">Скоро праздник</div>
   <div class="soon" id="soon"></div>
   <div class="h2">Все поводы</div>
@@ -160,6 +212,9 @@ body{overflow-x:hidden}
       <div class="field"><label for="fName">Кому</label><input id="fName" placeholder="Имя, например: Ольга" maxlength="40" autocomplete="off"></div>
       <div class="field"><label for="fText">Поздравление</label><textarea id="fText" maxlength="600"></textarea>
         <div class="row"><button class="pill" id="nextText">↻ Другой текст</button><button class="pill" id="clearText">Без текста</button></div></div>
+      <div class="field"><span class="lbl">Фото на открытке</span>
+        <div class="row" style="margin-top:0"><button class="pill" id="addPhoto">📷 Добавить фото</button><button class="pill" id="delPhoto" hidden>Убрать фото</button></div>
+        <input type="file" id="photoIn" accept="image/*" hidden></div>
       <div class="field"><label for="fFrom">От кого</label><input id="fFrom" placeholder="Например: Твоя Маша" maxlength="60" autocomplete="off"></div>
       <div class="field"><span class="lbl">Оформление</span><div class="strip" id="designs"></div>
         <div class="dots" id="pals"></div></div>
@@ -167,7 +222,7 @@ body{overflow-x:hidden}
         <div class="row"><button class="pill" id="shuffle">🎲 Перемешать украшения</button></div></div>
     </div>
   </div>
-  <div class="sendbar"><div class="wrap"><button class="big" id="send"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>Отправить открытку</button></div></div>
+  <div class="sendbar"><div class="wrap"><button class="big vid" id="video" aria-label="Видео-открытка">🎬 Видео</button><button class="big" id="send"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>Отправить</button></div></div>
 </main>
 
 <script>
@@ -187,6 +242,7 @@ if(!inApp) $("#dlbar").hidden = false;
 /* ---------- home ---------- */
 function thumb(c, w){ const cv = renderCard(c, w / W); return cv; }
 function renderHome(){
+  renderCod(); renderBdays();
   const soon = HOLIDAYS.map(h => ({ h, n: nextDate(h) })).filter(x => x.n).sort((a, b) => a.n.days - b.n.days).slice(0, 5);
   $("#soon").innerHTML = soon.map(({ h, n }) => `<button class="chip" data-h="${h.id}"><span class="e">${h.emoji}</span><span><b>${esc(h.name)}</b><small>${n.days === 0 ? "сегодня!" : n.days === 1 ? "завтра" : `${n.date.getDate()} ${MON[n.date.getMonth()]} · через ${n.days} ${plural(n.days, "день", "дня", "дней")}`}</small></span></button>`).join("");
   $("#grid").innerHTML = HOLIDAYS.map(h => `<button class="hol" data-h="${h.id}"><div class="th"></div><b>${h.emoji} ${esc(h.name)}</b></button>`).join("");
@@ -202,7 +258,8 @@ const FONT_KEYS = Object.keys(FONTS);
 function openEditor(init){
   const h = HOL[init.h] || HOLIDAYS[0];
   card = Object.assign({ h: h.id, d: h.designs[0], p: 0, s: 1 + Math.floor(Math.random() * 1e6), n: "", t: h.wishes[0], f: "lobster", fr: store.get("from", "") }, init);
-  wishIdx = Math.max(0, h.wishes.indexOf(card.t)); customText = false;
+  wishIdx = Math.max(0, h.wishes.indexOf(card.t)); customText = false; card.img = null;
+  $("#delPhoto").hidden = true; $("#addPhoto").textContent = "📷 Добавить фото";
   $("#fName").value = card.n; $("#fText").value = card.t; $("#fFrom").value = card.fr;
   show("editor"); history.pushState({ v: "editor" }, "", location.pathname);
   document.title = h.name + " — открытка с именем";
@@ -228,7 +285,7 @@ function renderFonts(){
 let drawT = 0;
 function draw(now){
   clearTimeout(drawT);
-  const go = () => { const ctx = $("#pv").getContext("2d"); ctx.clearRect(0, 0, W, H); drawCard(ctx, card); };
+  const go = () => { const ctx = $("#pv").getContext("2d"); ctx.clearRect(0, 0, W, H); drawCard(ctx, { ...card, brand: brandOf() }); };
   now ? go() : (drawT = setTimeout(go, 90));
 }
 $("#fName").oninput = e => { card.n = e.target.value; draw(); };
@@ -249,8 +306,8 @@ const SOCIAL = [
 ];
 const nativeImg = () => !!(window.OtkApp && window.OtkApp.shareImage);
 async function copyText(s){ try{ await navigator.clipboard.writeText(s); return true; }catch(e){} try{ const ta = document.createElement("textarea"); ta.value = s; ta.style.cssText = "position:fixed;opacity:0"; document.body.appendChild(ta); ta.select(); const ok = document.execCommand("copy"); ta.remove(); return ok; }catch(e){ return false; } }
-function closeShare(){ const b = $("#shx"); if(b){ const u = b.dataset.url; if(u) URL.revokeObjectURL(u); b.remove(); } }
-function sheet({ title, img, link, text, file, b64, fileName, note }){
+function closeShare(){ if(typeof stopVoice === "function") stopVoice(); const b = $("#shx"); if(b){ const u = b.dataset.url; if(u) URL.revokeObjectURL(u); b.remove(); } }
+function sheet({ title, img, link, text, file, b64, fileName, note, extra }){
   closeShare();
   const U = encodeURIComponent(link), Tx = encodeURIComponent(text);
   const box = document.createElement("div"); box.className = "shx"; box.id = "shx";
@@ -264,7 +321,7 @@ function sheet({ title, img, link, text, file, b64, fileName, note }){
     <p class="shx-lbl">${canSend ? "Или ссылкой через" : "Отправить ссылкой через"}</p>
     <div class="soc">${SOCIAL.map(([n, c, ic, mk]) => `<a href="${esc(mk(U, Tx))}" target="_blank" rel="noopener"><i style="--c:${c}">${ic}</i>${n}</a>`).join("")}
       <button id="shxCopy"><i style="--c:#2f8f83"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></i>Копировать</button></div>
-    ${note ? `<p class="note">${esc(note)}</p>` : ""}
+    ${note ? `<p class="note">${esc(note)}</p>` : ""}${extra || ""}
   </div>`;
   if(img && img.startsWith("blob:")) box.dataset.url = img;
   document.body.appendChild(box);
@@ -284,12 +341,12 @@ function saveImage(b64, name, url){
 const cardLink = c => SITE + "?k=" + b64e({ h: c.h, d: c.d, p: c.p, s: c.s, n: c.n.trim(), t: c.t.trim(), f: c.f, fr: c.fr.trim() });
 const fileNameOf = c => "otkrytka-" + ((c.n || HOL[c.h].name).trim().replace(/[^\p{L}\p{N}]+/gu, "-") || "s-prazdnikom") + ".png";
 async function shareCard(c){
-  const cv = renderCard(c); const b64 = cv.toDataURL("image/png").split(",")[1];
+  const cv = renderCard({ ...c, brand: brandOf() }); const b64 = cv.toDataURL("image/png").split(",")[1];
   const blob = await new Promise(r => cv.toBlob(r, "image/png")); const fileName = fileNameOf(c);
   const file = new File([blob], fileName, { type: "image/png" });
   const text = `${c.n.trim() ? c.n.trim() + ", тебе" : "Тебе"} открытка 💌${c.fr.trim() ? " От: " + c.fr.trim() : ""}`;
   sheet({ title: "Отправить открытку", img: URL.createObjectURL(blob), link: cardLink(c), text, file, b64, fileName,
-    note: "По ссылке открытка красиво раскроется у получателя, и он сможет сделать свою." });
+    note: c.img || brandOf() ? "Фото и логотип уходят только с картинкой. По ссылке откроется открытка без них." : "По ссылке открытка красиво раскроется у получателя, и он сможет сделать свою.", extra: giftsHtml(c.h) });
 }
 function shareApp(){
   sheet({ title: "Рассказать о приложении", img: "og-image.jpg", link: SITE + "download/", text: "Нашла классное приложение: красивые открытки с именем за минуту, бесплатно и без рекламы 💌",
@@ -339,6 +396,181 @@ function particles(cv, c){
   fxRaf = requestAnimationFrame(loop);
 }
 
+/* ---------- modal helper (all bottom sheets share #shx, so Back/Escape closes any of them) ---------- */
+function modal(title, html){
+  closeShare();
+  const box = document.createElement("div"); box.className = "shx"; box.id = "shx";
+  box.innerHTML = `<div class="shx-box" role="dialog" aria-modal="true" aria-labelledby="shxT"><div class="shx-head"><h3 id="shxT">${esc(title)}</h3><button class="ibtn" id="shxX" aria-label="Закрыть"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>${html}</div>`;
+  document.body.appendChild(box); box.onclick = e => { if(e.target === box) closeShare(); }; $("#shxX").onclick = closeShare;
+  return box;
+}
+
+/* ---------- card of the day ---------- */
+function renderCod(){
+  const c = cardOfDay(), h = HOL[c.h];
+  $("#cod").innerHTML = `<div class="th"></div><div><small>Открытка дня</small><h3>${esc(h.title)}!</h3><button class="pill" id="codGo">Отправить</button></div>`;
+  $("#cod .th").appendChild(renderCard(c, 264 / W));
+  $("#cod").onclick = () => openEditor({ ...c, s: c.s, fr: store.get("from", "") });
+}
+
+/* ---------- birthdays of loved ones ---------- */
+const MONTHS = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
+let bdays = store.get("bdays", []);
+const reminder = Object.assign({ time: "09:00", before: true }, store.get("reminder", {}));
+function bdNext(b, now = new Date()){
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  let d = new Date(today.getFullYear(), b.m - 1, b.d); if(d < today) d = new Date(today.getFullYear() + 1, b.m - 1, b.d);
+  return { date: d, days: Math.round((d - today) / 864e5), age: b.y ? d.getFullYear() - b.y : 0 };
+}
+function syncApp(){ try{ if(window.OtkApp && window.OtkApp.setReminders) window.OtkApp.setReminders(JSON.stringify({ items: bdays, time: reminder.time, before: reminder.before })); }catch(e){} }
+function renderBdays(){
+  const list = bdays.map(b => ({ b, n: bdNext(b) })).sort((x, y) => x.n.days - y.n.days);
+  $("#bds").innerHTML = (list.length ? "" : `<p class="empty">Добавьте дни рождения родных и друзей — ${inApp ? "утром в нужный день придёт напоминание с готовой открыткой." : "в приложении для Android утром придёт напоминание с готовой открыткой."}</p>`) +
+    list.map(({ b, n }) => `<div class="bd${n.days === 0 ? " today" : ""}"><div class="av">${n.days === 0 ? "🎉" : "🎂"}</div><div class="tx"><b>${esc(b.n)}</b><small>${n.days === 0 ? "Сегодня!" : n.days === 1 ? "Завтра" : `${b.d} ${MONTHS[b.m - 1]} · через ${n.days} ${plural(n.days, "день", "дня", "дней")}`}${n.age ? ` · ${n.age} ${plural(n.age, "год", "года", "лет")}` : ""}</small></div>
+      <button class="go" data-go="${b.id}">Поздравить</button><button class="ed2" data-ed="${b.id}" aria-label="Изменить"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button></div>`).join("") +
+    `<button class="addbd" id="addBd">+ Добавить день рождения</button>`;
+  $("#addBd").onclick = () => bdForm();
+  document.querySelectorAll("[data-go]").forEach(x => x.onclick = () => congratulate(bdays.find(b => b.id === x.dataset.go)));
+  document.querySelectorAll("[data-ed]").forEach(x => x.onclick = () => bdForm(bdays.find(b => b.id === x.dataset.ed)));
+}
+function congratulate(b){
+  if(!b) return; const n = bdNext(b);
+  const h = HOL.bday, t = n.age && n.age % 5 === 0 ? `С юбилеем! ${n.age} — прекрасная дата. ` + h.wishes[0] : h.wishes[0];
+  openEditor({ h: n.age && n.age % 10 === 0 ? "jubilee" : "bday", n: b.n, t: n.age && n.age % 10 === 0 ? HOL.jubilee.wishes[0] : t });
+}
+function bdForm(b){
+  const isNew = !b; b = b || { id: "b" + Date.now().toString(36), n: "", d: new Date().getDate(), m: new Date().getMonth() + 1, y: "" };
+  const box = modal(isNew ? "День рождения" : "Изменить", `<div class="form">
+    <div class="field"><label for="bdN">Кого поздравляем</label><input id="bdN" maxlength="40" placeholder="Например: Мама, Оля, Сергей Петрович" value="${esc(b.n)}"></div>
+    <div class="field"><span class="lbl">Дата рождения</span><div class="two">
+      <select id="bdD" aria-label="День">${Array.from({ length: 31 }, (_, i) => `<option ${i + 1 === b.d ? "selected" : ""}>${i + 1}</option>`).join("")}</select>
+      <select id="bdM" aria-label="Месяц">${MONTHS.map((m, i) => `<option value="${i + 1}" ${i + 1 === b.m ? "selected" : ""}>${m}</option>`).join("")}</select>
+      <input id="bdY" inputmode="numeric" maxlength="4" placeholder="Год" value="${b.y || ""}" aria-label="Год рождения (необязательно)"></div>
+      <p class="note" style="text-align:left;margin-top:6px">Год можно не указывать. С годом покажем, сколько исполнится.</p></div>
+    <button class="big" id="bdSave">Сохранить</button>
+    ${isNew ? "" : `<button class="big ghost" id="bdDel" style="margin-top:10px">Удалить</button>`}</div>`);
+  $("#bdSave").onclick = () => {
+    const n = $("#bdN").value.trim(); if(!n){ $("#bdN").focus(); toast("Впишите имя"); return; }
+    const y = parseInt($("#bdY").value, 10);
+    Object.assign(b, { n, d: +$("#bdD").value, m: +$("#bdM").value, y: y > 1900 && y <= new Date().getFullYear() ? y : "" });
+    if(isNew) bdays.push(b); store.set("bdays", bdays); syncApp(); renderBdays(); closeShare();
+    toast(inApp ? `Напомню в день рождения в ${reminder.time}` : "Сохранено");
+  };
+  if($("#bdDel")) $("#bdDel").onclick = () => { bdays = bdays.filter(x => x.id !== b.id); store.set("bdays", bdays); syncApp(); renderBdays(); closeShare(); };
+  setTimeout(() => $("#bdN").focus(), 50);
+}
+
+/* ---------- photo on the card ---------- */
+function loadImage(file, max){
+  return new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => { const im = new Image(); im.onload = () => {
+    const k = Math.min(1, max / Math.max(im.width, im.height)), cv = document.createElement("canvas"); cv.width = Math.round(im.width * k); cv.height = Math.round(im.height * k);
+    cv.getContext("2d").drawImage(im, 0, 0, cv.width, cv.height); const out = new Image(); out.onload = () => res(out); out.src = cv.toDataURL(max <= 300 ? "image/png" : "image/jpeg", .9); }; im.onerror = rej; im.src = fr.result; }; fr.onerror = rej; fr.readAsDataURL(file); });
+}
+$("#addPhoto").onclick = () => $("#photoIn").click();
+$("#photoIn").onchange = async e => { const f = e.target.files[0]; e.target.value = ""; if(!f) return;
+  try{ card.img = await loadImage(f, 1200); $("#delPhoto").hidden = false; $("#addPhoto").textContent = "📷 Другое фото"; draw(true); toast("Фото добавлено"); }catch(err){ toast("Не получилось открыть фото"); } };
+$("#delPhoto").onclick = () => { card.img = null; $("#delPhoto").hidden = true; $("#addPhoto").textContent = "📷 Добавить фото"; draw(true); };
+
+/* ---------- business mode ---------- */
+const biz = Object.assign({ on: false, name: "", logo: "" }, store.get("biz", {}));
+let bizLogo = null;
+function loadBizLogo(){ if(!biz.logo){ bizLogo = null; return Promise.resolve(); } return new Promise(r => { const im = new Image(); im.onload = () => { bizLogo = im; r(); }; im.onerror = () => r(); im.src = biz.logo; }); }
+const brandOf = () => biz.on && (biz.name || bizLogo) ? { name: biz.name, logo: bizLogo } : null;
+
+/* ---------- settings ---------- */
+function openSettings(){
+  modal("Настройки", `<div class="set">
+    <h4>🔔 Напоминания о днях рождения</h4>
+    ${inApp ? `<div class="srow"><span>Время напоминания</span><input type="time" id="sTime" value="${reminder.time}"></div>
+    <label class="srow"><span>Напомнить и накануне<small>«Завтра день рождения у…»</small></span><input type="checkbox" id="sBefore" ${reminder.before ? "checked" : ""}></label>`
+      : `<p class="empty">Уведомления работают в приложении для Android. <a href="download/" style="color:var(--rose);font-weight:800">Скачать</a></p>`}
+    <h4>💼 Для бизнеса</h4>
+    <p class="empty" style="margin-bottom:4px">Логотип и название вашей компании на каждой открытке — поздравляйте клиентов от имени магазина, кафе или салона.</p>
+    <label class="srow"><span>Добавлять на открытки</span><input type="checkbox" id="sBiz" ${biz.on ? "checked" : ""}></label>
+    <div class="srow"><div class="logo-prev" id="sLogoPrev">${biz.logo ? `<img src="${biz.logo}" alt="Логотип">` : "лого"}</div><div style="flex:1;display:flex;gap:8px;flex-wrap:wrap"><button class="pill" id="sLogo">Загрузить логотип</button>${biz.logo ? `<button class="pill" id="sLogoDel">Убрать</button>` : ""}</div><input type="file" id="sLogoIn" accept="image/*" hidden></div>
+    <div class="field" style="margin-top:12px"><label for="sName">Название</label><input id="sName" maxlength="40" placeholder="Например: Цветы «Ромашка»" value="${esc(biz.name)}"></div>
+    <h4>💌 Приложение</h4>
+    <button class="big" id="sShare">Рассказать друзьям</button>
+    ${inApp ? "" : `<a class="big ghost" href="download/" style="margin-top:10px;text-decoration:none">Скачать для Android</a>`}
+  </div>`);
+  if($("#sTime")){ $("#sTime").onchange = e => { reminder.time = e.target.value || "09:00"; store.set("reminder", reminder); syncApp(); toast(`Напомню в ${reminder.time}`); };
+    $("#sBefore").onchange = e => { reminder.before = e.target.checked; store.set("reminder", reminder); syncApp(); }; }
+  const saveBiz = () => { store.set("biz", biz); };
+  $("#sBiz").onchange = e => { biz.on = e.target.checked; saveBiz(); toast(biz.on ? "Логотип будет на открытках" : "Выключено"); };
+  $("#sName").oninput = e => { biz.name = e.target.value.trim(); saveBiz(); };
+  $("#sLogo").onclick = () => $("#sLogoIn").click();
+  $("#sLogoIn").onchange = async e => { const f = e.target.files[0]; if(!f) return; try{ const im = await loadImage(f, 256); biz.logo = im.src; biz.on = true; saveBiz(); await loadBizLogo(); openSettings(); toast("Логотип добавлен"); }catch(err){ toast("Не получилось открыть картинку"); } };
+  if($("#sLogoDel")) $("#sLogoDel").onclick = async () => { biz.logo = ""; saveBiz(); await loadBizLogo(); openSettings(); };
+  $("#sShare").onclick = shareApp;
+}
+$("#setBtn").onclick = openSettings;
+
+/* ---------- gifts (affiliate links from gifts.json) ---------- */
+let GIFTS = [];
+fetch("gifts.json?t=" + Date.now()).then(r => r.json()).then(j => { GIFTS = (j.items || []).filter(g => g.url && g.title); }).catch(() => {});
+function giftsFor(h){ return GIFTS.filter(g => !g.holidays || !g.holidays.length || g.holidays.includes(h)).slice(0, 3); }
+function giftsHtml(h){ const g = giftsFor(h); return g.length ? `<p class="shx-lbl" style="margin-top:18px">Подарок к открытке</p><div class="gifts">${g.map(x => `<a class="gift" href="${esc(x.url)}" target="_blank" rel="noopener sponsored"><i>${esc(x.emoji || "🎁")}</i><span><b>${esc(x.title)}</b>${x.sub ? `<small>${esc(x.sub)}</small>` : ""}</span></a>`).join("")}</div>` : ""; }
+
+/* ---------- video card ---------- */
+let voiceBlob = null, voiceRec = null, voiceTimer = 0;
+function openVideo(){
+  if(!pickMime()){ toast("Видео на этом устройстве не поддерживается"); return; }
+  const def = ["bday", "jubilee", "baby"].includes(card.h) ? "bday" : ["ny", "xmas"].includes(card.h) ? "jingle" : "soft";
+  let music = def;
+  modal("Видео-открытка", `<div class="vprev" id="vPrev"></div>
+    <p class="shx-lbl">Музыка</p><div class="mus">${Object.entries(MELODIES).map(([k, m]) => `<button class="pill" data-m="${k}" aria-pressed="${k === music}">${esc(m.name)}</button>`).join("")}</div>
+    <p class="shx-lbl">Голосовое поздравление</p>
+    <div class="rec" id="vRec"><span class="dotr"></span><span class="tx" id="vRecTx">${voiceBlob ? "Голос записан ✓" : "Скажите пару тёплых слов — до 30 секунд"}</span><button class="pill" id="vRecBtn">${voiceBlob ? "Перезаписать" : "🎙 Записать"}</button>${voiceBlob ? `<button class="pill" id="vRecDel">✕</button>` : ""}</div>
+    <div class="prog" id="vProg" hidden><i></i></div>
+    <button class="big" id="vMake">🎬 Создать видео</button>
+    <p class="note">Видео длится 8 секунд, а с голосом — сколько длится запись. Его можно отправить в WhatsApp, Telegram или поставить в статус.</p>`);
+  const pv = renderCard({ ...card, img: card.img, brand: brandOf() }, 360 / W); $("#vPrev").appendChild(pv);
+  document.querySelectorAll("[data-m]").forEach(b => b.onclick = () => { music = b.dataset.m; document.querySelectorAll("[data-m]").forEach(x => x.setAttribute("aria-pressed", x === b)); });
+  $("#vRecBtn").onclick = () => voiceRec ? stopVoice() : startVoice();
+  if($("#vRecDel")) $("#vRecDel").onclick = () => { voiceBlob = null; openVideo(); };
+  $("#vMake").onclick = async () => {
+    if(voiceRec) stopVoice();
+    $("#vMake").disabled = true; $("#vMake").textContent = "Создаю видео…"; $("#vProg").hidden = false;
+    const vp = $("#vPrev"); vp.innerHTML = ""; const live = document.createElement("canvas"); live.width = 360; live.height = 450; vp.appendChild(live); const lctx = live.getContext("2d");
+    try{
+      const c = { ...card, img: card.img, brand: brandOf() };
+      const v = await makeVideo(c, { music, voice: voiceBlob, onProgress: k => { const i = $("#vProg i"); if(i) i.style.width = Math.round(k * 100) + "%"; }, preview: src => lctx.drawImage(src, 0, 0, 360, 450) });
+      if(!$("#shx")) return;
+      videoReady(v, c);
+    }catch(e){ toast("Не получилось создать видео"); if($("#vMake")){ $("#vMake").disabled = false; $("#vMake").textContent = "🎬 Создать видео"; } }
+  };
+}
+async function startVoice(){
+  try{
+    const st = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const chunks = []; voiceRec = new MediaRecorder(st);
+    voiceRec.ondataavailable = e => e.data.size && chunks.push(e.data);
+    voiceRec.onstop = () => { st.getTracks().forEach(t => t.stop()); voiceBlob = new Blob(chunks, { type: voiceRec.mimeType || "audio/webm" }); voiceRec = null; clearInterval(voiceTimer);
+      if($("#vRec")){ $("#vRec").classList.remove("on"); $("#vRecTx").textContent = "Голос записан ✓"; $("#vRecBtn").textContent = "Перезаписать"; } };
+    voiceRec.start(); const t0 = Date.now(); $("#vRec").classList.add("on"); $("#vRecBtn").textContent = "⏹ Стоп";
+    voiceTimer = setInterval(() => { const s = Math.floor((Date.now() - t0) / 1000); if($("#vRecTx")) $("#vRecTx").textContent = `Идёт запись… ${s} сек`; if(s >= 30) stopVoice(); }, 250);
+  }catch(e){ toast("Нет доступа к микрофону. Разрешите его в настройках."); }
+}
+function stopVoice(){ if(voiceRec && voiceRec.state !== "inactive") voiceRec.stop(); }
+function videoReady(v, c){
+  const url = URL.createObjectURL(v.blob), name = fileNameOf(c).replace(/\.png$/, "." + v.ext);
+  const file = new File([v.blob], name, { type: v.type });
+  const text = `${c.n.trim() ? c.n.trim() + ", тебе" : "Тебе"} видео-открытка 💌${c.fr.trim() ? " От: " + c.fr.trim() : ""}`;
+  const box = modal("Видео готово!", `<div class="vprev"><video src="${url}" controls autoplay playsinline loop></video></div>
+    <div class="shx-main"><button class="big" id="vSend">Отправить видео</button><button class="big ghost" id="vSaveV">Сохранить</button></div>
+    ${giftsHtml(c.h)}`);
+  box.dataset.url = url;
+  const toB64 = () => new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result.split(",")[1]); fr.readAsDataURL(v.blob); });
+  $("#vSend").onclick = async () => {
+    if(window.OtkApp && window.OtkApp.shareFile){ window.OtkApp.shareFile(await toB64(), v.type, name, text + "\n" + SITE); return; }
+    try{ if(navigator.canShare && navigator.canShare({ files: [file] })) await navigator.share({ files: [file], text }); else throw new Error("nofiles"); }
+    catch(e){ if(e.name !== "AbortError"){ saveVideo(); toast("Видео сохранено — отправьте его из галереи"); } }
+  };
+  const saveVideo = async () => { if(window.OtkApp && window.OtkApp.saveFile){ window.OtkApp.saveFile(await toB64(), v.type, name); return; } const a = document.createElement("a"); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); toast("Видео сохранено"); };
+  $("#vSaveV").onclick = saveVideo;
+}
+$("#video").onclick = openVideo;
+
 /* ---------- navigation ---------- */
 function show(view){
   $("#home").hidden = view !== "home"; $("#editor").hidden = view !== "editor";
@@ -358,11 +590,13 @@ window.appBack = () => {
 addEventListener("keydown", e => { if(e.key === "Escape") window.appBack(); });
 
 (async () => {
-  await loadFonts();
+  await Promise.all([loadFonts(), loadBizLogo()]);
   renderHome();
   const k = new URLSearchParams(location.search).get("k");
   if(k){ try{ const c = b64d(k); if(HOL[c.h]){ ["n", "t", "fr"].forEach(x => c[x] = String(c[x] || "").slice(0, 600)); openViewer(c); } }catch(e){} }
   const h = new URLSearchParams(location.search).get("h"); if(h && HOL[h]) openEditor({ h });
+  const bd = new URLSearchParams(location.search).get("bd"); if(bd){ const b = bdays.find(x => x.id === bd); if(b) congratulate(b); }
+  syncApp();
 })();
 if("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {});
 </script>

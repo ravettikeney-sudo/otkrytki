@@ -491,7 +491,69 @@ const DESIGNS = {
       bunting(ctx, 10, 90, p.flags); bunting(ctx, 150, 60, p.flags.slice().reverse(), -30, W + 30, 90, 70);
       const area = [110, 430, 860, 680]; confetti(ctx, r, 140, p.c, [0, 300, W, H - 300], 1, area);
       return { area, title: p.title, name: p.name, body: p.body };
+    } },
+  school: { name: "Школа", pals: [
+    { bg: ["#fef6e4", "#f3d2c1"], books: ["#e63946", "#457b9d", "#2a9d8f", "#f4a261"], leaves: ["#e76f51", "#f4a261", "#e9c46a", "#d62828"], title: "#1d3557", name: "#e63946", body: "#2b2d42" },
+    { bg: ["#1f4e3d", "#163a2e"], books: ["#e63946", "#f1faee", "#a8dadc", "#f4a261"], leaves: ["#f4a261", "#e9c46a", "#e76f51", "#ffd166"], title: "#f1faee", name: "#ffd166", body: "#e9f5ee", chalk: 1 } ],
+    draw(ctx, r, p){
+      vbg(ctx, p.bg); if(p.chalk){ for(let i = 0; i < 40; i++){ ctx.strokeStyle = "rgba(255,255,255,.04)"; ctx.lineWidth = 30 + r() * 60; ctx.beginPath(); const y = r() * H; ctx.moveTo(0, y); ctx.lineTo(W, y + (r() - .5) * 200); ctx.stroke(); } ctx.strokeStyle = "#8d6e4a"; ctx.lineWidth = 34; ctx.strokeRect(17, 17, W - 34, H - 34); }
+      const area = [120, 300, 840, 640];
+      for(let i = 0; i < 16; i++){ const x = r() * W, y = r() * H; if(inside(x, y, area, 40) || (x < 520 && y > 980)) continue; leaf(ctx, x, y, 50 + r() * 50, r() * TAU, p.leaves[i % p.leaves.length]); }
+      const bx = 820, by = 150; ctx.save(); ctx.translate(bx, by); ctx.rotate(.3);
+      ctx.fillStyle = "#c1121f"; [-1, 1].forEach(d => { ctx.beginPath(); ctx.ellipse(d * 50, -96, 54, 24, d * -.5, 0, TAU); ctx.fill(); ctx.beginPath(); ctx.moveTo(d * 8, -90); ctx.lineTo(d * 40, -20); ctx.lineTo(d * 22, -26); ctx.closePath(); ctx.fill(); });
+      ctx.shadowColor = "rgba(0,0,0,.3)"; ctx.shadowBlur = 20; ctx.shadowOffsetY = 8;
+      ctx.fillStyle = gold(ctx, -90, -80, 90, 100); ctx.beginPath(); ctx.moveTo(-18, -80); ctx.quadraticCurveTo(-60, -70, -62, 0); ctx.quadraticCurveTo(-66, 60, -96, 86); ctx.lineTo(96, 86); ctx.quadraticCurveTo(66, 60, 62, 0); ctx.quadraticCurveTo(60, -70, 18, -80); ctx.closePath(); ctx.fill();
+      ctx.shadowColor = "transparent"; ctx.fillStyle = "#a67c2e"; ctx.beginPath(); ctx.arc(0, 100, 20, 0, TAU); ctx.fill(); ctx.fillStyle = "#c1121f"; ctx.beginPath(); ctx.arc(0, -96, 14, 0, TAU); ctx.fill();
+      ctx.restore();
+      let y = H - 60; [[480, 70], [440, 64], [500, 76], [420, 60]].forEach(([w, h], i) => { const x = 40 + (i % 2) * 24, col = p.books[i % p.books.length];
+        ctx.fillStyle = "rgba(0,0,0,.15)"; ctx.fillRect(x + 8, y - h + 8, w, h); ctx.fillStyle = "#fffdf5"; ctx.fillRect(x + 10, y - h + 6, w - 20, h - 12);
+        ctx.fillStyle = lin(ctx, x, 0, x + w, 0, [shade(col, -.2), col, shade(col, -.1)]); ctx.fillRect(x, y - h, w, 14); ctx.fillRect(x, y - 14, w, 14); ctx.fillRect(x + w - 22, y - h, 22, h);
+        ctx.fillStyle = "rgba(255,255,255,.6)"; ctx.fillRect(x + w - 16, y - h * .7, 10, h * .4); y -= h; });
+      [["#ffd166", -0.5], ["#06d6a0", -.3]].forEach(([c, a], i) => { ctx.save(); ctx.translate(600 + i * 70, 1250); ctx.rotate(a); ctx.fillStyle = c; ctx.fillRect(-14, -220, 28, 220); ctx.fillStyle = "#f6d5a8"; ctx.beginPath(); ctx.moveTo(-14, -220); ctx.lineTo(14, -220); ctx.lineTo(0, -270); ctx.closePath(); ctx.fill(); ctx.fillStyle = "#333"; ctx.beginPath(); ctx.moveTo(-5, -255); ctx.lineTo(5, -255); ctx.lineTo(0, -270); ctx.closePath(); ctx.fill(); ctx.fillStyle = "#ff8fab"; ctx.fillRect(-14, -10, 28, 10); ctx.restore(); });
+      return { area, title: p.title, name: p.name, body: p.body, shadow: p.chalk ? "rgba(0,0,0,.3)" : null };
+    } },
+  pancakes: { name: "Блины", pals: [
+    { bg: ["#fff3c4", "#ffd9a0"], sun: "#ffb703", plate: "#4895ef", title: "#c1121f", name: "#7f4f24", body: "#4a3426" },
+    { bg: ["#cfe8ff", "#fff1d6"], sun: "#ffbe0b", plate: "#e63946", title: "#d00000", name: "#3a0ca3", body: "#2b2d42" } ],
+    draw(ctx, r, p){
+      vbg(ctx, p.bg);
+      ctx.save(); ctx.translate(W / 2, 250); for(let i = 0; i < 18; i++){ ctx.rotate(TAU / 18); ctx.fillStyle = rgba(p.sun, .35); ctx.beginPath(); ctx.moveTo(-18, -140); ctx.lineTo(0, -230 - (i % 2) * 40); ctx.lineTo(18, -140); ctx.closePath(); ctx.fill(); } ctx.restore();
+      glow(ctx, W / 2, 250, 260, p.sun, .6); ctx.fillStyle = lin(ctx, 0, 130, 0, 370, [shade(p.sun, .45), p.sun]); ctx.beginPath(); ctx.arc(W / 2, 250, 120, 0, TAU); ctx.fill();
+      const cx = W / 2, base = 1250;
+      ctx.fillStyle = lin(ctx, cx - 340, 0, cx + 340, 0, [shade(p.plate, -.2), shade(p.plate, .3), shade(p.plate, -.1)]); ctx.beginPath(); ctx.ellipse(cx, base, 340, 70, 0, 0, TAU); ctx.fill();
+      ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.ellipse(cx, base - 6, 280, 52, 0, 0, TAU); ctx.fill();
+      for(let i = 0; i < 9; i++){ const y = base - 22 - i * 20, w = 250 - i * 2 + (r() - .5) * 14;
+        ctx.fillStyle = lin(ctx, 0, y - 30, 0, y + 30, ["#f9d276", "#e9a23b", "#c97a20"]); ctx.beginPath(); ctx.ellipse(cx + (r() - .5) * 10, y, w, 34, 0, 0, TAU); ctx.fill();
+        ctx.strokeStyle = "rgba(160,90,20,.35)"; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(cx, y - 4, w - 30, 22, 0, .2, 2.9); ctx.stroke(); }
+      const ty = base - 22 - 8 * 20;
+      ctx.fillStyle = "rgba(255,230,140,.85)"; ctx.beginPath(); ctx.ellipse(cx, ty - 4, 210, 28, 0, 0, TAU); ctx.fill();
+      ctx.fillStyle = lin(ctx, cx - 50, 0, cx + 50, 0, ["#fff3b0", "#ffe066"]); ctx.save(); ctx.translate(cx, ty - 26); ctx.rotate(.2); ctx.fillRect(-46, -26, 92, 46); ctx.restore();
+      [[cx - 150, ty + 4], [cx + 160, ty + 8]].forEach(([x, y]) => { ctx.fillStyle = "rgba(230,150,30,.8)"; ctx.beginPath(); ctx.moveTo(x - 14, y); ctx.quadraticCurveTo(x, y + 70, x + 14, y); ctx.fill(); });
+      [[200, 1150], [880, 1170], [250, 1240]].forEach(([x, y]) => { ctx.fillStyle = "#c1121f"; ctx.beginPath(); ctx.arc(x, y, 18, 0, TAU); ctx.fill(); ctx.fillStyle = "rgba(255,255,255,.6)"; ctx.beginPath(); ctx.arc(x - 6, y - 6, 5, 0, TAU); ctx.fill(); });
+      return { area: [110, 430, 860, 560], title: p.title, name: p.name, body: p.body };
+    } },
+  house: { name: "Уютный дом", pals: [
+    { sky: ["#a2d2ff", "#e2f0ff", "#fff8ef"], wall: "#f4a261", roof: "#9b2226", grass: ["#52b788", "#40916c", "#74c69d"], title: "#9b2226", name: "#1d3557", body: "#2b2d42" },
+    { sky: ["#1b263b", "#415a77", "#778da9"], wall: "#e9c46a", roof: "#6d2e46", grass: ["#2d6a4f", "#1b4332", "#40916c"], title: "#ffd166", name: "#ffffff", body: "#eef2ff", night: 1 } ],
+    draw(ctx, r, p){
+      vbg(ctx, p.sky); if(p.night){ stars(ctx, r, 140, [0, 0, W, 800]); crescent(ctx, 860, 160, 60, "#ffe8a3"); } else { cloud(ctx, 200, 160, 60, "#fff", .9); cloud(ctx, 840, 220, 50, "#fff", .8); }
+      ctx.fillStyle = p.grass[0]; ctx.beginPath(); ctx.moveTo(0, H); ctx.lineTo(0, 1150); ctx.quadraticCurveTo(W / 2, 1090, W, 1150); ctx.lineTo(W, H); ctx.fill();
+      const hx = W / 2, base = 1200, hw = 380, hh = 230;
+      ctx.fillStyle = "#6c584c"; ctx.fillRect(hx + 90, base - hh - 190, 50, 110);
+      for(let i = 0; i < 3; i++) cloud(ctx, hx + 115 + i * 30, base - hh - 220 - i * 50, 22 + i * 8, "#ffffff", .7 - i * .15);
+      ctx.shadowColor = "rgba(0,0,0,.25)"; ctx.shadowBlur = 24; ctx.shadowOffsetY = 10;
+      ctx.fillStyle = lin(ctx, hx - hw / 2, 0, hx + hw / 2, 0, [shade(p.wall, -.12), p.wall, shade(p.wall, -.06)]); ctx.fillRect(hx - hw / 2, base - hh, hw, hh);
+      ctx.fillStyle = lin(ctx, 0, base - hh - 170, 0, base - hh, [shade(p.roof, .15), p.roof]); ctx.beginPath(); ctx.moveTo(hx - hw / 2 - 40, base - hh + 6); ctx.lineTo(hx, base - hh - 170); ctx.lineTo(hx + hw / 2 + 40, base - hh + 6); ctx.closePath(); ctx.fill();
+      ctx.shadowColor = "transparent";
+      const win = (x, y) => { glow(ctx, x + 35, y + 35, 90, "#ffd166", p.night ? .5 : .2); ctx.fillStyle = "#ffe8a3"; ctx.fillRect(x, y, 70, 70); ctx.strokeStyle = "#fff"; ctx.lineWidth = 6; ctx.strokeRect(x, y, 70, 70); ctx.beginPath(); ctx.moveTo(x + 35, y); ctx.lineTo(x + 35, y + 70); ctx.moveTo(x, y + 35); ctx.lineTo(x + 70, y + 35); ctx.stroke(); };
+      win(hx - 150, base - hh + 50); win(hx + 80, base - hh + 50);
+      ctx.fillStyle = "#7f5539"; rr(ctx, hx - 40, base - 150, 80, 150, 12); ctx.fill(); ctx.fillStyle = "#ffd166"; ctx.beginPath(); ctx.arc(hx + 22, base - 72, 6, 0, TAU); ctx.fill();
+      heart(ctx, hx, base - hh - 70, 60, "#ff4d6d");
+      [[150, 1210, 190], [930, 1220, 170]].forEach(([x, b, h]) => tree(ctx, x, b, h, "#2d6a4f", p.night ? "#d8e2dc" : "#95d5b2"));
+      grass(ctx, r, H, 110, p.grass, 40, 110);
+      return { area: [110, 220, 860, 480], title: p.title, name: p.name, body: p.body, shadow: p.night ? "rgba(0,0,0,.4)" : null };
     } }
+
 };
 
 /* ---------- holidays ---------- */
@@ -557,7 +619,49 @@ const HOLIDAYS = [
     "Благодарю за то, что ты есть! Пусть добро, которое ты даришь, всегда возвращается." ] },
   { id: "health", name: "Выздоравливай", emoji: "🌻", title: "Выздоравливай", nameFirst: true, designs: ["meadow", "sunrise", "wreath"], wishes: [
     "Скорее поправляйся! Пусть силы и хорошее настроение возвращаются с каждым днём.",
-    "Желаю крепкого здоровья и бодрости. Береги себя и возвращайся в строй с новыми силами!" ] }
+    "Желаю крепкого здоровья и бодрости. Береги себя и возвращайся в строй с новыми силами!" ] },
+  { id: "goodday", name: "Хорошего дня", emoji: "🌤", daily: true, title: "Хорошего дня", designs: ["meadow", "sunrise", "wreath", "garland"], wishes: [
+    "Пусть сегодня всё получается легко, а настроение будет солнечным с утра до вечера!",
+    "Желаю спокойного, светлого и удачного дня. Пусть он принесёт только хорошие новости!" ] },
+  { id: "monday", name: "Хорошей недели", emoji: "🗓", daily: true, title: "Хорошей недели", designs: ["sunrise", "meadow", "garland"], wishes: [
+    "Пусть неделя начнётся легко и пройдёт успешно. Удачи во всех делах и побольше приятных моментов!",
+    "Новая неделя — новые возможности! Пусть всё задуманное сбудется." ] },
+  { id: "friday", name: "С пятницей", emoji: "🎉", daily: true, title: "С пятницей", designs: ["party", "garland", "sunrise"], wishes: [
+    "Ура, пятница! Пусть вечер будет весёлым, а выходные — тёплыми и радостными.",
+    "Неделя позади — впереди отдых! Хорошего настроения и приятных планов на выходные." ] },
+  { id: "jubilee", name: "Юбилей", emoji: "🏆", title: "С юбилеем", designs: ["frame", "fireworks", "roses", "balloons"], wishes: [
+    "Поздравляем с юбилеем! Крепкого здоровья, бодрости, любви близких и долгих счастливых лет.",
+    "Пусть годы будут мудростью, а каждый новый день — радостью. С юбилеем!" ] },
+  { id: "sep1", name: "1 Сентября", emoji: "📚", date: [9, 1], title: "С Днём знаний", designs: ["school", "balloons", "garland"], wishes: [
+    "Пусть учёба будет интересной, оценки — отличными, а друзья — верными. Удачного учебного года!",
+    "С 1 Сентября! Новых знаний, ярких открытий и радости от каждого дня." ] },
+  { id: "teacher", name: "День учителя", emoji: "🍎", title: "С Днём учителя", designs: ["school", "wreath", "frame"], wishes: [
+    "Спасибо за знания, терпение и доброе сердце! Пусть ученики радуют, а работа приносит вдохновение.",
+    "С праздником! Здоровья, сил и благодарных учеников." ] },
+  { id: "grad", name: "Выпускной", emoji: "🎓", title: "С выпускным", designs: ["school", "party", "fireworks"], wishes: [
+    "Поздравляем с выпускным! Пусть впереди ждёт яркая дорога, интересное дело и исполнение мечты.",
+    "Новая жизнь начинается! Смело вперёд — у тебя всё получится." ] },
+  { id: "medic", name: "День медика", emoji: "🩺", nth: [6, 0, 3], title: "С Днём медицинского работника", designs: ["wreath", "meadow", "frame"], wishes: [
+    "Спасибо за заботу, профессионализм и доброе сердце! Крепкого здоровья вам и вашим близким.",
+    "С праздником! Пусть благодарность пациентов вдохновляет, а сил всегда хватает." ] },
+  { id: "builder", name: "День строителя", emoji: "🏗", nth: [8, 0, 2], title: "С Днём строителя", designs: ["house", "emblem", "frame"], wishes: [
+    "С профессиональным праздником! Надёжных проектов, удачи и крепкого здоровья.",
+    "Пусть всё построенное стоит веками, а работа приносит радость и достаток." ] },
+  { id: "family", name: "День семьи", emoji: "👨‍👩‍👧", date: [7, 8], title: "С Днём семьи, любви и верности", designs: ["wreath", "hearts", "house", "meadow"], wishes: [
+    "Пусть в доме всегда будут любовь, тепло и согласие, а семья — самой надёжной опорой.",
+    "Желаю семейного счастья, взаимопонимания и радостных моментов вместе!" ] },
+  { id: "angel", name: "День ангела", emoji: "😇", title: "С Днём ангела", designs: ["wreath", "night", "frame"], wishes: [
+    "Пусть Ангел-хранитель оберегает от бед, а жизнь будет наполнена светом и добром.",
+    "С именинами! Мира в душе, здоровья и тепла близких." ] },
+  { id: "housewarming", name: "Новоселье", emoji: "🏡", title: "С новосельем", designs: ["house", "garland", "balloons"], wishes: [
+    "Пусть новый дом будет уютным и тёплым, полным смеха, гостей и счастливых дней!",
+    "С новосельем! Пусть в этих стенах живут радость, любовь и достаток." ] },
+  { id: "maslenitsa", name: "Масленица", emoji: "🥞", maslenitsa: true, title: "С Масленицей", designs: ["pancakes", "garland", "sunrise"], wishes: [
+    "Пусть Масленица принесёт весеннее тепло, вкусные блины и весёлые встречи!",
+    "Масленица идёт — блины несёт! Пусть все печали уйдут вместе с зимой." ] },
+  { id: "elders", name: "День пожилых людей", emoji: "🌷", date: [10, 1], title: "С Днём пожилых людей", designs: ["wreath", "meadow", "roses"], wishes: [
+    "Крепкого здоровья, бодрости духа и любви родных. Спасибо за вашу мудрость и тепло!",
+    "Пусть каждый день будет светлым и спокойным, а рядом всегда будут близкие." ] }
 ];
 const HOL = Object.fromEntries(HOLIDAYS.map(h => [h.id, h]));
 
@@ -593,7 +697,7 @@ function titleLines(h, name){
   return h.nameFirst ? [{ t: name + ",", k: "name" }, { t: h.title.charAt(0).toLowerCase() + h.title.slice(1) + "!", k: "title" }]
                      : [{ t: h.title + ",", k: "title" }, { t: name + "!", k: "name" }];
 }
-function drawText(ctx, L, c){
+function drawText(ctx, L, c, reveal){
   const F = FONTS[c.f] || FONTS.lobster, h = HOL[c.h] || HOLIDAYS[0];
   const [ax, ay, aw, ah] = L.area, cx = ax + aw / 2;
   ctx.textAlign = "center"; ctx.textBaseline = "alphabetic";
@@ -616,17 +720,50 @@ function drawText(ctx, L, c){
   if(L.plaque){ ctx.save(); ctx.shadowColor = "rgba(0,0,0,.12)"; ctx.shadowBlur = 30; ctx.shadowOffsetY = 10; ctx.fillStyle = L.plaque; rr(ctx, ax - 50, y - 50, aw + 100, total + 90, 36); ctx.fill(); ctx.restore(); }
   ctx.save();
   if(L.shadow){ ctx.shadowColor = L.shadow; ctx.shadowBlur = 14; ctx.shadowOffsetY = 3; }
-  blocks.forEach(b => { y += b.gap || 0; ctx.font = b.font; ctx.fillStyle = b.col; b.lines.forEach(t => { y += b.lh; ctx.fillText(t, cx, y - b.lh * .24); }); });
+  blocks.forEach((b, bi) => {
+    y += b.gap || 0; ctx.font = b.font; ctx.fillStyle = b.col;
+    b.lines.forEach(t => { y += b.lh;
+      if(reveal == null){ ctx.fillText(t, cx, y - b.lh * .24); return; }
+      const k = Math.max(0, Math.min(1, (reveal - .35 - bi * .55) / .7)); if(k <= 0) return;
+      const e = 1 - Math.pow(1 - k, 3), sc = bi < 2 ? .6 + .4 * e + Math.sin(k * Math.PI) * .08 : 1;
+      ctx.save(); ctx.globalAlpha = e; ctx.translate(cx, y - b.lh * .24 + (1 - e) * 30); ctx.scale(sc, sc); ctx.fillText(t, 0, 0); ctx.restore(); });
+  });
   ctx.restore();
 }
 
 /* ---------- public ---------- */
 function designOf(c){ return DESIGNS[c.d] || DESIGNS[(HOL[c.h] || HOLIDAYS[0]).designs[0]]; }
-function drawCard(ctx, c){
+/* photo in a polaroid frame at the top of the text area; the text moves below it */
+function drawPhoto(ctx, L, img){
+  const [ax, ay, aw, ah] = L.area, ph = Math.min(aw * .62, ah * .5, 470), pw = ph * .9, cx = ax + aw / 2, top = ay - 10;
+  ctx.save(); ctx.translate(cx, top + ph / 2 + 16); ctx.rotate(-.035);
+  ctx.shadowColor = "rgba(0,0,0,.3)"; ctx.shadowBlur = 30; ctx.shadowOffsetY = 12;
+  ctx.fillStyle = "#ffffff"; ctx.fillRect(-pw / 2 - 18, -ph / 2 - 18, pw + 36, ph + 58); ctx.shadowColor = "transparent";
+  const s = Math.max(pw / img.width, ph / img.height), sw = pw / s, sh = ph / s;
+  ctx.drawImage(img, (img.width - sw) / 2, (img.height - sh) / 2, sw, sh, -pw / 2, -ph / 2, pw, ph);
+  ctx.fillStyle = "rgba(255,255,255,.35)"; ctx.save(); ctx.translate(0, -ph / 2 - 18); ctx.rotate(.05); ctx.fillRect(-60, -16, 120, 34); ctx.restore();
+  ctx.restore();
+  L.area = [ax, top + ph + 70, aw, Math.max(220, ah - ph - 80)];
+}
+/* business mode: logo + company name on a small plaque at the bottom */
+function drawBrand(ctx, b){
+  if(!b || (!b.logo && !b.name)) return;
+  ctx.save(); ctx.font = "700 34px Nunito, sans-serif"; const tw = b.name ? Math.min(ctx.measureText(b.name).width, 620) : 0, lg = b.logo ? 70 : 0;
+  const w = lg + tw + (lg && tw ? 20 : 0) + 56, h = 96, x = (W - w) / 2, y = H - h - 26;
+  ctx.shadowColor = "rgba(0,0,0,.18)"; ctx.shadowBlur = 20; ctx.shadowOffsetY = 6; ctx.fillStyle = "rgba(255,255,255,.92)"; rr(ctx, x, y, w, h, 48); ctx.fill(); ctx.shadowColor = "transparent";
+  let cx = x + 28;
+  if(b.logo){ const s = Math.min(lg / b.logo.width, lg / b.logo.height); ctx.drawImage(b.logo, cx + (lg - b.logo.width * s) / 2, y + (h - b.logo.height * s) / 2, b.logo.width * s, b.logo.height * s); cx += lg + 20; }
+  if(b.name){ ctx.fillStyle = "#2d1e2f"; ctx.textAlign = "left"; ctx.textBaseline = "middle"; ctx.fillText(b.name, cx, y + h / 2 + 2, 620); }
+  ctx.restore();
+}
+function drawScene(ctx, c){
   const d = designOf(c), p = d.pals[(c.p || 0) % d.pals.length], r = rng32(c.s || 1);
   ctx.save(); ctx.textAlign = "left"; const L = d.draw(ctx, r, p, c); ctx.restore();
-  drawText(ctx, L, c);
+  if(c.img) drawPhoto(ctx, L, c.img);
+  if(c.brand && (c.brand.logo || c.brand.name)){ drawBrand(ctx, c.brand); L.area = [L.area[0], L.area[1], L.area[2], Math.min(L.area[3], 1200 - L.area[1])]; }
+  return L;
 }
+function drawCard(ctx, c){ const L = drawScene(ctx, c); drawText(ctx, L, c); }
 function renderCard(c, scale = 1){
   const cv = document.createElement("canvas"); cv.width = Math.round(W * scale); cv.height = Math.round(H * scale);
   const ctx = cv.getContext("2d"); if(scale !== 1) ctx.scale(scale, scale); drawCard(ctx, c); return cv;
@@ -634,6 +771,24 @@ function renderCard(c, scale = 1){
 function orthodoxEaster(y){ const a = y % 4, b = y % 7, c = y % 19, d = (19 * c + 15) % 30, e = (2 * a + 4 * b - d + 34) % 7; const m = Math.floor((d + e + 114) / 31), day = (d + e + 114) % 31 + 1; const dt = new Date(y, m - 1, day); dt.setDate(dt.getDate() + 13); return dt; }
 function nextDate(h, now = new Date()){
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  for(const y of [today.getFullYear(), today.getFullYear() + 1]){ const d = h.easter ? orthodoxEaster(y) : h.date ? new Date(y, h.date[0] - 1, h.date[1]) : null; if(d && d >= today) return { date: d, days: Math.round((d - today) / 864e5) }; }
+  for(const y of [today.getFullYear(), today.getFullYear() + 1]){ const d = holidayDate(h, y); if(d && d >= today) return { date: d, days: Math.round((d - today) / 864e5) }; }
   return null;
+}
+
+/* nth weekday of month: [month 1-12, weekday 0=Sun, n] */
+function nthWeekday(y, m, wd, n){ const d = new Date(y, m - 1, 1); const add = (wd - d.getDay() + 7) % 7; d.setDate(1 + add + (n - 1) * 7); return d; }
+function holidayDate(h, y){
+  if(h.easter) return orthodoxEaster(y);
+  if(h.maslenitsa){ const e = orthodoxEaster(y); e.setDate(e.getDate() - 55); return e; }
+  if(h.nth) return nthWeekday(y, h.nth[0], h.nth[1], h.nth[2]);
+  if(h.date) return new Date(y, h.date[0] - 1, h.date[1]);
+  return null;
+}
+/* the card shown on the home screen today */
+function cardOfDay(now = new Date()){
+  const today = HOLIDAYS.find(h => { const d = holidayDate(h, now.getFullYear()); return d && d.toDateString() === now.toDateString(); });
+  const wd = now.getDay(), hr = now.getHours();
+  const id = today ? today.id : wd === 5 ? "friday" : (wd === 6 || wd === 0) ? "weekend" : hr < 12 ? (wd === 1 ? "monday" : "morning") : hr >= 21 ? "night" : "goodday";
+  const h = HOL[id], seed = now.getFullYear() * 1000 + now.getMonth() * 40 + now.getDate();
+  return { h: id, d: h.designs[seed % h.designs.length], p: seed % 3, s: seed, n: "", t: h.wishes[seed % h.wishes.length], f: ["lobster", "marck", "playfair", "caveat"][seed % 4], fr: "" };
 }

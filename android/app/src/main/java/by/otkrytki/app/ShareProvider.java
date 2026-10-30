@@ -22,7 +22,7 @@ public class ShareProvider extends ContentProvider {
         return f;
     }
     @Override public boolean onCreate() { return true; }
-    @Override public String getType(Uri uri) { return "image/png"; }
+    @Override public String getType(Uri uri) { String n = String.valueOf(uri.getLastPathSegment()); return n.endsWith(".mp4") ? "video/mp4" : n.endsWith(".webm") ? "video/webm" : "image/png"; }
     @Override public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException {
         return ParcelFileDescriptor.open(fileFor(uri), ParcelFileDescriptor.MODE_READ_ONLY);
     }
