@@ -213,7 +213,7 @@ body{overflow-x:hidden}
   <div class="ed">
     <div class="pv"><canvas id="pv" width="1080" height="1350" aria-label="Предпросмотр открытки"></canvas></div>
     <div>
-      <div class="field"><label for="fName">Кому</label><input id="fName" placeholder="Имя, например: Ольга" maxlength="40" autocomplete="off"></div>
+      <div class="field"><label for="fName">Кому</label><input id="fName" placeholder="Имя, например: Нина" maxlength="40" autocomplete="off"></div>
       <div class="field"><label for="fText">Поздравление</label><textarea id="fText" maxlength="600"></textarea>
         <div class="row"><button class="pill" id="nextText">↻ Другой текст</button><button class="pill" id="clearText">Без текста</button></div></div>
       <div class="field"><span class="lbl">Фото на открытке</span>
@@ -291,7 +291,7 @@ function renderPals(){
   document.querySelectorAll(".dot").forEach(b => b.onclick = () => { card.p = +b.dataset.p; document.querySelectorAll(".dot").forEach(x => x.setAttribute("aria-pressed", x === b)); draw(true); });
 }
 function renderFonts(){
-  $("#fonts").innerHTML = FONT_KEYS.map(k => `<button class="fnt" data-f="${k}" aria-pressed="${k === card.f}" style="font:${FONTS[k].t.replace("{s}", Math.round(26 * Math.min(1.15, FONTS[k].k)))}" title="${FONTS[k].n}">Ольга</button>`).join("");
+  $("#fonts").innerHTML = FONT_KEYS.map(k => `<button class="fnt" data-f="${k}" aria-pressed="${k === card.f}" style="font:${FONTS[k].t.replace("{s}", Math.round(26 * Math.min(1.15, FONTS[k].k)))}" title="${FONTS[k].n}">Нина</button>`).join("");
   document.querySelectorAll("#fonts .fnt").forEach(b => b.onclick = () => { card.f = b.dataset.f; document.querySelectorAll("#fonts .fnt").forEach(x => x.setAttribute("aria-pressed", x === b)); draw(true); });
   $("#bfonts").innerHTML = Object.entries(BODY).map(([k, B]) => `<button class="fnt bf" data-b="${k}" aria-pressed="${k === (card.bf || "auto")}" ${B.b ? `style="font:${B.b.replace("{s}", Math.round(17 * B.kb))}"` : ""} title="${B.n}">${B.b ? "С праздником!" : "Как у заголовка"}</button>`).join("");
   document.querySelectorAll("#bfonts .fnt").forEach(b => b.onclick = () => { card.bf = b.dataset.b === "auto" ? "" : b.dataset.b; document.querySelectorAll("#bfonts .fnt").forEach(x => x.setAttribute("aria-pressed", x === b)); draw(true); });
