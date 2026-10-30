@@ -673,12 +673,41 @@ const FONTS = {
   caveat:   { n: "Caveat", t: "700 {s}px Caveat", b: "500 {s}px Caveat", s: "700 {s}px Caveat", k: 1.15, kb: 1.25 },
   playfair: { n: "Playfair Display", t: "italic 700 {s}px 'Playfair Display'", b: "{s}px 'Playfair Display'", s: "italic {s}px 'Playfair Display'", k: .9, kb: .95 },
   comfortaa:{ n: "Comfortaa", t: "700 {s}px Comfortaa", b: "500 {s}px Comfortaa", s: "700 {s}px Comfortaa", k: .78, kb: .88 },
-  amatic:   { n: "Amatic SC", t: "700 {s}px 'Amatic SC'", b: "{s}px Kurale", s: "700 {s}px 'Amatic SC'", k: 1.3, kb: 1 }
+  amatic:   { n: "Amatic SC", t: "700 {s}px 'Amatic SC'", b: "{s}px Kurale", s: "700 {s}px 'Amatic SC'", k: 1.3, kb: 1 },
+  pacifico: { n: "Pacifico", t: "{s}px Pacifico", b: "{s}px Kurale", s: "{s}px Pacifico", k: .82, kb: 1 },
+  greatvibes:{ n: "Great Vibes", t: "{s}px 'Great Vibes'", b: "italic 500 {s}px 'Cormorant Garamond'", s: "{s}px 'Great Vibes'", k: 1.15, kb: 1.12 },
+  comforter:{ n: "Comforter", t: "{s}px Comforter", b: "italic 500 {s}px 'Cormorant Garamond'", s: "{s}px Comforter", k: 1.25, kb: 1.12 },
+  yeseva:   { n: "Yeseva One", t: "{s}px 'Yeseva One'", b: "{s}px Lora", s: "italic {s}px Lora", k: .85, kb: .95 },
+  poiret:   { n: "Poiret One", t: "{s}px 'Poiret One'", b: "{s}px 'Poiret One'", s: "{s}px 'Poiret One'", k: 1, kb: 1.08 },
+  ruslan:   { n: "Ruslan Display", t: "{s}px 'Ruslan Display'", b: "{s}px 'PT Serif'", s: "italic {s}px 'PT Serif'", k: .78, kb: .95 },
+  pangolin: { n: "Pangolin", t: "{s}px Pangolin", b: "{s}px Pangolin", s: "{s}px Pangolin", k: .95, kb: .98 },
+  underdog: { n: "Underdog", t: "{s}px Underdog", b: "{s}px Neucha", s: "{s}px Underdog", k: .9, kb: 1.05 },
+  doodle:   { n: "Rubik Doodle Shadow", t: "{s}px 'Rubik Doodle Shadow'", b: "{s}px Nunito", s: "700 {s}px Nunito", k: .8, kb: .95 },
+  ponomar:  { n: "Ponomar", t: "{s}px Ponomar", b: "{s}px 'PT Serif'", s: "{s}px Ponomar", k: 1.05, kb: .95 },
+  prata:    { n: "Prata", t: "{s}px Prata", b: "italic {s}px Lora", s: "italic {s}px Lora", k: .82, kb: .95 }
 };
-async function loadFonts(){
-  const specs = []; Object.values(FONTS).forEach(f => [f.t, f.b, f.s].forEach(x => specs.push(x.replace("{s}", 40))));
-  try{ await Promise.all(specs.map(s => document.fonts.load(s, "Аа"))); }catch(e){}
-}
+/* fonts for the greeting text, chosen separately from the title */
+const BODY = {
+  auto:      { n: "Как у заголовка" },
+  kurale:    { n: "Kurale", b: "{s}px Kurale", kb: 1 },
+  lora:      { n: "Lora", b: "{s}px Lora", kb: .95 },
+  ptserif:   { n: "PT Serif", b: "{s}px 'PT Serif'", kb: .95 },
+  cormorant: { n: "Cormorant", b: "italic 500 {s}px 'Cormorant Garamond'", kb: 1.12 },
+  alice:     { n: "Alice", b: "{s}px Alice", kb: 1 },
+  philosopher:{ n: "Philosopher", b: "{s}px Philosopher", kb: 1 },
+  nunito:    { n: "Nunito", b: "600 {s}px Nunito", kb: .95 },
+  montserrat:{ n: "Montserrat", b: "500 {s}px Montserrat", kb: .88 },
+  comfortaa: { n: "Comfortaa", b: "500 {s}px Comfortaa", kb: .88 },
+  neucha:    { n: "Neucha", b: "{s}px Neucha", kb: 1.08 },
+  pangolin:  { n: "Pangolin", b: "{s}px Pangolin", kb: .98 },
+  caveat:    { n: "Caveat", b: "500 {s}px Caveat", kb: 1.25 },
+  badscript: { n: "Bad Script", b: "{s}px 'Bad Script'", kb: 1 },
+  marmelad:  { n: "Marmelad", b: "{s}px Marmelad", kb: .98 },
+  shantell:  { n: "Shantell", b: "500 {s}px 'Shantell Sans'", kb: .92 }
+};
+function fontSpecs(c){ const F = FONTS[c.f] || FONTS.lobster, B = BODY[c.bf]; return [F.t, F.b, F.s, B && B.b].filter(Boolean).map(x => x.replace("{s}", 40)); }
+function ensureFonts(c){ return Promise.all(fontSpecs(c).map(x => document.fonts.load(x, "Аа").catch(() => {}))); }
+async function loadFonts(){ try{ await ensureFonts({ f: "lobster" }); }catch(e){} }
 
 /* ---------- text ---------- */
 function wrap(ctx, text, maxW){
@@ -709,9 +738,10 @@ function drawText(ctx, L, c, reveal){
   });
   const used = blocks.reduce((a, b) => a + b.lh * b.lines.length, 0);
   const body = (c.t || "").trim(), from = (c.fr || "").trim();
-  let bs = 52 * F.kb;
+  const BF = BODY[c.bf] && BODY[c.bf].b ? BODY[c.bf] : null, bodyTpl = BF ? BF.b : F.b;
+  let bs = 52 * (BF ? BF.kb : F.kb);
   if(body){
-    let lines; for(; bs >= 24; bs -= 2){ ctx.font = fnt(F.b, bs); lines = wrap(ctx, body, aw * .96); if(used + 36 + lines.length * bs * 1.34 + (from ? bs * 2 : 0) <= ah) break; }
+    let lines; for(; bs >= 24; bs -= 2){ ctx.font = fnt(bodyTpl, bs); lines = wrap(ctx, body, aw * .96); if(used + 36 + lines.length * bs * 1.34 + (from ? bs * 2 : 0) <= ah) break; }
     blocks.push({ font: ctx.font, lines, lh: bs * 1.34, col: L.body, gap: 36 });
   }
   if(from){ const s = Math.min(bs * 1.12, 54 * F.kb); ctx.font = fnt(F.s, s); blocks.push({ font: ctx.font, lines: wrap(ctx, from, aw), lh: s * 1.3, col: L.title, gap: body ? 26 : 36 }); }
@@ -1014,3 +1044,86 @@ const DESIGNS2 = {
 Object.assign(DESIGNS, DESIGNS2);
 const MORE_DESIGNS = { bday: ["watercolor", "neon", "luxe", "lights", "champagne", "rainbow", "minimal"], ny: ["lights", "champagne", "luxe", "neon"], xmas: ["lights", "minimal", "papercut"], feb14: ["candles", "neon", "watercolor", "minimal"], feb23: ["luxe", "papercut"], mar8: ["watercolor", "sakura", "minimal", "lavender"], easter: ["sakura", "watercolor"], mom: ["watercolor", "sakura", "lavender", "minimal"], wedding: ["watercolor", "champagne", "candles", "minimal", "luxe"], anniv: ["champagne", "candles", "luxe"], baby: ["rainbow", "watercolor"], morning: ["sea", "lavender", "papercut", "sakura"], night: ["candles", "lights", "papercut"], weekend: ["sea", "papercut", "lavender"], love: ["candles", "neon", "watercolor"], thanks: ["watercolor", "minimal", "lavender"], health: ["rainbow", "sakura", "sea"], goodday: ["sea", "lavender", "minimal", "papercut"], monday: ["papercut", "minimal"], friday: ["neon", "lights", "champagne"], jubilee: ["luxe", "champagne", "watercolor"], sep1: ["autumn", "rainbow"], teacher: ["autumn", "watercolor", "minimal"], grad: ["neon", "luxe", "champagne"], medic: ["minimal", "watercolor"], builder: ["papercut"], family: ["watercolor", "papercut"], angel: ["watercolor", "candles"], housewarming: ["lights", "papercut"], elders: ["autumn", "lavender", "watercolor"] };
 Object.entries(MORE_DESIGNS).forEach(([h, ds]) => { if(HOL[h]) ds.forEach(d => { if(!HOL[h].designs.includes(d)) HOL[h].designs.push(d); }); });
+
+/* ---------- cats (original drawings) ---------- */
+function pawPrint(ctx, x, y, s, col, rot){
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.fillStyle = col;
+  ctx.beginPath(); ctx.ellipse(0, s * .25, s * .42, s * .34, 0, 0, TAU); ctx.fill();
+  [[-.48, -.2, .15], [-.18, -.48, .16], [.18, -.48, .16], [.48, -.2, .15]].forEach(([a, b, k]) => { ctx.beginPath(); ctx.ellipse(a * s, b * s, k * s, k * 1.25 * s, a * .5, 0, TAU); ctx.fill(); });
+  ctx.restore();
+}
+function yarn(ctx, x, y, R, col){
+  ctx.fillStyle = lin(ctx, x - R, y - R, x + R, y + R, [shade(col, .3), col, shade(col, -.25)]); ctx.beginPath(); ctx.arc(x, y, R, 0, TAU); ctx.fill();
+  ctx.save(); ctx.beginPath(); ctx.arc(x, y, R, 0, TAU); ctx.clip(); ctx.strokeStyle = rgba(shade(col, -.35), .6); ctx.lineWidth = R * .07;
+  for(let i = -3; i <= 3; i++){ ctx.beginPath(); ctx.ellipse(x + i * R * .25, y, R * .25, R * 1.1, .5, 0, TAU); ctx.stroke(); } ctx.restore();
+  ctx.strokeStyle = col; ctx.lineWidth = R * .07; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(x + R * .7, y + R * .7); ctx.bezierCurveTo(x + R * 1.5, y + R * 1.3, x + R * 1.8, y + R * .2, x + R * 2.6, y + R * .9); ctx.stroke();
+}
+/* o: {fur, shade, inner, eye, closed, sleep, tabby, muzzle} */
+function catHead(ctx, x, y, s, o, rot = 0){
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot);
+  const fur = o.fur, dk = o.shade || shade(fur, -.25);
+  [-1, 1].forEach(d => { ctx.fillStyle = fur; ctx.beginPath(); ctx.moveTo(d * s * .9, -s * .25); ctx.quadraticCurveTo(d * s * .95, -s * 1.05, d * s * .62, -s * 1.02); ctx.quadraticCurveTo(d * s * .35, -s * .8, d * s * .15, -s * .62); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = o.inner; ctx.beginPath(); ctx.moveTo(d * s * .78, -s * .38); ctx.quadraticCurveTo(d * s * .82, -s * .88, d * s * .62, -s * .88); ctx.quadraticCurveTo(d * s * .42, -s * .74, d * s * .3, -s * .6); ctx.closePath(); ctx.fill(); });
+  const g = ctx.createRadialGradient(-s * .25, -s * .35, s * .1, 0, 0, s * 1.15); g.addColorStop(0, shade(fur, .18)); g.addColorStop(1, dk);
+  ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(0, 0, s, s * .82, 0, 0, TAU); ctx.fill();
+  if(o.tabby){ ctx.strokeStyle = rgba(shade(fur, -.4), .7); ctx.lineWidth = s * .07; ctx.lineCap = "round"; [-.18, 0, .18].forEach(dx => { ctx.beginPath(); ctx.moveTo(dx * s, -s * .78); ctx.lineTo(dx * s * .8, -s * .5); ctx.stroke(); });
+    [-1, 1].forEach(d => { ctx.beginPath(); ctx.moveTo(d * s * .98, s * .02); ctx.lineTo(d * s * .75, s * .05); ctx.moveTo(d * s * .96, s * .2); ctx.lineTo(d * s * .76, s * .18); ctx.stroke(); }); }
+  if(o.muzzle){ ctx.fillStyle = o.muzzle; ctx.beginPath(); ctx.ellipse(-s * .17, s * .32, s * .26, s * .2, 0, 0, TAU); ctx.ellipse(s * .17, s * .32, s * .26, s * .2, 0, 0, TAU); ctx.fill(); }
+  ctx.fillStyle = "rgba(255,120,140,.35)"; [-1, 1].forEach(d => { ctx.beginPath(); ctx.ellipse(d * s * .6, s * .25, s * .15, s * .09, 0, 0, TAU); ctx.fill(); });
+  if(o.closed || o.sleep){ ctx.strokeStyle = "#2b1d1d"; ctx.lineWidth = s * .065; ctx.lineCap = "round"; [-1, 1].forEach(d => { ctx.beginPath(); if(o.sleep) ctx.arc(d * s * .38, -s * .06, s * .14, .25, Math.PI - .25); else ctx.arc(d * s * .38, s * .04, s * .15, Math.PI + .3, -.3); ctx.stroke(); }); }
+  else [-1, 1].forEach(d => { const ex = d * s * .38, ey = -s * .04;
+    ctx.fillStyle = o.eye; ctx.beginPath(); ctx.ellipse(ex, ey, s * .17, s * .21, 0, 0, TAU); ctx.fill();
+    ctx.fillStyle = "#1b1b1b"; ctx.beginPath(); ctx.ellipse(ex, ey + s * .02, s * .11, s * .17, 0, 0, TAU); ctx.fill();
+    ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.arc(ex - s * .05, ey - s * .07, s * .055, 0, TAU); ctx.fill(); ctx.beginPath(); ctx.arc(ex + s * .05, ey + s * .07, s * .025, 0, TAU); ctx.fill(); });
+  ctx.fillStyle = "#f28aa0"; ctx.beginPath(); ctx.moveTo(-s * .09, s * .16); ctx.quadraticCurveTo(0, s * .12, s * .09, s * .16); ctx.quadraticCurveTo(s * .02, s * .28, 0, s * .28); ctx.quadraticCurveTo(-s * .02, s * .28, -s * .09, s * .16); ctx.fill();
+  ctx.strokeStyle = "#3a2a2a"; ctx.lineWidth = s * .035; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(0, s * .28); ctx.quadraticCurveTo(-s * .06, s * .38, -s * .16, s * .33); ctx.moveTo(0, s * .28); ctx.quadraticCurveTo(s * .06, s * .38, s * .16, s * .33); ctx.stroke();
+  ctx.strokeStyle = rgba(o.whisk || "#ffffff", .85); ctx.lineWidth = s * .02; [-1, 1].forEach(d => [[-.02, -.08], [.06, 0], [.14, .1]].forEach(([a, b]) => { ctx.beginPath(); ctx.moveTo(d * s * .45, s * (.22 + a)); ctx.lineTo(d * s * 1.25, s * (.12 + b + a)); ctx.stroke(); }));
+  ctx.restore();
+}
+function catPaw(ctx, x, y, s, fur){
+  ctx.fillStyle = lin(ctx, x, y - s * .25, x, y + s * .25, [shade(fur, .15), shade(fur, -.15)]); ctx.beginPath(); ctx.ellipse(x, y, s * .3, s * .2, 0, 0, TAU); ctx.fill();
+  ctx.strokeStyle = rgba(shade(fur, -.45), .6); ctx.lineWidth = s * .03; [-.1, .1].forEach(d => { ctx.beginPath(); ctx.moveTo(x + d * s, y + s * .02); ctx.lineTo(x + d * s, y + s * .17); ctx.stroke(); });
+}
+const CATS = { ginger: { fur: "#f4a259", inner: "#ffc2b4", eye: "#7cc46a", tabby: 1, whisk: "#ffffff" }, grey: { fur: "#9aa5b1", inner: "#ffc2d1", eye: "#f2c14e", tabby: 1, muzzle: "#eef1f4" }, black: { fur: "#3a3a46", inner: "#f5a3b8", eye: "#9be15d", muzzle: "#ffffff", whisk: "#ffffff" }, white: { fur: "#fbf8f3", shade: "#d8d2c8", inner: "#ffc2d1", eye: "#6ec1e4", whisk: "#c9c0b5" }, cream: { fur: "#f3dcc0", inner: "#ffc2d1", eye: "#5aa9e6", tabby: 0, muzzle: "#fffaf3", whisk: "#ffffff" } };
+const DESIGNS3 = {
+  cats: { name: "Котики выглядывают", pals: [
+    { bg: ["#ffe5ec", "#fff4e6"], ledge: "#ffb4c6", cats: ["ginger", "grey", "black"], acc: ["#ff8fab", "#ffd166", "#9bd0f5"], title: "#d6336c", name: "#5a189a", body: "#4a3546" },
+    { bg: ["#e3f6f0", "#fffbe6"], ledge: "#86d3b8", cats: ["white", "ginger", "grey"], acc: ["#ff9f80", "#ffd166", "#8ecae6"], title: "#1b7f63", name: "#e05a2b", body: "#2d4038" },
+    { bg: ["#2c2457", "#4b3b8f"], ledge: "#8b7ad8", cats: ["black", "cream", "grey"], acc: ["#ffd166", "#ff8fab", "#a0e7e5"], title: "#ffd166", name: "#ffffff", body: "#efeaff", dark: 1 } ],
+    draw(ctx, r, p){
+      vbg(ctx, p.bg); bokeh(ctx, r, 12, "#ffffff", 30, 100, p.dark ? .08 : .4);
+      const area = [110, 180, 860, 700];
+      for(let i = 0; i < 16; i++){ const x = r() * W, y = r() * 1000; if(inside(x, y, area, 40)) continue; pawPrint(ctx, x, y, 24 + r() * 16, rgba(p.acc[i % 3], p.dark ? .35 : .45), r() * TAU); }
+      for(let i = 0; i < 10; i++){ const x = r() * W, y = r() * 1000; if(inside(x, y, area, 30)) continue; heart(ctx, x, y, 22 + r() * 22, p.acc[i % 3], (r() - .5) * .6); }
+      yarn(ctx, 130, 960, 46, p.acc[0]); yarn(ctx, 905, 930, 38, p.acc[2]);
+      const pos = [[240, 1140, 150, -.12], [540, 1112, 170, 0], [840, 1140, 150, .12]];
+      pos.forEach(([x, y, s, rot], i) => catHead(ctx, x, y, s, CATS[p.cats[i]], rot));
+      const top = H - 150; ctx.fillStyle = lin(ctx, 0, top, 0, H, [shade(p.ledge, .2), p.ledge, shade(p.ledge, -.12)]); ctx.shadowColor = "rgba(0,0,0,.18)"; ctx.shadowBlur = 20; ctx.shadowOffsetY = -6; rr(ctx, -20, top, W + 40, 200, 40); ctx.fill(); ctx.shadowColor = "transparent";
+      ctx.fillStyle = rgba("#ffffff", .25); ctx.fillRect(0, top + 14, W, 8);
+      pos.forEach(([x, , s], i) => { const f = CATS[p.cats[i]].fur; catPaw(ctx, x - s * .45, top + 6, s, f); catPaw(ctx, x + s * .45, top + 6, s, f); });
+      return { area, title: p.title, name: p.name, body: p.body, shadow: p.dark ? "rgba(0,0,0,.35)" : null };
+    } },
+  catnap: { name: "Спящий котик", pals: [
+    { sky: ["#1b1f4b", "#3b2f7a", "#6a4c93"], cloud: "#d9d4ff", cat: "grey", title: "#ffe8a3", name: "#ffffff", body: "#eeeaff", night: 1 },
+    { sky: ["#ffd6e0", "#ffe8d6", "#fff8ef"], cloud: "#ffffff", cat: "ginger", title: "#d1495b", name: "#7b2cbf", body: "#4a3546" },
+    { sky: ["#bde0fe", "#e0f0ff", "#fdfcff"], cloud: "#ffffff", cat: "white", title: "#3d5a80", name: "#e05780", body: "#2b3a55" } ],
+    draw(ctx, r, p){
+      vbg(ctx, p.sky); const area = [120, 170, 840, 570];
+      if(p.night){ stars(ctx, r, 200, [0, 0, W, 1000], "#ffffff", area); sparkles(ctx, r, 12, "#fff6d5", [0, 0, W, 900], 6, 16, area); crescent(ctx, 880, 150, 70, "#ffe8a3"); }
+      else { glow(ctx, 880, 150, 220, "#fff3b0", .7); ctx.fillStyle = "#ffe8a3"; ctx.beginPath(); ctx.arc(880, 150, 60, 0, TAU); ctx.fill(); bokeh(ctx, r, 10, "#ffffff", 30, 90, .5, area); }
+      [[150, 1250, 120], [930, 1250, 120], [540, 1300, 200], [330, 1200, 150], [760, 1200, 150], [540, 1180, 170]].forEach(([x, y, s]) => cloud(ctx, x, y, s, p.cloud, .97));
+      const C = CATS[p.cat], cx = 560, cy = 1020;
+      ctx.shadowColor = "rgba(0,0,0,.15)"; ctx.shadowBlur = 30; ctx.shadowOffsetY = 10;
+      ctx.fillStyle = lin(ctx, cx - 240, cy - 120, cx + 240, cy + 120, [shade(C.fur, .15), C.fur, C.shade || shade(C.fur, -.2)]); ctx.beginPath(); ctx.ellipse(cx, cy, 245, 135, 0, 0, TAU); ctx.fill(); ctx.shadowColor = "transparent";
+      if(C.tabby){ ctx.strokeStyle = rgba(shade(C.fur, -.35), .55); ctx.lineWidth = 16; ctx.lineCap = "round"; [-60, 0, 60, 120].forEach(dx => { ctx.beginPath(); ctx.arc(cx + dx, cy - 160, 120, 1.25, 1.75); ctx.stroke(); }); }
+      ctx.strokeStyle = C.fur; ctx.lineWidth = 54; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(cx + 220, cy + 30); ctx.bezierCurveTo(cx + 260, cy + 150, cx - 60, cy + 175, cx - 230, cy + 110); ctx.stroke();
+      ctx.strokeStyle = C.shade || shade(C.fur, -.15); ctx.lineWidth = 54; ctx.beginPath(); ctx.moveTo(cx - 180, cy + 125); ctx.lineTo(cx - 232, cy + 110); ctx.stroke();
+      catPaw(ctx, cx - 120, cy + 105, 150, C.fur); catPaw(ctx, cx - 30, cy + 112, 150, C.fur);
+      catHead(ctx, cx - 210, cy - 40, 125, { ...C, sleep: 1 }, -.35);
+      ctx.fillStyle = p.night ? "#ffe8a3" : p.title; ctx.font = "700 60px Nunito, sans-serif"; ctx.textAlign = "left"; [["z", 0, 0, 1], ["z", 40, -50, .8], ["Z", 90, -110, 1.1]].forEach(([t, dx, dy, k]) => { ctx.save(); ctx.translate(cx - 90 + dx, cy - 95 + dy); ctx.scale(k, k); ctx.fillText(t, 0, 0); ctx.restore(); });
+      return { area, title: p.title, name: p.name, body: p.body, shadow: p.night ? "rgba(0,0,0,.4)" : null };
+    } }
+};
+Object.assign(DESIGNS, DESIGNS3);
+["bday", "love", "friday", "weekend", "goodday", "thanks", "health", "baby", "feb14", "mar8", "monday", "housewarming"].forEach(h => { if(HOL[h] && !HOL[h].designs.includes("cats")) HOL[h].designs.splice(Math.min(2, HOL[h].designs.length), 0, "cats"); });
+["night", "morning", "love", "health", "goodday", "weekend", "baby"].forEach(h => { if(HOL[h] && !HOL[h].designs.includes("catnap")) HOL[h].designs.splice(Math.min(1, HOL[h].designs.length), 0, "catnap"); });

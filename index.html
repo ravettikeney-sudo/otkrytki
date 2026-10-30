@@ -21,7 +21,7 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Lobster&family=Marck+Script&family=Bad+Script&family=Caveat:wght@500;700&family=Playfair+Display:ital,wght@0,400;1,400;1,700&family=Comfortaa:wght@500;700&family=Amatic+SC:wght@700&family=Kurale&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Lobster&family=Marck+Script&family=Bad+Script&family=Caveat:wght@500;700&family=Playfair+Display:ital,wght@0,400;1,400;1,700&family=Comfortaa:wght@500;700&family=Amatic+SC:wght@700&family=Kurale&family=Pacifico&family=Great+Vibes&family=Comforter&family=Yeseva+One&family=Poiret+One&family=Ruslan+Display&family=Pangolin&family=Underdog&family=Rubik+Doodle+Shadow&family=Ponomar&family=Prata&family=Lora:ital@0;1&family=PT+Serif:ital@0;1&family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Alice&family=Philosopher&family=Montserrat:wght@500&family=Neucha&family=Marmelad&family=Shantell+Sans:wght@500&display=swap">
 <script src="cards.js"></script>
 <script src="video.js"></script>
 <style>
@@ -90,7 +90,8 @@ body{overflow-x:hidden}
 .dot{width:38px;height:38px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1.5px var(--line)}
 .dot[aria-pressed="true"]{box-shadow:0 0 0 3px var(--rose)}
 .fonts{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}
-.fnt{flex:none;min-width:84px;padding:8px 12px;border-radius:14px;border:1.5px solid var(--line);background:var(--card);font-size:26px;line-height:1.1}
+.fnt{flex:none;min-width:84px;padding:8px 14px;border-radius:14px;border:1.5px solid var(--line);background:var(--card);font-size:26px;line-height:1.25;white-space:nowrap}
+.fnt.bf{font-size:17px;font-family:Nunito;font-weight:700;padding:12px 14px}
 .fnt[aria-pressed="true"]{border-color:var(--rose);background:#fff0f4}
 .sendbar{position:fixed;left:0;right:0;bottom:0;z-index:6;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(180deg,rgba(255,244,236,0),rgba(255,244,236,.95) 30%)}
 .sendbar .wrap{display:flex;justify-content:center}
@@ -221,7 +222,8 @@ body{overflow-x:hidden}
       <div class="field"><label for="fFrom">От кого</label><input id="fFrom" placeholder="Например: Твоя Маша" maxlength="60" autocomplete="off"></div>
       <div class="field"><span class="lbl">Оформление</span><div class="strip" id="designs"></div>
         <div class="dots" id="pals"></div></div>
-      <div class="field"><span class="lbl">Шрифт</span><div class="fonts" id="fonts"></div>
+      <div class="field"><span class="lbl">Шрифт заголовка и имени</span><div class="fonts" id="fonts"></div></div>
+      <div class="field"><span class="lbl">Шрифт поздравления</span><div class="fonts" id="bfonts"></div>
         <div class="row"><button class="pill" id="shuffle">🎲 Перемешать украшения</button></div></div>
     </div>
   </div>
@@ -260,7 +262,7 @@ let card = null, wishIdx = 0, customText = false;
 const FONT_KEYS = Object.keys(FONTS);
 function openEditor(init){
   const h = HOL[init.h] || HOLIDAYS[0];
-  card = Object.assign({ h: h.id, d: h.designs[0], p: 0, s: 1 + Math.floor(Math.random() * 1e6), n: "", t: h.wishes[0], f: "lobster", fr: store.get("from", "") }, init);
+  card = Object.assign({ h: h.id, d: h.designs[0], p: 0, s: 1 + Math.floor(Math.random() * 1e6), n: "", t: h.wishes[0], f: "lobster", bf: "", fr: store.get("from", "") }, init);
   wishIdx = Math.max(0, h.wishes.indexOf(card.t)); customText = false; card.img = null;
   $("#delPhoto").hidden = true; $("#addPhoto").textContent = "📷 Добавить фото";
   $("#fName").value = card.n; $("#fText").value = card.t; $("#fFrom").value = card.fr;
@@ -279,7 +281,7 @@ function renderDesigns(){
     box.appendChild(b); };
   own.forEach(add);
   if(rest.length){ const sep = document.createElement("div"); sep.className = "dsep"; sep.textContent = "Все стили →"; box.appendChild(sep); rest.forEach(add); }
-  const step = () => { if(job !== thumbJob || !queue.length) return; const [cv, k] = queue.shift(); const ctx = cv.getContext("2d"); ctx.scale(172 / W, 215 / H); drawCard(ctx, { h: card.h, d: k, p: 0, s: 5, n: "", t: "", f: card.f }); setTimeout(step, 0); };
+  const step = async () => { if(job !== thumbJob || !queue.length) return; await ensureFonts(card); const [cv, k] = queue.shift(); const ctx = cv.getContext("2d"); ctx.scale(172 / W, 215 / H); drawCard(ctx, { h: card.h, d: k, p: 0, s: 5, n: "", t: "", f: card.f }); setTimeout(step, 0); };
   step();
   const sel = box.querySelector('[aria-pressed="true"]'); if(sel) setTimeout(() => sel.scrollIntoView({ block: "nearest", inline: "center" }), 50);
 }
@@ -289,14 +291,17 @@ function renderPals(){
   document.querySelectorAll(".dot").forEach(b => b.onclick = () => { card.p = +b.dataset.p; document.querySelectorAll(".dot").forEach(x => x.setAttribute("aria-pressed", x === b)); draw(true); });
 }
 function renderFonts(){
-  $("#fonts").innerHTML = FONT_KEYS.map(k => `<button class="fnt" data-f="${k}" aria-pressed="${k === card.f}" style="font:${FONTS[k].t.replace("{s}", 26)}" title="${FONTS[k].n}">Аа</button>`).join("");
-  document.querySelectorAll(".fnt").forEach(b => b.onclick = () => { card.f = b.dataset.f; document.querySelectorAll(".fnt").forEach(x => x.setAttribute("aria-pressed", x === b)); draw(true); });
+  $("#fonts").innerHTML = FONT_KEYS.map(k => `<button class="fnt" data-f="${k}" aria-pressed="${k === card.f}" style="font:${FONTS[k].t.replace("{s}", Math.round(26 * Math.min(1.15, FONTS[k].k)))}" title="${FONTS[k].n}">Ольга</button>`).join("");
+  document.querySelectorAll("#fonts .fnt").forEach(b => b.onclick = () => { card.f = b.dataset.f; document.querySelectorAll("#fonts .fnt").forEach(x => x.setAttribute("aria-pressed", x === b)); draw(true); });
+  $("#bfonts").innerHTML = Object.entries(BODY).map(([k, B]) => `<button class="fnt bf" data-b="${k}" aria-pressed="${k === (card.bf || "auto")}" ${B.b ? `style="font:${B.b.replace("{s}", Math.round(17 * B.kb))}"` : ""} title="${B.n}">${B.b ? "С праздником!" : "Как у заголовка"}</button>`).join("");
+  document.querySelectorAll("#bfonts .fnt").forEach(b => b.onclick = () => { card.bf = b.dataset.b === "auto" ? "" : b.dataset.b; document.querySelectorAll("#bfonts .fnt").forEach(x => x.setAttribute("aria-pressed", x === b)); draw(true); });
 }
 let drawT = 0;
 function draw(now){
   clearTimeout(drawT);
   const go = () => { const ctx = $("#pv").getContext("2d"); ctx.clearRect(0, 0, W, H); drawCard(ctx, { ...card, brand: brandOf() }); };
-  now ? go() : (drawT = setTimeout(go, 90));
+  const run = () => ensureFonts(card).then(go);
+  now ? run() : (drawT = setTimeout(run, 90));
 }
 $("#fName").oninput = e => { card.n = e.target.value; draw(); };
 $("#fText").oninput = e => { card.t = e.target.value; customText = true; draw(); };
@@ -348,9 +353,10 @@ function saveImage(b64, name, url){
   if(window.OtkApp && window.OtkApp.saveImage){ window.OtkApp.saveImage(b64, name); return; }
   const a = document.createElement("a"); a.href = url || "data:image/png;base64," + b64; a.download = name; document.body.appendChild(a); a.click(); a.remove(); toast("Открытка сохранена");
 }
-const cardLink = c => SITE + "?k=" + b64e({ h: c.h, d: c.d, p: c.p, s: c.s, n: c.n.trim(), t: c.t.trim(), f: c.f, fr: c.fr.trim() });
+const cardLink = c => SITE + "?k=" + b64e({ h: c.h, d: c.d, p: c.p, s: c.s, n: c.n.trim(), t: c.t.trim(), f: c.f, bf: c.bf || "", fr: c.fr.trim() });
 const fileNameOf = c => "otkrytka-" + ((c.n || HOL[c.h].name).trim().replace(/[^\p{L}\p{N}]+/gu, "-") || "s-prazdnikom") + ".png";
 async function shareCard(c){
+  await ensureFonts(c);
   const cv = renderCard({ ...c, brand: brandOf() }); const b64 = cv.toDataURL("image/png").split(",")[1];
   const blob = await new Promise(r => cv.toBlob(r, "image/png")); const fileName = fileNameOf(c);
   const file = new File([blob], fileName, { type: "image/png" });
@@ -368,7 +374,8 @@ $("#tellFriends").onclick = e => { e.preventDefault(); shareApp(); };
 
 /* ---------- viewer (what the recipient sees) ---------- */
 let fxRaf = 0;
-function openViewer(c){
+async function openViewer(c){
+  await ensureFonts(c);
   const v = document.createElement("div"); v.className = "vw"; v.id = "viewer";
   const cv = renderCard(c);
   v.innerHTML = `<canvas class="fx"></canvas><h2>Вам открытка! 💌</h2>${c.fr ? `<p class="from">От: ${esc(c.fr)}</p>` : ""}
@@ -416,8 +423,8 @@ function modal(title, html){
 }
 
 /* ---------- card of the day ---------- */
-function renderCod(){
-  const c = cardOfDay(), h = HOL[c.h];
+async function renderCod(){
+  const c = cardOfDay(), h = HOL[c.h]; await ensureFonts(c);
   $("#cod").innerHTML = `<div class="th"></div><div><small>Открытка дня</small><h3>${esc(h.title)}!</h3><button class="pill" id="codGo">Отправить</button></div>`;
   $("#cod .th").appendChild(renderCard(c, 264 / W));
   $("#cod").onclick = () => openEditor({ ...c, s: c.s, fr: store.get("from", "") });
