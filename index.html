@@ -82,7 +82,8 @@ body{overflow-x:hidden}
 .pill:active{transform:scale(.96)}
 .strip{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 10px;scrollbar-width:thin}
 .dsg{flex:none;width:86px;border:0;padding:0;background:none;text-align:center;font-size:12px;font-weight:700;color:var(--muted)}
-.dsg canvas{width:86px;height:107px;border-radius:12px;display:block;margin-bottom:5px;outline:3px solid transparent;outline-offset:2px;box-shadow:0 4px 12px rgba(90,30,60,.15)}
+.dsep{flex:none;align-self:center;writing-mode:vertical-rl;transform:rotate(180deg);font-weight:800;font-size:12px;color:var(--rose);padding:0 2px;letter-spacing:.04em}
+.dsg canvas{width:86px;height:107px;background:var(--soft);border-radius:12px;display:block;margin-bottom:5px;outline:3px solid transparent;outline-offset:2px;box-shadow:0 4px 12px rgba(90,30,60,.15)}
 .dsg[aria-pressed="true"] canvas{outline-color:var(--rose)}
 .dsg[aria-pressed="true"]{color:var(--ink)}
 .dots{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -268,16 +269,23 @@ function openEditor(init){
   renderDesigns(); renderFonts(); renderPals(); draw(true);
   if(matchMedia("(min-width:821px)").matches) $("#fName").focus();
 }
+let thumbJob = 0;
 function renderDesigns(){
-  const h = HOL[card.h];
-  $("#designs").innerHTML = ""; h.designs.forEach(k => { const b = document.createElement("button"); b.className = "dsg"; b.setAttribute("aria-pressed", k === card.d); b.dataset.d = k;
-    b.appendChild(renderCard({ h: card.h, d: k, p: 0, s: 5, n: "", t: "", f: card.f }, 172 / W)); b.append(DESIGNS[k].name);
+  const h = HOL[card.h], own = h.designs, rest = Object.keys(DESIGNS).filter(k => !own.includes(k));
+  const box = $("#designs"); box.innerHTML = ""; const job = ++thumbJob, queue = [];
+  const add = k => { const b = document.createElement("button"); b.className = "dsg"; b.setAttribute("aria-pressed", k === card.d); b.dataset.d = k;
+    const ph = document.createElement("canvas"); ph.width = 172; ph.height = 215; b.appendChild(ph); b.append(DESIGNS[k].name); queue.push([ph, k]);
     b.onclick = () => { card.d = k; card.p = 0; document.querySelectorAll(".dsg").forEach(x => x.setAttribute("aria-pressed", x === b)); renderPals(); draw(true); };
-    $("#designs").appendChild(b); });
+    box.appendChild(b); };
+  own.forEach(add);
+  if(rest.length){ const sep = document.createElement("div"); sep.className = "dsep"; sep.textContent = "Все стили →"; box.appendChild(sep); rest.forEach(add); }
+  const step = () => { if(job !== thumbJob || !queue.length) return; const [cv, k] = queue.shift(); const ctx = cv.getContext("2d"); ctx.scale(172 / W, 215 / H); drawCard(ctx, { h: card.h, d: k, p: 0, s: 5, n: "", t: "", f: card.f }); setTimeout(step, 0); };
+  step();
+  const sel = box.querySelector('[aria-pressed="true"]'); if(sel) setTimeout(() => sel.scrollIntoView({ block: "nearest", inline: "center" }), 50);
 }
 function renderPals(){
   const d = DESIGNS[card.d];
-  $("#pals").innerHTML = d.pals.length < 2 ? "" : d.pals.map((p, i) => { const c = p.bg ? (Array.isArray(p.bg) ? p.bg : [p.bg, p.glow]) : p.sky; return `<button class="dot" aria-label="Цвет ${i + 1}" aria-pressed="${i === card.p}" data-p="${i}" style="background:linear-gradient(135deg,${c[0]},${c[c.length - 1]})"></button>`; }).join("");
+  $("#pals").innerHTML = d.pals.length < 2 ? "" : d.pals.map((p, i) => { const c = Array.isArray(p.bg) ? p.bg : p.sky ? p.sky : [p.bg, p.glow || p.a || p.line || (p.c && p.c[0]) || p.title]; return `<button class="dot" aria-label="Цвет ${i + 1}" aria-pressed="${i === card.p}" data-p="${i}" style="background:linear-gradient(135deg,${c[0]},${c[c.length - 1]})"></button>`; }).join("");
   document.querySelectorAll(".dot").forEach(b => b.onclick = () => { card.p = +b.dataset.p; document.querySelectorAll(".dot").forEach(x => x.setAttribute("aria-pressed", x === b)); draw(true); });
 }
 function renderFonts(){
