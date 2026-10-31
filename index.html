@@ -392,7 +392,7 @@ function renderDesigns(){
   if(hidden.length){ const mb = document.createElement("button"); mb.className = "dsg more"; mb.innerHTML = `<span class="mi">📸</span>Ещё ${hidden.length} тем<br>(${hidden.reduce((a, k) => a + DESIGNS[k].pals.length, 0)} фото)`; mb.onclick = () => { showAllPh = true; renderDesigns(); }; box.appendChild(mb); }
   const step = async () => { if(job !== thumbJob || !queue.length) return; const [cv, k, i] = queue.shift(); const tc = { h: card.h, d: k, p: i, s: DESIGNS[k].photo ? 3 : 5, n: "", t: "", f: card.f, bf: card.bf };
     await prepareCard(tc, .3); if(job !== thumbJob) return; const ctx = cv.getContext("2d"); ctx.setTransform(172 / W, 0, 0, 215 / H, 0, 0); drawCard(ctx, tc, { wm: false }); setTimeout(step, 0); };
-  step();
+  step(); step(); step(); step();
   const sel = box.querySelector('[aria-pressed="true"]'); if(sel) setTimeout(() => sel.scrollIntoView({ block: "nearest", inline: "center" }), 50);
 }
 function renderFonts(){
