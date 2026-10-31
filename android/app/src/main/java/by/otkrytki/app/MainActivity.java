@@ -154,6 +154,12 @@ public class MainActivity extends Activity {
                 }
             } catch (Exception ignored) { }
         }
+        @JavascriptInterface public String muxAudio(String videoB64, String pcmB64, int sr, int ch) {
+            try {
+                byte[] r = Mux.addAudio(new File(getCacheDir(), "mux"), android.util.Base64.decode(videoB64, android.util.Base64.DEFAULT), android.util.Base64.decode(pcmB64, android.util.Base64.DEFAULT), sr, ch);
+                return android.util.Base64.encodeToString(r, android.util.Base64.NO_WRAP);
+            } catch (Throwable e) { return ""; }
+        }
         @JavascriptInterface public void shareFile(String base64, String mime, String name, String text) {
             try {
                 byte[] b = android.util.Base64.decode(base64, android.util.Base64.DEFAULT);

@@ -2,6 +2,7 @@
    Такой файл открывается в WhatsApp, Viber, Telegram, ВК и любой галерее. */
 const MP4_W = 704, MP4_H = 880, MP4_FPS = 30, MP4_SR = 44100;
 
+function u8b64(u){ let s = ""; for(let i = 0; i < u.length; i += 32768) s += String.fromCharCode.apply(null, u.subarray(i, i + 32768)); return btoa(s); }
 function cpuCopy(src){ const c = document.createElement("canvas"); c.width = src.width; c.height = src.height; c.getContext("2d", { willReadFrequently: true }).drawImage(src, 0, 0); return c; }
 async function mp4Support(){
   if(!window.VideoEncoder || !window.VideoFrame || !window.Mp4Muxer) return null;
@@ -16,7 +17,8 @@ async function mp4Support(){
   if(!video) return null;
   let audio = null;
   if(window.AudioEncoder && window.AudioData){
-    try{ const cfg = { codec: "mp4a.40.2", sampleRate: MP4_SR, numberOfChannels: 2, bitrate: 128000 }; const r = await AudioEncoder.isConfigSupported(cfg); if(r.supported) audio = cfg; }catch(e){}
+    for(const sr of [44100, 48000]) for(const br of [128000, 96000]){ if(audio) break;
+      try{ const cfg = { codec: "mp4a.40.2", sampleRate: sr, numberOfChannels: 2, bitrate: br }; const r = await AudioEncoder.isConfigSupported(cfg); if(r.supported) audio = cfg; }catch(e){} }
   }
   return { video, audio };
 }
@@ -27,7 +29,7 @@ async function encodeMp4({ dur, draw, buildAudio, onProgress, preview, sup }){
   const M = window.Mp4Muxer;
   const muxer = new M.Muxer({ target: new M.ArrayBufferTarget(), fastStart: "in-memory", firstTimestampBehavior: "offset",
     video: { codec: "avc", width: MP4_W, height: MP4_H, frameRate: MP4_FPS },
-    audio: sup.audio ? { codec: "aac", numberOfChannels: 2, sampleRate: MP4_SR } : undefined });
+    audio: sup.audio ? { codec: "aac", numberOfChannels: 2, sampleRate: sup.audio.sampleRate } : undefined });
   let err = null;
   let lastOut = performance.now();
   const venc = new VideoEncoder({ output: (ch, meta) => { lastOut = performance.now(); muxer.addVideoChunk(ch, meta); }, error: e => err = e });
@@ -35,7 +37,7 @@ async function encodeMp4({ dur, draw, buildAudio, onProgress, preview, sup }){
   // звук: рендерим заранее, быстрее реального времени
   if(sup.audio && buildAudio){
     try{
-      const oac = new OfflineAudioContext(2, Math.ceil(MP4_SR * dur), MP4_SR);
+      const SR = sup.audio.sampleRate, oac = new OfflineAudioContext(2, Math.ceil(SR * dur), SR);
       await buildAudio(oac);
       const buf = await oac.startRendering();
       const aenc = new AudioEncoder({ output: (ch, meta) => muxer.addAudioChunk(ch, meta), error: e => err = e });
@@ -44,7 +46,7 @@ async function encodeMp4({ dur, draw, buildAudio, onProgress, preview, sup }){
       for(let i = 0; i < buf.length; i += step){
         const n = Math.min(step, buf.length - i), data = new Float32Array(n * 2);
         data.set(L.subarray(i, i + n), 0); data.set(R.subarray(i, i + n), n);
-        const ad = new AudioData({ format: "f32-planar", sampleRate: MP4_SR, numberOfFrames: n, numberOfChannels: 2, timestamp: Math.round(i / MP4_SR * 1e6), data });
+        const ad = new AudioData({ format: "f32-planar", sampleRate: SR, numberOfFrames: n, numberOfChannels: 2, timestamp: Math.round(i / SR * 1e6), data });
         aenc.encode(ad); ad.close();
       }
       await aenc.flush(); aenc.close();
@@ -66,6 +68,19 @@ async function encodeMp4({ dur, draw, buildAudio, onProgress, preview, sup }){
   }
   await venc.flush(); venc.close(); if(err) throw err;
   muxer.finalize();
+  let out = new Uint8Array(muxer.target.buffer);
+  // нет AAC в браузере — звук добавляет само приложение (Android MediaCodec)
+  if(!sup.audio && buildAudio && window.OtkApp && OtkApp.muxAudio){
+    try{
+      const oac = new OfflineAudioContext(2, Math.ceil(MP4_SR * dur), MP4_SR); await buildAudio(oac);
+      const ab = await oac.startRendering(), L = ab.getChannelData(0), R = ab.getChannelData(1);
+      const pcm = new Int16Array(L.length * 2);
+      for(let i = 0; i < L.length; i++){ pcm[2 * i] = Math.max(-1, Math.min(1, L[i])) * 32767; pcm[2 * i + 1] = Math.max(-1, Math.min(1, R[i])) * 32767; }
+      await new Promise(r => setTimeout(r, 0));
+      const res = OtkApp.muxAudio(u8b64(out), u8b64(new Uint8Array(pcm.buffer)), MP4_SR, 2);
+      if(res){ const bin = atob(res), u = new Uint8Array(bin.length); for(let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); out = u; }
+    }catch(e){ console.warn("native mux", e); }
+  }
   if(onProgress) onProgress(1);
-  return { blob: new Blob([muxer.target.buffer], { type: "video/mp4" }), type: "video/mp4", ext: "mp4" };
+  return { blob: new Blob([out], { type: "video/mp4" }), type: "video/mp4", ext: "mp4" };
 }
