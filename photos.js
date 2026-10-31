@@ -1,22 +1,30 @@
 /* ---------- Фото-открытки: настоящие фотографии (Unsplash License) + текст поверх ----------
    Каждая «коллекция» — это дизайн ph_<имя>, а её фотографии — варианты (палитры). */
-const PH_SETS = {"bday": "t0b1b1b1b1b1t0", "candles": "b1t0", "trees": "t1t1t1t1t1t0t1t1t1", "baubles": "t1b1t1t0t1t0b1t0t1b1t1b0", "roses": "t1t1t1t1t1t1t1b0t0", "tulips": "b1t1t1t1t1b1t1t0b0", "cats": "b1b1b1t0b1t0t1t0b1t1", "coffee": "t1b0t0t0t1b1t0t0", "cozy": "b1t1b1b1b1b1t1b1t0b1", "leaves": "t1t1t1t1t1b1t1b0b0t1b1", "rowan": "t1b1t1t1t1t1t1", "champ": "t1t1t0t1", "balloons": "b0b0b0t1t1b1b0t1b0t0", "snow": "t0t1t0t1b0t1b0t1t0", "peony": "t1t1t1t1t1t1b0t1t1t1b0b1", "night": "t0t0t0t0t0t0t0", "gifts": "t1b1b1t1t0b1t1", "rings": "t1b1t1b1t0t0", "easter": "t1t1t1t1t1t1t0", "daisy": "t1t0t0t0t1b1t0", "sunflower": "t1t1t0t0t0b0b1", "sea": "b0t1b0b0t0t0t0t0b0", "teddy": "t1b0b1b1t1t1t0b0", "hearts": "t1t0t1t1t1t0b0t0b0", "pancakes": "t1t0t0t1b1t1t1"};
+const PH_SETS = {"bday": "t0b1b1b1b1b1t0", "candles": "b1t0", "trees": "t1t1t1t1t1t0t1t1t1", "baubles": "t1b1t1t0t1t0b1t0t1b1t1b0", "roses": "t1t1t1t1t1t1t1b0t0", "tulips": "b1t1t1t1t1b1t1t0b0", "cats": "b1b1b1t0b1t0t1t0b1t1", "coffee": "t1b0t0t0t1b1t0t0", "cozy": "b1t1b1b1b1b1t1b1t0b1", "leaves": "t1t1t1t1t1b1t1b0b0t1b1", "rowan": "t1b1t1t1t1t1t1", "champ": "t1t1t0t1", "balloons": "b0b0b0t1t1b1b0t1b0t0", "snow": "t0t1t0t1b0t1b0t1t0", "peony": "t1t1t1t1t1t1b0t1t1t1b0b1", "night": "t0t0t0t0t0t0t0", "gifts": "t1b1b1t1t0b1t1", "rings": "t1b1t1b1t0t0", "easter": "t1t1t1t1t1t1t0", "daisy": "t1t0t0t0t1b1t0", "sunflower": "t1t1t0t0t0b0b1", "sea": "b0t1b0b0t0t0t0t0b0", "teddy": "t1b0b1b1t1t1t0b0", "hearts": "t1t0t1t1t1t0b0t0b0", "pancakes": "t1t0t0t1b1t1t1", "tea": "t0b0t0b0t1t1b0b1t0t1t0b0t1t0t0t1t1", "cocoa": "t1t0t0t1b0t1t1t1t1t1t1", "village": "t0t0t0t0t0t0t0b1t0b0", "lavender": "t0t0t0t0t1t0t1t0t1t0t0t0", "lilac": "t1t1b0t0t1t1t1b1t1t1t1t1t1", "blossom": "b0t0t1t1b0t1t1t1t1t1t1t1", "puppy": "b1t1b1t0t1t0t1b1t0t1t1b1b0t0", "birds": "t0t0b1t1b1t1t1t1b1t1b1b0t0t1", "butterfly": "b1t1b1t1t0t1t0t1b1b0t1t1t1", "straw": "t1t1t1b0t0t1t1t1t1t1t1t0", "sweets": "t0t0t1t1t0t1t0t1t1t1t0", "wild": "t1t1t1t0t0t1t1t1t0t1t1t1t1", "mount": "t0t0t0b0t0t0b1t0t0t0b0", "hydr": "t0t1t1t1t1t1t1b1b0t1t1b0", "xmashome": "t1t1t0t0t1t0t1t1t0t1t1t0", "frost": "t0t1t1t0t1t0t1t1t1", "dand": "t0b0t1t0t0t1t0t1t1t0", "rainbow": "b1t1t1t1t1t0t1b0t1t1t0", "basket": "t1t0t0t1t1t0t1t1t1b0t1", "park": "t0t1t1t1t1t0t1t1t1t0t1", "lily": "t1t0t1t1t0t1b1b0t1t1t0", "books": "t1t1t1t1t1t1t1t1t1", "cupcake": "t0t1t1t1t0t0t1t1t1t1", "forest": "t1t1t1t1t1t1t1t1t1t1t0", "orchid": "t1t0b0t1t1t0t1t1t0t1b1", "apples": "t1t1t1t1t1t1t1t1t1t1", "bokeh": "t1t1t1t1t1t1t1t1t1t1t1t1", "mist": "t1t0t0t1t0t0t0t1t0t0", "bunny": "t1t1t1t1t1t1t1b1t1t1"};
 const PH_NAMES = { bday: "Торт и свечи", candles: "Свечи", trees: "Ёлка и огни", baubles: "Ёлочные шары", roses: "Розы", tulips: "Тюльпаны", cats: "Котики", coffee: "Утренний кофе",
   cozy: "Уютная осень", leaves: "Осенние листья", rowan: "Рябина", champ: "Шампанское", balloons: "Воздушные шары", snow: "Зимний лес", peony: "Пионы", night: "Луна и звёзды",
-  gifts: "Подарки", rings: "Кольца", easter: "Пасхальные яйца", daisy: "Ромашки", sunflower: "Подсолнухи", sea: "Море", teddy: "Мишки", hearts: "Сердечки", pancakes: "Блины" };
+  gifts: "Подарки", rings: "Кольца", easter: "Пасхальные яйца", daisy: "Ромашки", sunflower: "Подсолнухи", sea: "Море", teddy: "Мишки", hearts: "Сердечки", pancakes: "Блины",
+  tea: "Чай", cocoa: "Какао и уют", village: "Зимние домики", lavender: "Лаванда", lilac: "Сирень", blossom: "Цветущая вишня", puppy: "Щенки", birds: "Снегири",
+  butterfly: "Бабочки", straw: "Клубника", sweets: "Макаронс", wild: "Полевые цветы", mount: "Горы и озёра", hydr: "Гортензии", xmashome: "Новогодний уют",
+  frost: "Морозные узоры", dand: "Одуванчики", rainbow: "Радуга", basket: "Цветы в корзинке", park: "Осенний парк", lily: "Лилии", books: "Книги и цветы",
+  cupcake: "Капкейки", forest: "Лес и солнце", orchid: "Орхидеи", apples: "Яблоки", bokeh: "Огоньки", mist: "Туманное утро", bunny: "Зайчики" };
 const PH_FOR = {
-  bday: "bday balloons gifts roses peony champ cats teddy candles", ny: "trees baubles snow champ gifts cats", xmas: "trees candles baubles snow night",
-  feb14: "hearts roses peony rings teddy", feb23: "sea snow champ leaves gifts", mar8: "tulips peony roses daisy gifts", easter: "easter tulips daisy",
-  mom: "peony roses tulips daisy hearts", wedding: "rings roses peony champ hearts", anniv: "rings hearts roses champ candles", baby: "teddy balloons daisy",
-  morning: "coffee cozy sunflower daisy cats leaves rowan", night: "night candles cats sea", weekend: "sea cozy coffee sunflower leaves",
-  love: "hearts roses peony teddy sea", thanks: "peony roses daisy sunflower tulips", health: "cozy daisy sunflower cats teddy",
-  goodday: "sunflower daisy coffee cozy rowan leaves cats sea", monday: "coffee sunflower cats cozy", friday: "champ sea balloons cats",
-  jubilee: "champ roses peony bday balloons", sep1: "leaves rowan sunflower balloons", teacher: "leaves peony roses rowan", grad: "balloons champ sea",
-  medic: "daisy tulips peony sea", builder: "sea sunflower leaves", family: "daisy hearts sunflower cozy", angel: "candles daisy peony night",
-  housewarming: "cozy gifts balloons candles", maslenitsa: "pancakes sunflower", elders: "leaves rowan daisy peony cozy"
+  bday: "bday balloons gifts roses peony cupcake sweets champ basket hydr cats puppy teddy bunny straw candles orchid lily butterfly", ny: "trees baubles xmashome bokeh snow village frost cocoa birds champ gifts cats puppy",
+  xmas: "xmashome trees candles baubles bokeh village snow frost night birds cocoa", feb14: "hearts roses peony rings teddy sweets straw candles bokeh",
+  feb23: "mount sea snow forest champ village leaves gifts", mar8: "tulips peony roses lilac blossom basket hydr orchid lily daisy sweets butterfly gifts", easter: "easter bunny blossom tulips lilac daisy basket",
+  mom: "peony roses tulips basket lilac hydr lily orchid daisy hearts tea", wedding: "rings roses peony lily orchid champ hearts hydr basket", anniv: "rings hearts roses champ candles peony lily",
+  baby: "teddy bunny balloons puppy daisy cupcake butterfly", morning: "coffee tea cozy mist sunflower daisy cats puppy birds leaves rowan park apples straw",
+  night: "night candles bokeh cats sea frost", weekend: "sea mount forest cozy coffee tea sunflower wild park lavender leaves", love: "hearts roses peony teddy sea straw sweets lavender",
+  thanks: "peony roses basket hydr daisy sunflower tulips lily orchid wild", health: "tea cozy daisy sunflower apples straw cats puppy teddy forest rainbow",
+  goodday: "sunflower daisy wild butterfly coffee tea cozy rowan leaves park cats puppy sea rainbow dand mist", monday: "coffee tea sunflower cats puppy cozy mist",
+  friday: "champ sea balloons cupcake sweets cats puppy", jubilee: "champ roses peony bday hydr orchid lily balloons basket",
+  sep1: "leaves park rowan books apples sunflower balloons", teacher: "books leaves park peony roses rowan hydr basket", grad: "balloons champ sea mount rainbow",
+  medic: "daisy tulips peony lily hydr sea forest", builder: "mount sea sunflower forest leaves", family: "daisy hearts sunflower cozy basket rainbow puppy cats",
+  angel: "candles daisy peony lily orchid night blossom", housewarming: "cozy gifts balloons candles basket apples", maslenitsa: "pancakes sunflower tea",
+  elders: "leaves park rowan daisy peony cozy tea"
 };
-(function seasonal(){ const m = new Date().getMonth(); if(m >= 8 && m <= 10) ["morning", "goodday", "weekend", "monday"].forEach(h => { PH_FOR[h] = "cozy leaves rowan " + PH_FOR[h].replace(/\b(cozy|leaves|rowan)\b/g, "").trim(); });
-  if(m === 11 || m <= 1) ["morning", "goodday", "weekend"].forEach(h => { PH_FOR[h] = PH_FOR[h] + " snow"; }); })();
+(function seasonal(){ const m = new Date().getMonth(); if(m >= 8 && m <= 10) ["morning", "goodday", "weekend", "monday"].forEach(h => { PH_FOR[h] = "cozy leaves park rowan " + PH_FOR[h].replace(/\b(cozy|leaves|park|rowan)\b/g, "").trim(); });
+  if(m === 11 || m <= 1) ["morning", "goodday", "weekend"].forEach(h => { PH_FOR[h] = "cocoa frost birds village " + PH_FOR[h] + " snow"; }); })();
 
 const PH_IMG = {};
 function phUrl(set, n, small){ return `ph/${set}/${n}${small ? "t" : ""}.webp`; }

@@ -93,6 +93,8 @@ body{overflow-x:hidden}
 .dsg canvas{width:86px;height:107px;background:var(--soft);border-radius:12px;display:block;margin-bottom:5px;outline:3px solid transparent;outline-offset:2px;box-shadow:0 4px 12px rgba(90,30,60,.15)}
 .dsg[aria-pressed="true"] canvas{outline-color:var(--rose)}
 .dsg[aria-pressed="true"]{color:var(--ink)}
+.dsg.more{width:96px;align-self:flex-start;height:107px;border-radius:12px;background:var(--grad);color:#fff;font-weight:800;font-size:13px;line-height:1.25;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.dsg.more .mi{font-size:26px;margin-bottom:4px}
 .dots{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .dot{width:38px;height:38px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1.5px var(--line)}
 .dot[aria-pressed="true"]{box-shadow:0 0 0 3px var(--rose)}
@@ -355,7 +357,7 @@ function openStyles(hid, push = true){
     const pv = t.querySelector(".pv2"); pv.innerHTML = ""; pv.appendChild(renderCard(c, 360 / W)); } })();
 }
 const FONT_KEYS = Object.keys(FONTS);
-function openEditor(init, gid, from){
+function openEditor(init, gid, from){ showAllPh = false;
   const h = HOL[init.h] || HOLIDAYS[0];
   card = Object.assign({ h: h.id, d: h.designs[0], p: 0, s: 1 + Math.floor(Math.random() * 1e6), n: "", t: h.wishes[0], f: "lobster", bf: "", fr: store.get("from", "") }, init);
   wishIdx = Math.max(0, h.wishes.indexOf(card.t)); customText = false; card.img = null; card.st = card.st || []; selSt = -1;
@@ -374,8 +376,11 @@ function renderGroupTabs(){
   $("#gtabs").innerHTML = groupsFor(card.h).map(({ g }) => `<button data-g="${g.id}" aria-pressed="${g.id === curGroup}">${g.emoji} ${esc(g.name)}</button>`).join("");
   document.querySelectorAll("#gtabs button").forEach(b => b.onclick = () => { curGroup = b.dataset.g; document.querySelectorAll("#gtabs button").forEach(x => x.setAttribute("aria-pressed", x === b)); renderDesigns(); });
 }
+let showAllPh = false;
 function renderDesigns(){
-  const ds = groupDesigns(card.h, curGroup), own = (HOL[card.h] || HOLIDAYS[0]).designs;
+  let ds = groupDesigns(card.h, curGroup); const own = (HOL[card.h] || HOLIDAYS[0]).designs;
+  const hidden = curGroup === "photo" && !showAllPh ? ds.filter(k => !own.includes(k) && k !== card.d) : [];
+  if(hidden.length) ds = ds.filter(k => !hidden.includes(k));
   const box = $("#designs"); box.innerHTML = ""; const job = ++thumbJob, queue = []; let sepDone = false;
   ds.forEach(k => {
     if(!sepDone && !own.includes(k) && box.children.length){ const sep = document.createElement("div"); sep.className = "dsep"; sep.textContent = "Ещё в этом стиле →"; box.appendChild(sep); sepDone = true; }
@@ -384,6 +389,7 @@ function renderDesigns(){
       b.onclick = () => { card.d = k; card.p = i; card.tp = ""; document.querySelectorAll(".dsg").forEach(x => x.setAttribute("aria-pressed", x === b)); draw(true); };
       box.appendChild(b); });
   });
+  if(hidden.length){ const mb = document.createElement("button"); mb.className = "dsg more"; mb.innerHTML = `<span class="mi">📸</span>Ещё ${hidden.length} тем<br>(${hidden.reduce((a, k) => a + DESIGNS[k].pals.length, 0)} фото)`; mb.onclick = () => { showAllPh = true; renderDesigns(); }; box.appendChild(mb); }
   const step = async () => { if(job !== thumbJob || !queue.length) return; const [cv, k, i] = queue.shift(); const tc = { h: card.h, d: k, p: i, s: DESIGNS[k].photo ? 3 : 5, n: "", t: "", f: card.f, bf: card.bf };
     await prepareCard(tc, .3); if(job !== thumbJob) return; const ctx = cv.getContext("2d"); ctx.setTransform(172 / W, 0, 0, 215 / H, 0, 0); drawCard(ctx, tc, { wm: false }); setTimeout(step, 0); };
   step();
