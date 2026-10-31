@@ -55,7 +55,7 @@ async function makeVideo(c, opts = {}){
     await prepareCard(c, 1);
     if(window.Card3D && Card3D.release) Card3D.release();
     const scene = document.createElement("canvas"); scene.width = W; scene.height = H;
-    const L = drawScene(scene.getContext("2d"), c);
+    const L = drawScene(scene.getContext("2d", { willReadFrequently: true }), c);
     let voiceBuf = null; if(voice){ try{ voiceBuf = await new OfflineAudioContext(2, 1, MP4_SR).decodeAudioData(await voice.arrayBuffer()); }catch(e){} }
     const dur = Math.min(40, Math.max(8, voiceBuf ? voiceBuf.duration + 3.2 : 8));
     const kind = particleKind(c), ps = makeParticles(kind, kind === "snow" ? 80 : 55, W, H); ps.k = 2;

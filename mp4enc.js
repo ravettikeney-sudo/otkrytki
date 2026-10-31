@@ -2,6 +2,7 @@
    Такой файл открывается в WhatsApp, Viber, Telegram, ВК и любой галерее. */
 const MP4_W = 704, MP4_H = 880, MP4_FPS = 30, MP4_SR = 44100;
 
+function cpuCopy(src){ const c = document.createElement("canvas"); c.width = src.width; c.height = src.height; c.getContext("2d", { willReadFrequently: true }).drawImage(src, 0, 0); return c; }
 async function mp4Support(){
   if(!window.VideoEncoder || !window.VideoFrame || !window.Mp4Muxer) return null;
   const base = { width: MP4_W, height: MP4_H, bitrate: 3000000, framerate: MP4_FPS };
@@ -28,7 +29,8 @@ async function encodeMp4({ dur, draw, buildAudio, onProgress, preview, sup }){
     video: { codec: "avc", width: MP4_W, height: MP4_H, frameRate: MP4_FPS },
     audio: sup.audio ? { codec: "aac", numberOfChannels: 2, sampleRate: MP4_SR } : undefined });
   let err = null;
-  const venc = new VideoEncoder({ output: (ch, meta) => muxer.addVideoChunk(ch, meta), error: e => err = e });
+  let lastOut = performance.now();
+  const venc = new VideoEncoder({ output: (ch, meta) => { lastOut = performance.now(); muxer.addVideoChunk(ch, meta); }, error: e => err = e });
   venc.configure(sup.video);
   // звук: рендерим заранее, быстрее реального времени
   if(sup.audio && buildAudio){
@@ -48,8 +50,9 @@ async function encodeMp4({ dur, draw, buildAudio, onProgress, preview, sup }){
       await aenc.flush(); aenc.close();
     }catch(e){ console.warn("audio", e); }
   }
+  lastOut = performance.now();
   const vc = document.createElement("canvas"); vc.width = MP4_W; vc.height = MP4_H;
-  const ctx = vc.getContext("2d"); ctx.scale(MP4_W / W, MP4_H / H);
+  const ctx = vc.getContext("2d", { willReadFrequently: true }); ctx.scale(MP4_W / W, MP4_H / H);
   const N = Math.round(dur * MP4_FPS), fd = 1e6 / MP4_FPS;
   let lastYield = performance.now();
   for(let i = 0; i < N; i++){
@@ -58,7 +61,7 @@ async function encodeMp4({ dur, draw, buildAudio, onProgress, preview, sup }){
     ctx.save(); draw(ctx, t, 1 / MP4_FPS); ctx.restore();
     const fr = new VideoFrame(vc, { timestamp: Math.round(i * fd), duration: Math.round(fd) });
     venc.encode(fr, { keyFrame: i % (MP4_FPS * 2) === 0 }); fr.close();
-    while(venc.encodeQueueSize > 6) await new Promise(r => setTimeout(r, 4));
+    while(venc.encodeQueueSize > 6){ if(performance.now() - lastOut > 8000) throw new Error("encoder-stall"); await new Promise(r => setTimeout(r, 4)); }
     if(performance.now() - lastYield > 40){ if(preview) preview(vc); if(onProgress) onProgress(i / N); await new Promise(r => setTimeout(r, 0)); lastYield = performance.now(); }
   }
   await venc.flush(); venc.close(); if(err) throw err;

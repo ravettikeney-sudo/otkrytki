@@ -140,7 +140,7 @@ async function makeEnvelopeVideo(c, opts = {}){
   const sup = await mp4Support();
   if(sup){ try{
     const { sound = true, onProgress, preview } = opts;
-    await prepareCard(c, 1); const card = renderCard(c);
+    await prepareCard(c, 1); const card = cpuCopy(renderCard(c));
     if(window.Card3D && Card3D.release) Card3D.release();
     const st = envState(c, card);
     return await encodeMp4({ sup, dur: ENV_DUR, onProgress, preview,
