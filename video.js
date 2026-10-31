@@ -50,6 +50,7 @@ function videoFrame(ctx, scene, L, c, ps, kind, t, dur){
 async function makeVideo(c, { music = "none", voice = null, onProgress, preview } = {}){
   const mime = pickMime(); if(!mime) throw new Error("no-recorder");
   await prepareCard(c, 1);
+  if(window.Card3D && Card3D.release) Card3D.release();
   const scene = document.createElement("canvas"); scene.width = W; scene.height = H;
   const L = drawScene(scene.getContext("2d"), c);
   const ac = new (window.AudioContext || window.webkitAudioContext)(); await ac.resume();

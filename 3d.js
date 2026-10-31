@@ -163,6 +163,8 @@ async function render(c, scale){
 const keyOf = (c, scale) => [c.d, c.p || 0, c.s || 1, c.h, scale >= .6 ? "L" : "S"].join("|");
 let queue = Promise.resolve();
 window.Card3D = {
+  /* frees the GPU (e.g. before recording a video); the next render re-creates the renderer */
+  release(){ if(renderer){ renderer.dispose(); renderer.forceContextLoss(); renderer = null; envTex = null; } },
   get(c, wantLarge = true){ return cache.get(keyOf(c, wantLarge ? 1 : .3)) || cache.get(keyOf(c, wantLarge ? .3 : 1)) || null; },
   prepare(c, scale = 1){
     const k = keyOf(c, scale); if(cache.has(k)) return Promise.resolve(cache.get(k));
