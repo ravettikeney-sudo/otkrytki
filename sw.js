@@ -1,5 +1,5 @@
 // Keeps the app working offline: the page, the card engine, icons and fonts are cached; fresh versions load when online.
-const CACHE = "otkrytki-v15";
+const CACHE = "otkrytki-v16";
 const SHELL = ["./", "./index.html", "./cards.js", "./photos.js", "./video.js", "./3d.js", "./envelope.js", "./mp4enc.js", "./mp4-muxer.min.js", "./texts.js", "./namedays.js", "./manifest.json", "./icon-192.png", "./icon-512.png", "./og-image.jpg"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(k => Promise.all(k.filter(x => x !== CACHE).map(x => caches.delete(x)))).then(() => self.clients.claim())); });

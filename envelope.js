@@ -7,11 +7,11 @@ const ENV_DUR = 9.5;    // total video length
 
 function envTheme(c){
   const h = c.h, d = c.d || "";
-  if(["ny", "xmas"].includes(h) || ["winter", "baubles", "baubles3d"].includes(d)) return "snow";
+  if(["ny", "xmas"].includes(h) || ["winter", "baubles", "baubles3d", "ph_snow", "ph_frost", "ph_village", "ph_trees", "ph_baubles", "ph_xmashome", "ph_cocoa", "ph_birds"].includes(d)) return "snow";
   if(["feb14", "love", "wedding", "anniv", "family"].includes(h)) return "hearts";
   if(["jubilee", "grad", "feb23"].includes(h)) return "fireworks";
-  if(["sep1", "teacher"].includes(h) || d === "autumn") return "leaves";
-  if(["night", "angel"].includes(h)) return "stars";
+  if(["sep1", "teacher"].includes(h) || ["autumn", "ph_leaves", "ph_park", "ph_rowan", "ph_cozy"].includes(d)) return "leaves";
+  if(["night", "angel", "evening"].includes(h)) return "stars";
   if(["mar8", "mom", "easter", "thanks", "elders", "medic", "morning", "goodday", "health", "weekend", "monday"].includes(h)) return "petals";
   if(["bday", "baby"].includes(h)) return "balloons";
   return "confetti";

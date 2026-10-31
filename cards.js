@@ -610,6 +610,9 @@ const HOLIDAYS = [
   { id: "night", name: "Спокойной ночи", emoji: "🌙", title: "Спокойной ночи", designs: ["night", "winter", "baby"], wishes: [
     "Пусть ночь будет тихой, а сны — сладкими и добрыми. Отдыхай и набирайся сил!",
     "Закрывай глазки, пусть приснится что-то очень хорошее. Сладких снов!" ] },
+  { id: "evening", name: "Добрый вечер", emoji: "🌇", title: "Добрый вечер", designs: ["night", "sunrise", "candles"], wishes: [
+    "Пусть этот вечер будет тёплым и уютным, а все заботы останутся позади. Отдыхай!",
+    "Добрый вечер! Пусть он подарит тишину, приятные разговоры и хорошее настроение." ] },
   { id: "weekend", name: "Хороших выходных", emoji: "🌼", title: "Хороших выходных", designs: ["meadow", "sunrise", "garland"], wishes: [
     "Пусть выходные будут тёплыми, спокойными и радостными. Отдыхай и наслаждайся каждой минутой!",
     "Желаю отличных выходных: хорошей погоды, приятных встреч и много поводов для улыбки!" ] },
@@ -844,7 +847,7 @@ function holidayDate(h, y){
 function cardOfDay(now = new Date()){
   const today = HOLIDAYS.find(h => { const d = holidayDate(h, now.getFullYear()); return d && d.toDateString() === now.toDateString(); });
   const wd = now.getDay(), hr = now.getHours();
-  const id = today ? today.id : wd === 5 ? "friday" : (wd === 6 || wd === 0) ? "weekend" : hr < 12 ? (wd === 1 ? "monday" : "morning") : hr >= 21 ? "night" : "goodday";
+  const id = today ? today.id : wd === 5 ? "friday" : (wd === 6 || wd === 0) ? "weekend" : hr < 12 ? (wd === 1 ? "monday" : "morning") : hr >= 21 || hr < 5 ? "night" : hr >= 17 ? "evening" : "goodday";
   const h = HOL[id], seed = now.getFullYear() * 1000 + now.getMonth() * 40 + now.getDate();
   return { h: id, d: h.designs[seed % h.designs.length], p: seed % 3, s: seed, n: "", t: h.wishes[seed % h.wishes.length], f: ["lobster", "marck", "playfair", "caveat"][seed % 4], fr: "" };
 }
