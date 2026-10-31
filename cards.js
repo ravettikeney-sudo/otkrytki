@@ -806,7 +806,19 @@ function drawWatermark(ctx){
   ctx.fillStyle = "#e2557a"; ctx.textAlign = "left"; ctx.textBaseline = "middle"; ctx.fillText("Открытки", ex + 44, y + h / 2 + 1);
   ctx.restore();
 }
-function drawCard(ctx, c, opt = {}){ const L = drawScene(ctx, c); drawText(ctx, L, c); if(opt.wm !== false && WATERMARK && !c.nowm) drawWatermark(ctx); }
+/* stickers: emoji or text badges ("t:Ура!"), positioned in card coordinates */
+const BADGE_COLS = [["#ff5f8f", "#ffb347"], ["#7b2cbf", "#e2557a"], ["#06d6a0", "#118ab2"], ["#ffd166", "#ff8a5c"], ["#e7b65a", "#a67c2e"]];
+function drawStickers(ctx, list){
+  (list || []).forEach(st => { ctx.save(); ctx.translate(st.x, st.y); ctx.rotate(st.r || 0);
+    if(String(st.k).startsWith("t:")){ const txt = st.k.slice(2), fs = st.s * .42; ctx.font = `400 ${fs}px Lobster, cursive`; const tw = ctx.measureText(txt).width, w = tw + fs * 1.1, h = fs * 1.55;
+      const cols = BADGE_COLS[(st.c || 0) % BADGE_COLS.length]; ctx.shadowColor = "rgba(0,0,0,.25)"; ctx.shadowBlur = fs * .3; ctx.shadowOffsetY = fs * .08;
+      ctx.fillStyle = lin(ctx, -w / 2, 0, w / 2, 0, cols); rr(ctx, -w / 2, -h / 2, w, h, h / 2); ctx.fill(); ctx.shadowColor = "transparent";
+      ctx.strokeStyle = "rgba(255,255,255,.85)"; ctx.lineWidth = fs * .07; rr(ctx, -w / 2 + fs * .12, -h / 2 + fs * .12, w - fs * .24, h - fs * .24, h / 2); ctx.stroke();
+      ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(txt, 0, fs * .05); }
+    else { ctx.font = `${st.s}px "Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.shadowColor = "rgba(0,0,0,.18)"; ctx.shadowBlur = st.s * .08; ctx.shadowOffsetY = st.s * .03; ctx.fillText(st.k, 0, st.s * .04); }
+    ctx.restore(); });
+}
+function drawCard(ctx, c, opt = {}){ const L = drawScene(ctx, c); drawText(ctx, L, c); drawStickers(ctx, c.st); if(opt.wm !== false && WATERMARK && !c.nowm) drawWatermark(ctx); }
 function renderCard(c, scale = 1){
   const cv = document.createElement("canvas"); cv.width = Math.round(W * scale); cv.height = Math.round(H * scale);
   const ctx = cv.getContext("2d"); if(scale !== 1) ctx.scale(scale, scale); drawCard(ctx, c, { wm: scale >= .5 }); return cv;

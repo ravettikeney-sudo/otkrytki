@@ -25,6 +25,9 @@
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.min.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
 <script src="cards.js"></script>
 <script src="video.js"></script>
+<script src="envelope.js"></script>
+<script src="texts.js"></script>
+<script src="namedays.js"></script>
 <style>
 :root{
   --bg:#fff4ec; --bg2:#ffe9ef; --card:#ffffff; --ink:#2d1e2f; --muted:#7a6670; --line:rgba(80,40,60,.12);
@@ -143,7 +146,31 @@ body{overflow-x:hidden}
 .gtabs::-webkit-scrollbar{display:none}
 .gtabs button{flex:none;padding:9px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);font-weight:800;font-size:14px;white-space:nowrap}
 .gtabs button[aria-pressed="true"]{background:var(--plum);border-color:var(--plum);color:#fff}
+.wt{display:flex;gap:6px;overflow-x:auto;padding:0 0 8px;scrollbar-width:none}
+.wt::-webkit-scrollbar{display:none}
+.wt button{flex:none;padding:7px 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);font-weight:700;font-size:13px;white-space:nowrap}
+.wt button[aria-pressed="true"]{background:var(--rose,#e8457a);border-color:transparent;color:#fff}
+.wt.sm button[aria-pressed="true"]{background:var(--plum);color:#fff}
+.wcount{font-size:12px;opacity:.6;font-weight:700;margin-left:auto;align-self:center}
 @media (min-width:821px){ .stgrid{grid-template-columns:repeat(3,1fr)} }
+
+/* my cards */
+.hist{display:flex;gap:12px;overflow-x:auto;padding:2px 2px 10px;scrollbar-width:none}
+.hist::-webkit-scrollbar{display:none}
+.hc{flex:none;width:112px;border:0;padding:0;background:none;text-align:left}
+.hc .th{width:112px;height:140px;border-radius:14px;overflow:hidden;background:var(--soft);box-shadow:0 6px 16px rgba(90,30,60,.16)}
+.hc .th canvas{width:100%;height:100%;display:block}
+.hc b{display:block;margin:6px 2px 0;font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hc small{display:block;margin:0 2px;color:var(--muted);font-size:12px}
+
+/* stickers */
+.stk{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.stk button{font-size:34px;line-height:1;padding:10px 0;border-radius:14px;border:1.5px solid var(--line);background:var(--card)}
+.stk button:active{transform:scale(.92)}
+.stb{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.stb button{border:0;color:#fff;font:400 20px Lobster,cursive;padding:9px 16px;border-radius:999px;background:linear-gradient(90deg,var(--a),var(--b));box-shadow:0 4px 10px rgba(0,0,0,.12)}
+.sttools{margin-top:10px;padding:10px 12px;border-radius:14px;background:#fff0f4;border:1px dashed rgba(226,85,122,.45);font-size:13px;color:var(--muted);font-weight:700}
+#pv.has-st{touch-action:none;cursor:grab}
 
 /* home extras */
 .cod{display:grid;grid-template-columns:132px 1fr;gap:16px;align-items:center;padding:14px;border-radius:22px;background:var(--card);border:1px solid var(--line);box-shadow:0 8px 24px rgba(120,50,70,.08);margin-top:18px}
@@ -152,6 +179,13 @@ body{overflow-x:hidden}
 .cod small{font-weight:800;color:var(--rose);text-transform:uppercase;letter-spacing:.06em;font-size:12px}
 .cod h3{margin:4px 0 10px;font:400 26px/1.1 Lobster,cursive;color:var(--plum)}
 .cod .pill{background:var(--grad);color:#fff;border:0}
+.nd{padding:14px;border-radius:20px;background:linear-gradient(135deg,#fff7e8,#fff0f6);border:1px solid var(--line)}
+.nd .names{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 10px}
+.nd .names button{padding:7px 12px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font-weight:800;font-size:14px;color:var(--plum)}
+.nd .names button.more{color:var(--muted);font-weight:700}
+.nd small{color:var(--muted);font-weight:700;font-size:13px}
+.ndres{margin-top:12px;display:flex;flex-direction:column;gap:6px}
+.ndres button{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-radius:14px;border:1px solid var(--line);background:var(--card);font-weight:800;text-align:left}
 .bds{display:flex;flex-direction:column;gap:8px}
 .bd{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:var(--card);border:1px solid var(--line)}
 .bd .av{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:22px;background:#fff0f4;flex:none}
@@ -199,6 +233,9 @@ body{overflow-x:hidden}
 .vw h2{font:400 clamp(30px,7vw,44px) Lobster,cursive;color:var(--plum);margin:6px 0 14px;text-align:center}
 .vw .from{margin:-8px 0 14px;font-weight:800;color:var(--rose);font-size:18px;position:relative}
 .vw .cardwrap{position:relative;width:min(440px,100%);perspective:1200px}
+@keyframes wig{0%,100%{transform:rotate(0)}25%{transform:rotate(-1.2deg)}75%{transform:rotate(1.2deg)}}
+.vw .cardwrap.env canvas.wiggle{animation:wig 1.6s ease-in-out infinite}
+.vw .cardwrap.env canvas{width:100%;display:block;border-radius:18px;box-shadow:0 24px 60px rgba(90,30,60,.3);touch-action:manipulation}
 .vw .cardwrap img{width:100%;display:block;border-radius:18px;box-shadow:0 24px 60px rgba(90,30,60,.3);animation:open 1s cubic-bezier(.2,.9,.25,1.05) both}
 @keyframes open{0%{transform:rotateX(70deg) translateY(60px) scale(.8);opacity:0}100%{transform:none;opacity:1}}
 .vw canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
@@ -223,6 +260,9 @@ body{overflow-x:hidden}
 <main class="wrap" id="home">
   <section class="hero"><h1>Открытка с именем <em>за минуту</em></h1><p>Выберите праздник, впишите имя — и отправьте в любой мессенджер.</p></section>
   <div class="cod" id="cod"></div>
+  <div id="histBox" hidden><div class="h2">💌 Мои открытки</div><div class="hist" id="hist"></div></div>
+  <div class="h2">😇 Именины</div>
+  <div class="nd" id="nd"></div>
   <div class="h2">🎂 Дни рождения близких</div>
   <div class="bds" id="bds"></div>
   <div class="h2" id="soonT">Скоро праздник</div>
@@ -243,11 +283,17 @@ body{overflow-x:hidden}
     <div class="pv"><canvas id="pv" width="1080" height="1350" aria-label="Предпросмотр открытки"></canvas></div>
     <div>
       <div class="field"><label for="fName">Кому</label><input id="fName" placeholder="Имя, например: Нина" maxlength="40" autocomplete="off"></div>
-      <div class="field"><label for="fText">Поздравление</label><textarea id="fText" maxlength="600"></textarea>
-        <div class="row"><button class="pill" id="nextText">↻ Другой текст</button><button class="pill" id="clearText">Без текста</button></div></div>
+      <div class="field"><label for="fText">Поздравление</label>
+        <div class="wt" id="wWho" aria-label="Кому поздравление"></div>
+        <div class="wt sm" id="wTone" aria-label="Тон"></div>
+        <textarea id="fText" maxlength="600"></textarea>
+        <div class="row"><button class="pill" id="nextText">↻ Другой текст</button><button class="pill" id="clearText">Без текста</button><span class="wcount" id="wCount"></span></div></div>
       <div class="field"><span class="lbl">Фото на открытке</span>
         <div class="row" style="margin-top:0"><button class="pill" id="addPhoto">📷 Добавить фото</button><button class="pill" id="delPhoto" hidden>Убрать фото</button></div>
         <input type="file" id="photoIn" accept="image/*" hidden></div>
+      <div class="field"><span class="lbl">Наклейки</span>
+        <div class="row" style="margin-top:0"><button class="pill" id="addSticker">😍 Добавить наклейку</button><button class="pill" id="clrStickers" hidden>Убрать все</button></div>
+        <div class="sttools" id="stTools" hidden><span>Выбрана наклейка — двигайте её пальцем по открытке</span><div class="row"><button class="pill" data-a="minus">➖ Меньше</button><button class="pill" data-a="plus">➕ Больше</button><button class="pill" data-a="rot">↻ Повернуть</button><button class="pill" data-a="del">🗑 Удалить</button></div></div></div>
       <div class="field"><label for="fFrom">От кого</label><input id="fFrom" placeholder="Например: Твоя Маша" maxlength="60" autocomplete="off"></div>
       <div class="field"><span class="lbl">Стиль и вариант</span><div class="gtabs" id="gtabs"></div><div class="strip" id="designs"></div>
         <div class="row"><button class="pill" id="shuffle">🎲 Перемешать украшения</button></div></div>
@@ -276,7 +322,7 @@ if(!inApp) $("#dlbar").hidden = false;
 /* ---------- home ---------- */
 function thumb(c, w){ const cv = renderCard(c, w / W); return cv; }
 function renderHome(){
-  renderCod(); renderBdays();
+  renderCod(); renderBdays(); renderHist(); renderNamedays();
   const soon = HOLIDAYS.map(h => ({ h, n: nextDate(h) })).filter(x => x.n).sort((a, b) => a.n.days - b.n.days).slice(0, 5);
   $("#soon").innerHTML = soon.map(({ h, n }) => `<button class="chip" data-h="${h.id}"><span class="e">${h.emoji}</span><span><b>${esc(h.name)}</b><small>${n.days === 0 ? "сегодня!" : n.days === 1 ? "завтра" : `${n.date.getDate()} ${MON[n.date.getMonth()]} · через ${n.days} ${plural(n.days, "день", "дня", "дней")}`}</small></span></button>`).join("");
   $("#grid").innerHTML = HOLIDAYS.map(h => `<button class="hol" data-h="${h.id}"><div class="th"></div><b>${h.emoji} ${esc(h.name)}</b></button>`).join("");
@@ -309,13 +355,15 @@ const FONT_KEYS = Object.keys(FONTS);
 function openEditor(init, gid, from){
   const h = HOL[init.h] || HOLIDAYS[0];
   card = Object.assign({ h: h.id, d: h.designs[0], p: 0, s: 1 + Math.floor(Math.random() * 1e6), n: "", t: h.wishes[0], f: "lobster", bf: "", fr: store.get("from", "") }, init);
-  wishIdx = Math.max(0, h.wishes.indexOf(card.t)); customText = false; card.img = null;
+  wishIdx = Math.max(0, h.wishes.indexOf(card.t)); customText = false; card.img = null; card.st = card.st || []; selSt = -1;
   $("#delPhoto").hidden = true; $("#addPhoto").textContent = "📷 Добавить фото";
   $("#fName").value = card.n; $("#fText").value = card.t; $("#fFrom").value = card.fr;
   curGroup = gid || (DESIGNS[card.d] && DESIGNS[card.d].group) || "classic"; editorFrom = from || "home";
   show("editor"); history.pushState({ v: "editor" }, "", location.pathname);
   document.title = h.name + " — открытка с именем";
-  renderGroupTabs(); renderDesigns(); renderFonts(); draw(true);
+  wTone = ""; wKind = "";
+  if(!init.t){ const w = wishList(); if(w.length){ wishIdx = 0; card.t = w[0]; $("#fText").value = card.t; } }
+  renderWishTabs(); renderGroupTabs(); renderDesigns(); renderFonts(); draw(true);
   if(matchMedia("(min-width:821px)").matches) $("#fName").focus();
 }
 let thumbJob = 0;
@@ -347,14 +395,54 @@ function renderFonts(){
 let drawT = 0;
 function draw(now){
   clearTimeout(drawT);
-  const go = () => { const ctx = $("#pv").getContext("2d"); ctx.clearRect(0, 0, W, H); drawCard(ctx, { ...card, brand: brandOf() }); };
+  const go = () => redrawNow();
   const run = () => prepareCard(card, 1).then(go);
   now ? run() : (drawT = setTimeout(run, 90));
 }
+let selSt = -1;
+function redrawNow(){
+  const ctx = $("#pv").getContext("2d"); ctx.clearRect(0, 0, W, H); drawCard(ctx, { ...card, brand: brandOf() });
+  const st = (card.st || [])[selSt];
+  if(st){ ctx.save(); ctx.translate(st.x, st.y); ctx.rotate(st.r || 0); ctx.setLineDash([14, 10]); ctx.lineWidth = 5; ctx.strokeStyle = "#e2557a"; const hw = String(st.k).startsWith("t:") ? st.s * .42 * (st.k.length * .32 + 1.4) : st.s * .62; ctx.strokeRect(-hw, -st.s * .4, hw * 2, st.s * .8); ctx.restore(); }
+  $("#pv").classList.toggle("has-st", !!(card.st && card.st.length)); $("#clrStickers").hidden = !(card.st && card.st.length); $("#stTools").hidden = !st;
+}
+const STICKERS = ["🎉", "🎂", "🎁", "🎈", "🥳", "🍾", "🥂", "💐", "🌹", "🌷", "🌸", "🌻", "❤️", "💖", "💕", "😘", "🥰", "😍", "🤗", "🌟", "⭐", "✨", "🎄", "❄️", "☃️", "🎅", "🐱", "🐶", "🐻", "🦋", "🍰", "🧁", "☕", "🌙", "☀️", "🍀", "👑", "💎", "🏆", "🎓", "💍", "👶", "🙏", "👍", "😂", "🔥", "🍓", "🎶"];
+const BADGES = ["Ура!", "Люблю!", "Поздравляю!", "С праздником!", "Обнимаю!", "Целую!", "Ты лучшая!", "Ты лучший!", "Счастья!", "Мур!", "Скучаю!", "Спасибо!"];
+$("#addSticker").onclick = () => {
+  modal("Наклейки", `<div class="stk">${STICKERS.map(e => `<button data-e="${e}">${e}</button>`).join("")}</div>
+    <p class="shx-lbl" style="margin-top:16px">Надписи</p><div class="stb">${BADGES.map((b, i) => `<button data-b="${esc(b)}" data-c="${i % 5}" style="--a:${BADGE_COLS[i % 5][0]};--b:${BADGE_COLS[i % 5][1]}">${esc(b)}</button>`).join("")}</div>`);
+  const put = (k, c) => { card.st = card.st || []; const n = card.st.length; card.st.push({ k, x: 540 + (n % 3 - 1) * 180, y: 560 + Math.floor(n / 3) % 3 * 160, s: k.startsWith("t:") ? 130 : 170, r: (Math.random() - .5) * .3, c }); selSt = card.st.length - 1; closeShare(); redrawNow(); $("#pv").scrollIntoView({ block: "center", behavior: "smooth" }); };
+  document.querySelectorAll(".stk button").forEach(b => b.onclick = () => put(b.dataset.e));
+  document.querySelectorAll(".stb button").forEach(b => b.onclick = () => put("t:" + b.dataset.b, +b.dataset.c));
+};
+$("#clrStickers").onclick = () => { card.st = []; selSt = -1; redrawNow(); };
+document.querySelectorAll("#stTools [data-a]").forEach(b => b.onclick = () => { const st = (card.st || [])[selSt]; if(!st) return; const a = b.dataset.a;
+  if(a === "minus") st.s = Math.max(60, st.s * .82); if(a === "plus") st.s = Math.min(520, st.s * 1.22); if(a === "rot") st.r = (st.r || 0) + Math.PI / 12; if(a === "del"){ card.st.splice(selSt, 1); selSt = -1; } redrawNow(); });
+(() => { const cv = $("#pv"); let drag = null;
+  const pt = e => { const r = cv.getBoundingClientRect(); return [(e.clientX - r.left) * W / r.width, (e.clientY - r.top) * H / r.height]; };
+  cv.addEventListener("pointerdown", e => { if(!card || !card.st || !card.st.length) return; const [x, y] = pt(e); let hit = -1;
+    for(let i = card.st.length - 1; i >= 0; i--){ const st = card.st[i], hw = String(st.k).startsWith("t:") ? st.s * 1.1 : st.s * .6; if(Math.abs(x - st.x) < hw && Math.abs(y - st.y) < st.s * .5){ hit = i; break; } }
+    selSt = hit; if(hit >= 0){ drag = { dx: x - card.st[hit].x, dy: y - card.st[hit].y }; cv.setPointerCapture(e.pointerId); e.preventDefault(); } redrawNow(); });
+  cv.addEventListener("pointermove", e => { if(!drag || selSt < 0) return; const [x, y] = pt(e), st = card.st[selSt]; st.x = Math.max(0, Math.min(W, x - drag.dx)); st.y = Math.max(0, Math.min(H, y - drag.dy)); redrawNow(); });
+  const end = () => { drag = null; }; cv.addEventListener("pointerup", end); cv.addEventListener("pointercancel", end);
+})();
 $("#fName").oninput = e => { card.n = e.target.value; draw(); };
 $("#fText").oninput = e => { card.t = e.target.value; customText = true; draw(); };
 $("#fFrom").oninput = e => { card.fr = e.target.value; store.set("from", card.fr); draw(); };
-$("#nextText").onclick = () => { const w = HOL[card.h].wishes; wishIdx = (wishIdx + 1) % w.length; card.t = w[wishIdx]; $("#fText").value = card.t; customText = false; draw(true); };
+let wWho = store.get("wWho", "a"), wTone = "", wKind = "";
+function wishList(){ return pickTexts(card.h, wWho, wTone, wKind); }
+function renderWishTabs(){
+  const rs = recipientsFor(card.h); if(!rs.some(r => r.id === wWho)) wWho = "a";
+  $("#wWho").innerHTML = rs.map(r => `<button data-w="${r.id}" aria-pressed="${r.id === wWho}">${esc(r.label)}</button>`).join("");
+  $("#wTone").innerHTML = TONES.map(t => `<button data-t="${t.id}" aria-pressed="${t.id === wTone}">${t.label}</button>`).join("") + '<span style="width:10px;flex:none"></span>' +
+    KINDS.slice(1).map(k => `<button data-k="${k.id}" aria-pressed="${k.id === wKind}">${k.id === "v" ? "📜 " : "✍️ "}${k.label}</button>`).join("");
+  $("#wWho").querySelectorAll("button").forEach(b => b.onclick = () => { wWho = b.dataset.w; store.set("wWho", wWho); applyWish(0); });
+  $("#wTone").querySelectorAll("[data-t]").forEach(b => b.onclick = () => { wTone = b.dataset.t; applyWish(0); });
+  $("#wTone").querySelectorAll("[data-k]").forEach(b => b.onclick = () => { wKind = wKind === b.dataset.k ? "" : b.dataset.k; applyWish(0); });
+  const n = wishList().length; $("#wCount").textContent = n > 1 ? `${Math.min(wishIdx + 1, n)} из ${n}` : "";
+}
+function applyWish(i){ const w = wishList(); wishIdx = w.length ? (i % w.length + w.length) % w.length : 0; card.t = w[wishIdx] || ""; $("#fText").value = card.t; customText = false; renderWishTabs(); draw(true); }
+$("#nextText").onclick = () => applyWish(wishIdx + 1);
 $("#clearText").onclick = () => { card.t = ""; $("#fText").value = ""; draw(true); };
 $("#shuffle").onclick = () => { card.s = 1 + Math.floor(Math.random() * 1e6); draw(true); };
 
@@ -401,16 +489,49 @@ function saveImage(b64, name, url){
   if(window.OtkApp && window.OtkApp.saveImage){ window.OtkApp.saveImage(b64, name); return; }
   const a = document.createElement("a"); a.href = url || "data:image/png;base64," + b64; a.download = name; document.body.appendChild(a); a.click(); a.remove(); toast("Открытка сохранена");
 }
-const cardLink = c => SITE + "?k=" + b64e({ h: c.h, d: c.d, p: c.p, s: c.s, n: c.n.trim(), t: c.t.trim(), f: c.f, bf: c.bf || "", fr: c.fr.trim() });
+const cardLink = c => SITE + "?k=" + b64e({ h: c.h, d: c.d, p: c.p, s: c.s, n: c.n.trim(), t: c.t.trim(), f: c.f, bf: c.bf || "", fr: c.fr.trim(), st: (c.st || []).map(x => ({ k: x.k, x: Math.round(x.x), y: Math.round(x.y), s: Math.round(x.s), r: +(x.r || 0).toFixed(2), c: x.c || 0 })) });
 const fileNameOf = c => "otkrytka-" + ((c.n || HOL[c.h].name).trim().replace(/[^\p{L}\p{N}]+/gu, "-") || "s-prazdnikom") + ".png";
+let envJob = 0;
 async function shareCard(c){
+  const job = ++envJob; saveHistory(c);
+  const full = { ...c, brand: brandOf() };
+  const box = modal("Открытка в конверте", `<div class="vprev"><canvas id="envPrev" width="360" height="450" style="border-radius:14px;box-shadow:0 10px 26px rgba(90,30,60,.25)"></canvas></div>
+    <div class="prog" id="envProg"><i></i></div>
+    <p class="note" id="envNote" style="margin:0 0 14px">Упаковываю открытку в конверт… Получатель увидит конверт и нажмёт, чтобы открыть.</p>
+    <div class="shx-main"><button class="big" id="envSend" disabled>⏳ Готовлю…</button><button class="big ghost" id="envSave" disabled>Сохранить</button></div>
+    <details class="lnk"><summary>Другие способы</summary>
+      <div class="row" style="margin:6px 0 4px"><button class="pill" id="asImage">🖼 Отправить картинкой</button><button class="pill" id="asLink">🔗 Отправить ссылкой</button></div></details>
+    ${giftsHtml(c.h)}`);
+  $("#asImage").onclick = () => shareAsImage(c);
+  $("#asLink").onclick = () => shareAsImage(c, true);
+  if(!pickMime()){ $("#envNote").textContent = "На этом устройстве видео не создаётся — отправьте картинкой."; $("#envSend").textContent = "Отправить картинкой"; $("#envSend").disabled = false; $("#envSend").onclick = () => shareAsImage(c); return; }
+  const pv = $("#envPrev").getContext("2d");
+  try{
+    const v = await makeEnvelopeVideo(full, { onProgress: k => { const i = $("#envProg i"); if(i) i.style.width = Math.round(k * 100) + "%"; }, preview: src => { if(job === envJob && $("#envPrev")) pv.drawImage(src, 0, 0, 360, 450); } });
+    if(job !== envJob || !$("#envSend")) return;
+    const name = fileNameOf(c).replace(/\.png$/, "." + v.ext), file = new File([v.blob], name, { type: v.type });
+    const toB64 = () => new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result.split(",")[1]); fr.readAsDataURL(v.blob); });
+    const url = URL.createObjectURL(v.blob); $("#shx").dataset.url = url;
+    $("#envPrev").replaceWith(Object.assign(document.createElement("video"), { src: url, controls: true, playsInline: true, loop: true, muted: true, autoplay: true, style: "max-height:38dvh;max-width:100%;border-radius:14px" }));
+    $("#envProg").hidden = true; $("#envNote").textContent = "Готово! В чате придёт конверт — нажатием он откроется.";
+    const send = $("#envSend"); send.disabled = false; send.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>Отправить`;
+    send.onclick = async () => {
+      if(window.OtkApp && window.OtkApp.shareFile){ window.OtkApp.shareFile(await toB64(), v.type, name, ""); return; }
+      try{ if(navigator.canShare && navigator.canShare({ files: [file] })) await navigator.share({ files: [file] }); else { saveEnv(); toast("Видео сохранено — отправьте его из галереи"); } }catch(e){ if(e.name !== "AbortError") toast("Не получилось отправить"); }
+    };
+    const saveEnv = async () => { if(window.OtkApp && window.OtkApp.saveFile){ window.OtkApp.saveFile(await toB64(), v.type, name); return; } const a = document.createElement("a"); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); toast("Сохранено"); };
+    $("#envSave").disabled = false; $("#envSave").onclick = saveEnv;
+  }catch(e){ if($("#envNote")){ $("#envNote").textContent = "Не получилось создать конверт — отправьте картинкой."; $("#envSend").disabled = false; $("#envSend").textContent = "Отправить картинкой"; $("#envSend").onclick = () => shareAsImage(c); } }
+}
+async function shareAsImage(c, linkOpen){
   await prepareCard(c, 1);
   const cv = renderCard({ ...c, brand: brandOf() }); const b64 = cv.toDataURL("image/png").split(",")[1];
   const blob = await new Promise(r => cv.toBlob(r, "image/png")); const fileName = fileNameOf(c);
   const file = new File([blob], fileName, { type: "image/png" });
   const text = `${c.n.trim() ? c.n.trim() + ", тебе" : "Тебе"} открытка 💌${c.fr.trim() ? " От: " + c.fr.trim() : ""}`;
-  sheet({ title: "Отправить открытку", img: URL.createObjectURL(blob), link: cardLink(c), text, file, b64, fileName,
-    imageOnly: true, note: "", extra: giftsHtml(c.h) });
+  envJob++;
+  sheet({ title: linkOpen ? "Отправить ссылкой" : "Отправить картинкой", img: URL.createObjectURL(blob), link: cardLink(c), text, file, b64, fileName, imageOnly: true, note: "", extra: giftsHtml(c.h) });
+  if(linkOpen){ const d = document.querySelector("#shx details.lnk"); if(d) d.open = true; }
 }
 function shareApp(){
   sheet({ title: "Рассказать о приложении", img: "og-image.jpg", link: SITE + "download/", text: "Нашла классное приложение: красивые открытки с именем за минуту, бесплатно и без рекламы 💌",
@@ -426,9 +547,8 @@ async function openViewer(c){
   await prepareCard(c, 1);
   const v = document.createElement("div"); v.className = "vw"; v.id = "viewer";
   const cv = renderCard(c);
-  v.innerHTML = `<canvas class="fx"></canvas><h2>Вам открытка! 💌</h2>${c.fr ? `<p class="from">От: ${esc(c.fr)}</p>` : ""}
-    <div class="cardwrap"><img alt="Открытка: ${esc(HOL[c.h]?.name || "")}" src="${cv.toDataURL("image/png")}"></div>
-    <div class="acts">
+  v.innerHTML = `<div class="cardwrap env"><canvas id="envView" width="720" height="900" aria-label="Конверт с открыткой — нажмите, чтобы открыть"></canvas></div>
+    <div class="acts" id="vActs" hidden>
       <button class="big" id="vReply">💌 ${c.fr ? "Ответить открыткой" : "Сделать свою открытку"}</button>
       <button class="big ghost" id="vSave">Сохранить открытку</button>
       <button class="big ghost" id="vHome">Все открытки</button>
@@ -437,7 +557,15 @@ async function openViewer(c){
   $("#vReply").onclick = () => { closeViewer(); openEditor({ h: c.h, n: c.fr ? c.fr.replace(/^(тво[йяё]|ваш[аи]?|от)\s+/i, "") : "" }); };
   $("#vSave").onclick = () => saveImage(cv.toDataURL("image/png").split(",")[1], fileNameOf(c));
   $("#vHome").onclick = () => { closeViewer(); show("home"); };
-  particles(v.querySelector("canvas.fx"), c);
+  const canvas = $("#envView"), ctx = canvas.getContext("2d"); ctx.scale(720 / W, 900 / H);
+  const st = envState(c, cv); let opened = null;
+  st.last = ENV_OPEN - .4; drawEnvelopeFrame(ctx, st, ENV_OPEN - .4, { hint: "👆  Нажмите на конверт" });
+  canvas.classList.add("wiggle");
+  const loop = now => { if(!$("#envView")) return; const t = ENV_OPEN + (now - opened) / 1000;
+    drawEnvelopeFrame(ctx, st, t); if(t > ENV_OPEN + 3.4) $("#vActs").hidden = false;
+    if(t < ENV_OPEN + 9) fxRaf = requestAnimationFrame(loop); };
+  const open = () => { if(opened != null) return; opened = performance.now(); st.last = ENV_OPEN; canvas.classList.remove("wiggle"); canvas.style.cursor = "default"; fxRaf = requestAnimationFrame(loop); };
+  canvas.style.cursor = "pointer"; canvas.onclick = open;
 }
 function closeViewer(){ cancelAnimationFrame(fxRaf); const v = $("#viewer"); if(v) v.remove(); history.replaceState(null, "", location.pathname); }
 function particles(cv, c){
@@ -476,6 +604,63 @@ async function renderCod(){
   $("#cod").innerHTML = `<div class="th"></div><div><small>Открытка дня</small><h3>${esc(h.title)}!</h3><button class="pill" id="codGo">Отправить</button></div>`;
   $("#cod .th").appendChild(renderCard(c, 264 / W));
   $("#cod").onclick = () => openEditor({ ...c, s: c.s, fr: store.get("from", "") });
+}
+
+/* ---------- my cards (history of sent cards) ---------- */
+let HIST = store.get("hist", []);
+const clean = c => ({ h: c.h, d: c.d, p: c.p || 0, s: c.s, n: (c.n || "").trim(), t: (c.t || "").trim(), f: c.f, bf: c.bf || "", fr: (c.fr || "").trim(), st: c.st || [] });
+function saveHistory(c){
+  const x = clean(c), key = JSON.stringify(x); HIST = HIST.filter(h => JSON.stringify(clean(h)) !== key);
+  HIST.unshift({ ...x, at: Date.now() }); HIST = HIST.slice(0, 40); store.set("hist", HIST); renderHist();
+}
+let histJob = 0;
+const POPULAR = "Анна,Мария,Елена,Ольга,Татьяна,Наталья,Ирина,Светлана,Екатерина,Нина,Галина,Людмила,Надежда,Вера,Любовь,Валентина,Анастасия,Юлия,Марина,Дарья,Ксения,Софья,Александра,Тамара,Лидия,Полина,Варвара,Виктория,Александр,Сергей,Владимир,Андрей,Алексей,Дмитрий,Николай,Михаил,Иван,Евгений,Юрий,Игорь,Олег,Виктор,Павел,Пётр,Василий,Анатолий,Максим,Константин,Артём,Илья,Роман,Георгий,Денис,Кирилл,Антон,Егор,Фёдор,Борис,Григорий,Леонид,Валерий,Вадим,Станислав,Глеб,Матвей,Тимофей,Даниил".split(",");
+const popRank = n => { const i = POPULAR.indexOf(n); return i < 0 ? 999 : i; };
+function renderNamedays(){
+  const now = new Date(), t = namedaysOn(now), tm = namedaysOn(new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1));
+  const all = [...new Set([...t.f, ...t.m])].sort((a, b) => popRank(a) - popRank(b));
+  const top = all.slice(0, 10), rest = all.length - top.length;
+  const tmr = [...new Set([...tm.f, ...tm.m])].sort((a, b) => popRank(a) - popRank(b)).slice(0, 5);
+  $("#nd").innerHTML = (all.length ? `<small>Сегодня, ${now.getDate()} ${MON[now.getMonth()]}, день ангела у:</small><div class="names">${top.map(n => `<button data-n="${esc(n)}">${esc(n)}</button>`).join("")}${rest > 0 ? `<button class="more" id="ndMore">ещё ${rest}</button>` : ""}</div>`
+    : `<small>Сегодня именин по календарю нет.</small><div class="names"></div>`) +
+    (tmr.length ? `<small>Завтра: ${tmr.map(esc).join(", ")}</small><br>` : "") +
+    `<button class="pill" id="ndFind" style="margin-top:10px">🔎 Когда именины у…</button>`;
+  $("#nd").querySelectorAll("[data-n]").forEach(b => b.onclick = () => congratsAngel(b.dataset.n));
+  const more = $("#ndMore"); if(more) more.onclick = () => { $("#nd .names").innerHTML = all.map(n => `<button data-n="${esc(n)}">${esc(n)}</button>`).join(""); $("#nd").querySelectorAll("[data-n]").forEach(b => b.onclick = () => congratsAngel(b.dataset.n)); };
+  $("#ndFind").onclick = ndSearch;
+}
+function congratsAngel(n){ openEditor({ h: "angel", n }); }
+function ndSearch(){
+  const box = modal("Когда именины", `<input id="ndQ" placeholder="Введите имя, например: Нина" autocomplete="off" style="width:100%;padding:13px 14px;border-radius:14px;border:1.5px solid var(--line);font:700 16px Nunito"><div class="ndres" id="ndR"><small style="color:var(--muted);font-weight:700">Даты по православному календарю. Обычно отмечают ближайший день после дня рождения.</small></div>`);
+  const q = box.querySelector("#ndQ"); setTimeout(() => q.focus(), 50);
+  q.oninput = () => {
+    const name = q.value.trim(); const r = box.querySelector("#ndR");
+    if(name.length < 2){ r.innerHTML = ""; return; }
+    const now = new Date(); now.setHours(0, 0, 0, 0);
+    const ds = namedayDates(name).map(x => { let d = new Date(now.getFullYear(), x.m - 1, x.d); if(d < now) d = new Date(now.getFullYear() + 1, x.m - 1, x.d); return d; }).sort((a, b) => a - b);
+    const nice = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+    r.innerHTML = ds.length ? ds.map(d => { const days = Math.round((d - now) / 864e5); return `<button data-n="${esc(nice)}"><span>${d.getDate()} ${MON[d.getMonth()]}</span><small style="color:var(--muted)">${days === 0 ? "сегодня! 🎉" : days === 1 ? "завтра" : "через " + days + " " + plural(days, "день", "дня", "дней")}</small></button>`; }).join("")
+      : `<small style="color:var(--muted);font-weight:700">Не нашли такое имя в календаре. Попробуйте полную форму: «Елена», а не «Лена».</small>`;
+    r.querySelectorAll("[data-n]").forEach(b => b.onclick = () => { closeShare(); congratsAngel(b.dataset.n); });
+  };
+}
+function renderHist(){
+  $("#histBox").hidden = !HIST.length; if(!HIST.length) return;
+  const job = ++histJob;
+  $("#hist").innerHTML = HIST.map((h, i) => { const d = new Date(h.at); return `<button class="hc" data-i="${i}"><div class="th"></div><b>${esc(h.n || HOL[h.h]?.name || "Открытка")}</b><small>${d.getDate()} ${MON[d.getMonth()]}</small></button>`; }).join("");
+  document.querySelectorAll(".hc").forEach(b => b.onclick = () => histMenu(+b.dataset.i));
+  const slots = [...document.querySelectorAll(".hc .th")];
+  (async () => { for(let i = 0; i < slots.length; i++){ if(job !== histJob) return; const c = HIST[i]; if(!HOL[c.h] || !DESIGNS[c.d]) continue; await prepareCard(c, .3); if(job !== histJob) return; slots[i].appendChild(renderCard(c, 224 / W)); } })();
+}
+function histMenu(i){
+  const c = HIST[i]; if(!c) return;
+  modal(c.n ? `Открытка для: ${c.n}` : (HOL[c.h]?.name || "Открытка"), `<div class="vprev"><canvas id="hmPrev" width="324" height="405" style="border-radius:14px;box-shadow:0 10px 26px rgba(90,30,60,.25)"></canvas></div>
+    <div class="shx-main"><button class="big" id="hmSend">💌 Отправить ещё раз</button></div>
+    <div class="shx-main"><button class="big ghost" id="hmEdit">✏️ Изменить</button><button class="big ghost" id="hmDel">🗑 Удалить</button></div>`);
+  prepareCard(c, .3).then(() => { const cv = $("#hmPrev"); if(!cv) return; const x = cv.getContext("2d"); x.scale(324 / W, 405 / H); drawCard(x, c); });
+  $("#hmSend").onclick = () => { closeShare(); shareCard({ ...c, img: null }); };
+  $("#hmEdit").onclick = () => { closeShare(); openEditor({ ...c, st: (c.st || []).map(x => ({ ...x })) }); };
+  $("#hmDel").onclick = () => { HIST.splice(i, 1); store.set("hist", HIST); closeShare(); renderHist(); toast("Удалено"); };
 }
 
 /* ---------- birthdays of loved ones ---------- */
@@ -659,7 +844,7 @@ addEventListener("keydown", e => { if(e.key === "Escape") window.appBack(); });
   await Promise.all([loadFonts(), loadBizLogo()]);
   renderHome();
   const k = new URLSearchParams(location.search).get("k");
-  if(k){ try{ const c = b64d(k); if(HOL[c.h]){ ["n", "t", "fr"].forEach(x => c[x] = String(c[x] || "").slice(0, 600)); openViewer(c); } }catch(e){} }
+  if(k){ try{ const c = b64d(k); if(HOL[c.h]){ ["n", "t", "fr"].forEach(x => c[x] = String(c[x] || "").slice(0, 600)); c.st = Array.isArray(c.st) ? c.st.slice(0, 20).map(x => ({ k: String(x.k || "").slice(0, 30), x: +x.x || 0, y: +x.y || 0, s: Math.min(520, Math.max(40, +x.s || 150)), r: +x.r || 0, c: (+x.c || 0) % 5 })) : []; openViewer(c); } }catch(e){} }
   const h = new URLSearchParams(location.search).get("h"); if(h && HOL[h]) openEditor({ h });
   const bd = new URLSearchParams(location.search).get("bd"); if(bd){ const b = bdays.find(x => x.id === bd); if(b) congratulate(b); }
   syncApp();
