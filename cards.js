@@ -735,8 +735,8 @@ function drawText(ctx, L, c, reveal){
   const fnt = (tpl, s) => tpl.replace("{s}", Math.round(s));
   const blocks = [];
   titleLines(h, c.n).forEach(ln => {
-    if(ln.k === "name"){ let s = 150 * F.k; ctx.font = fnt(F.t, s); while(ctx.measureText(ln.t).width > aw && s > 50){ s -= 4; ctx.font = fnt(F.t, s); } blocks.push({ font: ctx.font, lines: [ln.t], lh: s * 1.12, col: L.name }); }
-    else { let s = 88 * F.k; ctx.font = fnt(F.t, s); let lines = wrap(ctx, ln.t, aw); while(lines.length > 2 && s > 50){ s -= 4; ctx.font = fnt(F.t, s); lines = wrap(ctx, ln.t, aw); } blocks.push({ font: ctx.font, lines, lh: s * 1.14, col: L.title }); }
+    if(ln.k === "name"){ let s = 150 * F.k * (L.ts || 1); ctx.font = fnt(F.t, s); while(ctx.measureText(ln.t).width > aw && s > 50){ s -= 4; ctx.font = fnt(F.t, s); } blocks.push({ font: ctx.font, lines: [ln.t], lh: s * 1.12, col: L.name }); }
+    else { let s = 88 * F.k * (L.ts || 1); ctx.font = fnt(F.t, s); let lines = wrap(ctx, ln.t, aw); while(lines.length > 2 && s > 50){ s -= 4; ctx.font = fnt(F.t, s); lines = wrap(ctx, ln.t, aw); } blocks.push({ font: ctx.font, lines, lh: s * 1.14, col: L.title }); }
   });
   const used = blocks.reduce((a, b) => a + b.lh * b.lines.length, 0);
   const body = (c.t || "").trim(), from = (c.fr || "").trim();
@@ -744,16 +744,17 @@ function drawText(ctx, L, c, reveal){
   let bs = 52 * (BF ? BF.kb : F.kb);
   if(body){
     let lines; for(; bs >= 24; bs -= 2){ ctx.font = fnt(bodyTpl, bs); lines = wrap(ctx, body, aw * .96); if(used + 36 + lines.length * bs * 1.34 + (from ? bs * 2 : 0) <= ah) break; }
-    blocks.push({ font: ctx.font, lines, lh: bs * 1.34, col: L.body, gap: 36 });
+    blocks.push({ font: ctx.font, lines, lh: bs * 1.34, col: L.body, gap: L.divider ? 70 : 36, div: !!L.divider });
   }
-  if(from){ const s = Math.min(bs * 1.12, 54 * F.kb); ctx.font = fnt(F.s, s); blocks.push({ font: ctx.font, lines: wrap(ctx, from, aw), lh: s * 1.3, col: L.title, gap: body ? 26 : 36 }); }
+  if(from){ const s = Math.min(bs * 1.12, 54 * F.kb); ctx.font = fnt(F.s, s); blocks.push({ font: ctx.font, lines: wrap(ctx, from, aw), lh: s * 1.3, col: L.from || L.title, gap: body ? 26 : 36 }); }
   const total = blocks.reduce((a, b) => a + (b.gap || 0) + b.lh * b.lines.length, 0);
-  let y = ay + Math.max(0, (ah - total) / 2);
-  if(L.plaque){ ctx.save(); ctx.shadowColor = "rgba(0,0,0,.12)"; ctx.shadowBlur = 30; ctx.shadowOffsetY = 10; ctx.fillStyle = L.plaque; rr(ctx, ax - 50, y - 50, aw + 100, total + 90, 36); ctx.fill(); ctx.restore(); }
+  let y = L.anchor === "top" ? ay : L.anchor === "bottom" ? ay + Math.max(0, ah - total) : ay + Math.max(0, (ah - total) / 2);
+  if(L.plaque){ ctx.save(); ctx.shadowColor = "rgba(0,0,0,.12)"; ctx.shadowBlur = 30; ctx.shadowOffsetY = 10; ctx.fillStyle = L.plaque; rr(ctx, ax - 50, y - 50, aw + 100, total + 90, 36); ctx.fill(); ctx.restore();
+    if(L.tape){ ctx.save(); ctx.translate(cx, y - 50); ctx.rotate(-.04); ctx.fillStyle = "rgba(240,160,180,.78)"; ctx.fillRect(-110, -24, 220, 48); ctx.fillStyle = "rgba(255,255,255,.35)"; for(let i = -100; i < 110; i += 26) ctx.fillRect(i, -24, 10, 48); ctx.restore(); } }
   ctx.save();
   if(L.shadow){ ctx.shadowColor = L.shadow; ctx.shadowBlur = 14; ctx.shadowOffsetY = 3; }
   blocks.forEach((b, bi) => {
-    y += b.gap || 0; ctx.font = b.font; ctx.fillStyle = b.col;
+    y += b.gap || 0; if(b.div && typeof phDivider === "function" && (reveal == null || reveal > 1.2)){ ctx.save(); ctx.shadowColor = "transparent"; phDivider(ctx, cx, y - b.gap / 2 + 6, L.divider); ctx.restore(); } ctx.font = b.font; ctx.fillStyle = b.col;
     if(L.glow && typeof b.col === "string"){ ctx.shadowColor = b.col; ctx.shadowBlur = 26; ctx.shadowOffsetY = 0; }
     b.lines.forEach(t => { y += b.lh;
       if(reveal == null){ ctx.fillText(t, cx, y - b.lh * .24); return; }

@@ -24,6 +24,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Lobster&family=Marck+Script&family=Bad+Script&family=Caveat:wght@500;700&family=Playfair+Display:ital,wght@0,400;1,400;1,700&family=Comfortaa:wght@500;700&family=Amatic+SC:wght@700&family=Kurale&family=Pacifico&family=Great+Vibes&family=Comforter&family=Yeseva+One&family=Poiret+One&family=Ruslan+Display&family=Pangolin&family=Underdog&family=Rubik+Doodle+Shadow&family=Ponomar&family=Prata&family=Lora:ital@0;1&family=PT+Serif:ital@0;1&family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Alice&family=Philosopher&family=Montserrat:wght@500&family=Neucha&family=Marmelad&family=Shantell+Sans:wght@500&display=swap">
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.min.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
 <script src="cards.js"></script>
+<script src="photos.js"></script>
 <script src="mp4-muxer.min.js"></script>
 <script src="mp4enc.js"></script>
 <script src="video.js"></script>
@@ -298,7 +299,7 @@ body{overflow-x:hidden}
         <div class="sttools" id="stTools" hidden><span>Выбрана наклейка — двигайте её пальцем по открытке</span><div class="row"><button class="pill" data-a="minus">➖ Меньше</button><button class="pill" data-a="plus">➕ Больше</button><button class="pill" data-a="rot">↻ Повернуть</button><button class="pill" data-a="del">🗑 Удалить</button></div></div></div>
       <div class="field"><label for="fFrom">От кого</label><input id="fFrom" placeholder="Например: Твоя Маша" maxlength="60" autocomplete="off"></div>
       <div class="field"><span class="lbl">Стиль и вариант</span><div class="gtabs" id="gtabs"></div><div class="strip" id="designs"></div>
-        <div class="row"><button class="pill" id="shuffle">🎲 Перемешать украшения</button></div></div>
+        <div class="row"><button class="pill" id="shuffle">🎲 Перемешать украшения</button><button class="pill" id="flipText" hidden>⇅ Текст вниз</button></div></div>
       <div class="field"><span class="lbl">Шрифт заголовка и имени</span><div class="fonts" id="fonts"></div></div>
       <div class="field"><span class="lbl">Шрифт поздравления</span><div class="fonts" id="bfonts"></div>
 </div>
@@ -330,7 +331,7 @@ function renderHome(){
   $("#grid").innerHTML = HOLIDAYS.map(h => `<button class="hol" data-h="${h.id}"><div class="th"></div><b>${h.emoji} ${esc(h.name)}</b></button>`).join("");
   document.querySelectorAll("[data-h]").forEach(b => b.onclick = () => openStyles(b.dataset.h));
   const slots = [...document.querySelectorAll(".hol .th")];
-  let i = 0; const step = async () => { if(i >= slots.length) return; const h = HOLIDAYS[i], c = { h: h.id, d: h.designs[0], p: 0, s: 11, n: "", t: "", f: "lobster" }; await prepareCard(c, .3); slots[i].appendChild(thumb(c, 300)); i++; setTimeout(step, 0); };
+  let i = 0; const step = async () => { if(i >= slots.length) return; const h = HOLIDAYS[i], c = { h: h.id, d: h.designs[0], p: 0, s: 12, n: "", t: "", f: "lobster" }; await prepareCard(c, .3); slots[i].appendChild(thumb(c, 300)); i++; setTimeout(step, 0); };
   step();
 }
 
@@ -350,7 +351,7 @@ function openStyles(hid, push = true){
   document.title = h.name + " — выберите стиль";
   const tiles = [...document.querySelectorAll(".st")];
   (async () => { for(const t of tiles.sort((a, b) => (a.dataset.g === "3d") - (b.dataset.g === "3d"))){ if(job !== stJob) return;
-    const c = { h: h.id, d: groupDesigns(h.id, t.dataset.g)[0], p: 0, s: 11, n: "", t: "", f: "lobster" }; await prepareCard(c, .3); if(job !== stJob) return;
+    const c = { h: h.id, d: groupDesigns(h.id, t.dataset.g)[0], p: 0, s: 12, n: "", t: "", f: "lobster" }; await prepareCard(c, .3); if(job !== stJob) return;
     const pv = t.querySelector(".pv2"); pv.innerHTML = ""; pv.appendChild(renderCard(c, 360 / W)); } })();
 }
 const FONT_KEYS = Object.keys(FONTS);
@@ -380,10 +381,10 @@ function renderDesigns(){
     if(!sepDone && !own.includes(k) && box.children.length){ const sep = document.createElement("div"); sep.className = "dsep"; sep.textContent = "Ещё в этом стиле →"; box.appendChild(sep); sepDone = true; }
     DESIGNS[k].pals.forEach((_, i) => { const b = document.createElement("button"); b.className = "dsg"; b.dataset.d = k; b.dataset.p = i; b.setAttribute("aria-pressed", k === card.d && i === (card.p || 0));
       const ph = document.createElement("canvas"); ph.width = 172; ph.height = 215; b.appendChild(ph); b.append(DESIGNS[k].name + (DESIGNS[k].pals.length > 1 ? " · " + (i + 1) : "")); queue.push([ph, k, i]);
-      b.onclick = () => { card.d = k; card.p = i; document.querySelectorAll(".dsg").forEach(x => x.setAttribute("aria-pressed", x === b)); draw(true); };
+      b.onclick = () => { card.d = k; card.p = i; card.tp = ""; document.querySelectorAll(".dsg").forEach(x => x.setAttribute("aria-pressed", x === b)); draw(true); };
       box.appendChild(b); });
   });
-  const step = async () => { if(job !== thumbJob || !queue.length) return; const [cv, k, i] = queue.shift(); const tc = { h: card.h, d: k, p: i, s: 5, n: "", t: "", f: card.f, bf: card.bf };
+  const step = async () => { if(job !== thumbJob || !queue.length) return; const [cv, k, i] = queue.shift(); const tc = { h: card.h, d: k, p: i, s: DESIGNS[k].photo ? 3 : 5, n: "", t: "", f: card.f, bf: card.bf };
     await prepareCard(tc, .3); if(job !== thumbJob) return; const ctx = cv.getContext("2d"); ctx.setTransform(172 / W, 0, 0, 215 / H, 0, 0); drawCard(ctx, tc, { wm: false }); setTimeout(step, 0); };
   step();
   const sel = box.querySelector('[aria-pressed="true"]'); if(sel) setTimeout(() => sel.scrollIntoView({ block: "nearest", inline: "center" }), 50);
@@ -396,7 +397,7 @@ function renderFonts(){
 }
 let drawT = 0;
 function draw(now){
-  clearTimeout(drawT);
+  clearTimeout(drawT); photoTools();
   const go = () => redrawNow();
   const run = () => prepareCard(card, 1).then(go);
   now ? run() : (drawT = setTimeout(run, 90));
@@ -446,7 +447,10 @@ function renderWishTabs(){
 function applyWish(i){ const w = wishList(); wishIdx = w.length ? (i % w.length + w.length) % w.length : 0; card.t = w[wishIdx] || ""; $("#fText").value = card.t; customText = false; renderWishTabs(); draw(true); }
 $("#nextText").onclick = () => applyWish(wishIdx + 1);
 $("#clearText").onclick = () => { card.t = ""; $("#fText").value = ""; draw(true); };
-$("#shuffle").onclick = () => { card.s = 1 + Math.floor(Math.random() * 1e6); draw(true); };
+$("#shuffle").onclick = () => { const ph = DESIGNS[card.d] && DESIGNS[card.d].photo; card.s = ph ? (card.s || 0) + 1 : 1 + Math.floor(Math.random() * 1e6); draw(true); };
+function photoTools(){ const d = DESIGNS[card.d], ph = !!(d && d.photo); $("#flipText").hidden = !ph; $("#shuffle").textContent = ph ? "🎨 Другой стиль текста" : "🎲 Перемешать украшения";
+  if(ph){ const pos = card.tp || d.pals[(card.p || 0) % d.pals.length].pos; $("#flipText").textContent = pos === "t" ? "⇩ Текст вниз" : "⇧ Текст вверх"; } }
+$("#flipText").onclick = () => { const d = DESIGNS[card.d]; if(!d || !d.photo) return; const pos = card.tp || d.pals[(card.p || 0) % d.pals.length].pos; card.tp = pos === "t" ? "b" : "t"; draw(true); };
 
 /* ---------- share ---------- */
 const SOCIAL = [
@@ -491,7 +495,7 @@ function saveImage(b64, name, url){
   if(window.OtkApp && window.OtkApp.saveImage){ window.OtkApp.saveImage(b64, name); return; }
   const a = document.createElement("a"); a.href = url || "data:image/png;base64," + b64; a.download = name; document.body.appendChild(a); a.click(); a.remove(); toast("Открытка сохранена");
 }
-const cardLink = c => SITE + "?k=" + b64e({ h: c.h, d: c.d, p: c.p, s: c.s, n: c.n.trim(), t: c.t.trim(), f: c.f, bf: c.bf || "", fr: c.fr.trim(), st: (c.st || []).map(x => ({ k: x.k, x: Math.round(x.x), y: Math.round(x.y), s: Math.round(x.s), r: +(x.r || 0).toFixed(2), c: x.c || 0 })) });
+const cardLink = c => SITE + "?k=" + b64e({ h: c.h, d: c.d, p: c.p, s: c.s, n: c.n.trim(), t: c.t.trim(), f: c.f, bf: c.bf || "", tp: c.tp || "", fr: c.fr.trim(), st: (c.st || []).map(x => ({ k: x.k, x: Math.round(x.x), y: Math.round(x.y), s: Math.round(x.s), r: +(x.r || 0).toFixed(2), c: x.c || 0 })) });
 const fileNameOf = c => "otkrytka-" + ((c.n || HOL[c.h].name).trim().replace(/[^\p{L}\p{N}]+/gu, "-") || "s-prazdnikom") + ".png";
 let envJob = 0;
 async function shareCard(c){
@@ -846,7 +850,7 @@ addEventListener("keydown", e => { if(e.key === "Escape") window.appBack(); });
   await Promise.all([loadFonts(), loadBizLogo()]);
   renderHome();
   const k = new URLSearchParams(location.search).get("k");
-  if(k){ try{ const c = b64d(k); if(HOL[c.h]){ ["n", "t", "fr"].forEach(x => c[x] = String(c[x] || "").slice(0, 600)); c.st = Array.isArray(c.st) ? c.st.slice(0, 20).map(x => ({ k: String(x.k || "").slice(0, 30), x: +x.x || 0, y: +x.y || 0, s: Math.min(520, Math.max(40, +x.s || 150)), r: +x.r || 0, c: (+x.c || 0) % 5 })) : []; openViewer(c); } }catch(e){} }
+  if(k){ try{ const c = b64d(k); if(HOL[c.h]){ ["n", "t", "fr"].forEach(x => c[x] = String(c[x] || "").slice(0, 600)); c.tp = c.tp === "t" || c.tp === "b" ? c.tp : ""; c.st = Array.isArray(c.st) ? c.st.slice(0, 20).map(x => ({ k: String(x.k || "").slice(0, 30), x: +x.x || 0, y: +x.y || 0, s: Math.min(520, Math.max(40, +x.s || 150)), r: +x.r || 0, c: (+x.c || 0) % 5 })) : []; openViewer(c); } }catch(e){} }
   const h = new URLSearchParams(location.search).get("h"); if(h && HOL[h]) openEditor({ h });
   const bd = new URLSearchParams(location.search).get("bd"); if(bd){ const b = bdays.find(x => x.id === bd); if(b) congratulate(b); }
   syncApp();
