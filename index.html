@@ -24,6 +24,8 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Lobster&family=Marck+Script&family=Bad+Script&family=Caveat:wght@500;700&family=Playfair+Display:ital,wght@0,400;1,400;1,700&family=Comfortaa:wght@500;700&family=Amatic+SC:wght@700&family=Kurale&family=Pacifico&family=Great+Vibes&family=Comforter&family=Yeseva+One&family=Poiret+One&family=Ruslan+Display&family=Pangolin&family=Underdog&family=Rubik+Doodle+Shadow&family=Ponomar&family=Prata&family=Lora:ital@0;1&family=PT+Serif:ital@0;1&family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Alice&family=Philosopher&family=Montserrat:wght@500&family=Neucha&family=Marmelad&family=Shantell+Sans:wght@500&display=swap">
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.min.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
 <script src="cards.js"></script>
+<script src="mp4-muxer.min.js"></script>
+<script src="mp4enc.js"></script>
 <script src="video.js"></script>
 <script src="envelope.js"></script>
 <script src="texts.js"></script>
@@ -504,7 +506,7 @@ async function shareCard(c){
     ${giftsHtml(c.h)}`);
   $("#asImage").onclick = () => shareAsImage(c);
   $("#asLink").onclick = () => shareAsImage(c, true);
-  if(!pickMime()){ $("#envNote").textContent = "На этом устройстве видео не создаётся — отправьте картинкой."; $("#envSend").textContent = "Отправить картинкой"; $("#envSend").disabled = false; $("#envSend").onclick = () => shareAsImage(c); return; }
+  if(!pickMime() && !window.VideoEncoder){ $("#envNote").textContent = "На этом устройстве видео не создаётся — отправьте картинкой."; $("#envSend").textContent = "Отправить картинкой"; $("#envSend").disabled = false; $("#envSend").onclick = () => shareAsImage(c); return; }
   const pv = $("#envPrev").getContext("2d");
   try{
     const v = await makeEnvelopeVideo(full, { onProgress: k => { const i = $("#envProg i"); if(i) i.style.width = Math.round(k * 100) + "%"; }, preview: src => { if(job === envJob && $("#envPrev")) pv.drawImage(src, 0, 0, 360, 450); } });
@@ -765,7 +767,7 @@ function giftsHtml(h){ const g = giftsFor(h); return g.length ? `<p class="shx-l
 /* ---------- video card ---------- */
 let voiceBlob = null, voiceRec = null, voiceTimer = 0;
 function openVideo(){
-  if(!pickMime()){ toast("Видео на этом устройстве не поддерживается"); return; }
+  if(!pickMime() && !window.VideoEncoder){ toast("Видео на этом устройстве не поддерживается"); return; }
   const def = ["bday", "jubilee", "baby"].includes(card.h) ? "bday" : ["ny", "xmas"].includes(card.h) ? "jingle" : "soft";
   let music = def;
   modal("Видео-открытка", `<div class="vprev" id="vPrev"></div>

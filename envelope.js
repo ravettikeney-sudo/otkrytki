@@ -136,7 +136,23 @@ function popSound(ac, out, t){
   s.connect(f); f.connect(g); g.connect(out); s.start(t);
   [880, 1320, 1760].forEach((fr, i) => { const o = ac.createOscillator(), gg = ac.createGain(); o.frequency.value = fr; gg.gain.setValueAtTime(0, t + .05 + i * .06); gg.gain.linearRampToValueAtTime(.18, t + .06 + i * .06); gg.gain.exponentialRampToValueAtTime(.001, t + .6 + i * .06); o.connect(gg); gg.connect(out); o.start(t + .05 + i * .06); o.stop(t + .8 + i * .06); });
 }
-async function makeEnvelopeVideo(c, { sound = true, onProgress, preview } = {}){
+async function makeEnvelopeVideo(c, opts = {}){
+  const sup = await mp4Support();
+  if(sup){ try{
+    const { sound = true, onProgress, preview } = opts;
+    await prepareCard(c, 1); const card = renderCard(c);
+    if(window.Card3D && Card3D.release) Card3D.release();
+    const st = envState(c, card);
+    return await encodeMp4({ sup, dur: ENV_DUR, onProgress, preview,
+      draw: (ctx, t) => drawEnvelopeFrame(ctx, st, t),
+      buildAudio: sound ? async ac => { const mg = ac.createGain(); mg.gain.value = .85; mg.connect(ac.destination);
+        popSound(ac, ac.destination, ENV_OPEN + .05);
+        const sub = { currentTime: ENV_OPEN + .5, createDelay: () => ac.createDelay(), createGain: () => ac.createGain(), createOscillator: () => ac.createOscillator() };
+        scheduleMelody(sub, mg, st.S.melody, ENV_DUR - ENV_OPEN - .5); } : null });
+  }catch(e){ console.warn("mp4 failed, fallback", e); } }
+  return makeEnvelopeVideoRec(c, opts);
+}
+async function makeEnvelopeVideoRec(c, { sound = true, onProgress, preview } = {}){
   const mime = pickMime(); if(!mime) throw new Error("no-recorder");
   await prepareCard(c, 1);
   const card = renderCard(c);

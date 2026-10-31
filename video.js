@@ -29,7 +29,8 @@ function makeParticles(kind, n, w, h){
   return Array.from({ length: n }, () => ({ x: Math.random() * w, y: -Math.random() * h * 1.2, v: 2 + Math.random() * 3.5, s: 10 + Math.random() * 16, a: Math.random() * 6.28, va: (Math.random() - .5) * .12, c: cols[Math.floor(Math.random() * cols.length)] }));
 }
 function drawParticles(ctx, kind, ps, w, h, alpha = 1){
-  ps.forEach(p => { p.y += p.v; p.x += Math.sin(p.a) * 1.2; p.a += p.va; if(p.y > h + 30){ p.y = -30; p.x = Math.random() * w; }
+  const k = ps.k || 1;
+  ps.forEach(p => { p.y += p.v * k; p.x += Math.sin(p.a) * 1.2 * k; p.a += p.va * k; if(p.y > h + 30){ p.y = -30; p.x = Math.random() * w; }
     ctx.save(); ctx.globalAlpha = alpha * (kind === "snow" ? .85 : .9); ctx.translate(p.x, p.y); ctx.rotate(p.a);
     if(kind === "snow"){ ctx.fillStyle = "#fff"; ctx.shadowColor = "rgba(120,140,200,.6)"; ctx.shadowBlur = 8; ctx.beginPath(); ctx.arc(0, 0, p.s / 3, 0, 6.283); ctx.fill(); }
     else if(kind === "heart"){ heartPath(ctx, 0, 0, p.s * 1.7); ctx.fillStyle = p.c; ctx.fill(); }
@@ -47,7 +48,26 @@ function videoFrame(ctx, scene, L, c, ps, kind, t, dur){
   if(WATERMARK && !c.nowm) drawWatermark(ctx);
 }
 /* Records the video. onFrame(canvas) lets the caller show the live preview. */
-async function makeVideo(c, { music = "none", voice = null, onProgress, preview } = {}){
+async function makeVideo(c, opts = {}){
+  const sup = window.mp4Support ? await mp4Support() : null;
+  if(sup){ try{
+    const { music = "none", voice = null, onProgress, preview } = opts;
+    await prepareCard(c, 1);
+    if(window.Card3D && Card3D.release) Card3D.release();
+    const scene = document.createElement("canvas"); scene.width = W; scene.height = H;
+    const L = drawScene(scene.getContext("2d"), c);
+    let voiceBuf = null; if(voice){ try{ voiceBuf = await new OfflineAudioContext(2, 1, MP4_SR).decodeAudioData(await voice.arrayBuffer()); }catch(e){} }
+    const dur = Math.min(40, Math.max(8, voiceBuf ? voiceBuf.duration + 3.2 : 8));
+    const kind = particleKind(c), ps = makeParticles(kind, kind === "snow" ? 80 : 55, W, H); ps.k = 2;
+    return await encodeMp4({ sup, dur, onProgress, preview,
+      draw: (ctx, t) => videoFrame(ctx, scene, L, c, ps, kind, t, dur),
+      buildAudio: async ac => { const mg = ac.createGain(); mg.gain.value = voiceBuf ? .28 : .9; mg.connect(ac.destination);
+        scheduleMelody(ac, mg, music, dur);
+        if(voiceBuf){ const s = ac.createBufferSource(); s.buffer = voiceBuf; const g = ac.createGain(); g.gain.value = 1.4; s.connect(g); g.connect(ac.destination); s.start(1.6); } } });
+  }catch(e){ console.warn("mp4 failed, fallback", e); } }
+  return makeVideoRec(c, opts);
+}
+async function makeVideoRec(c, { music = "none", voice = null, onProgress, preview } = {}){
   const mime = pickMime(); if(!mime) throw new Error("no-recorder");
   await prepareCard(c, 1);
   if(window.Card3D && Card3D.release) Card3D.release();
