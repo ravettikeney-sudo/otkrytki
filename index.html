@@ -68,7 +68,7 @@ header.top .wrap{display:flex;align-items:center;gap:12px;height:62px}
 .dlbar div b{display:block;color:var(--ink);font-size:15px}
 
 /* editor */
-.ed{display:grid;grid-template-columns:minmax(0,440px) minmax(0,1fr);gap:28px;padding:18px 0 120px;align-items:start}
+.ed{display:grid;grid-template-columns:minmax(0,440px) minmax(0,1fr);gap:28px;padding:18px 0 170px;align-items:start}
 .ed>*{min-width:0}
 body{overflow-x:hidden}
 .pv{position:sticky;top:78px}
@@ -94,8 +94,9 @@ body{overflow-x:hidden}
 .fnt{flex:none;min-width:84px;padding:8px 14px;border-radius:14px;border:1.5px solid var(--line);background:var(--card);font-size:26px;line-height:1.25;white-space:nowrap}
 .fnt.bf{font-size:17px;font-family:Nunito;font-weight:700;padding:12px 14px}
 .fnt[aria-pressed="true"]{border-color:var(--rose);background:#fff0f4}
-.sendbar{position:fixed;left:0;right:0;bottom:0;z-index:6;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(180deg,rgba(255,244,236,0),rgba(255,244,236,.95) 30%)}
+.sendbar{position:fixed;left:0;right:0;bottom:0;z-index:6;pointer-events:none;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(180deg,rgba(255,244,236,0),rgba(255,244,236,.95) 30%)}
 .sendbar .wrap{display:flex;justify-content:center}
+.sendbar button{pointer-events:auto}
 .big{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:17px 28px;border-radius:18px;border:0;color:#fff;font:900 18px Nunito;background:var(--grad);box-shadow:0 12px 28px rgba(255,95,143,.35);width:100%;max-width:520px}
 .big:active{transform:scale(.98)}
 .big.ghost{background:var(--card);color:var(--ink);border:1.5px solid var(--line);box-shadow:none}
@@ -248,10 +249,11 @@ body{overflow-x:hidden}
         <div class="row" style="margin-top:0"><button class="pill" id="addPhoto">📷 Добавить фото</button><button class="pill" id="delPhoto" hidden>Убрать фото</button></div>
         <input type="file" id="photoIn" accept="image/*" hidden></div>
       <div class="field"><label for="fFrom">От кого</label><input id="fFrom" placeholder="Например: Твоя Маша" maxlength="60" autocomplete="off"></div>
-      <div class="field"><span class="lbl">Стиль и вариант</span><div class="gtabs" id="gtabs"></div><div class="strip" id="designs"></div></div>
+      <div class="field"><span class="lbl">Стиль и вариант</span><div class="gtabs" id="gtabs"></div><div class="strip" id="designs"></div>
+        <div class="row"><button class="pill" id="shuffle">🎲 Перемешать украшения</button></div></div>
       <div class="field"><span class="lbl">Шрифт заголовка и имени</span><div class="fonts" id="fonts"></div></div>
       <div class="field"><span class="lbl">Шрифт поздравления</span><div class="fonts" id="bfonts"></div>
-        <div class="row"><button class="pill" id="shuffle">🎲 Перемешать украшения</button></div></div>
+</div>
     </div>
   </div>
   <div class="sendbar"><div class="wrap"><button class="big vid" id="video" aria-label="Видео-открытка">🎬 Видео</button><button class="big" id="send"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>Отправить</button></div></div>
@@ -505,7 +507,7 @@ function congratulate(b){
 function bdForm(b){
   const isNew = !b; b = b || { id: "b" + Date.now().toString(36), n: "", d: new Date().getDate(), m: new Date().getMonth() + 1, y: "" };
   const box = modal(isNew ? "День рождения" : "Изменить", `<div class="form">
-    <div class="field"><label for="bdN">Кого поздравляем</label><input id="bdN" maxlength="40" placeholder="Например: Мама, Оля, Сергей Петрович" value="${esc(b.n)}"></div>
+    <div class="field"><label for="bdN">Кого поздравляем</label><input id="bdN" maxlength="40" placeholder="Например: Мама, Нина, бабушка" value="${esc(b.n)}"></div>
     <div class="field"><span class="lbl">Дата рождения</span><div class="two">
       <select id="bdD" aria-label="День">${Array.from({ length: 31 }, (_, i) => `<option ${i + 1 === b.d ? "selected" : ""}>${i + 1}</option>`).join("")}</select>
       <select id="bdM" aria-label="Месяц">${MONTHS.map((m, i) => `<option value="${i + 1}" ${i + 1 === b.m ? "selected" : ""}>${m}</option>`).join("")}</select>

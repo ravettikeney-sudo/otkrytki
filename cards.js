@@ -396,10 +396,12 @@ const DESIGNS = {
     draw(ctx, r, p){
       vbg(ctx, p.sky);
       ctx.save(); ctx.globalAlpha = .18; ctx.fillStyle = "#ffffff"; for(let i = 0; i < 16; i++){ ctx.beginPath(); ctx.moveTo(W / 2, 1180); ctx.arc(W / 2, 1180, 1500, Math.PI + i * .2, Math.PI + i * .2 + .09); ctx.fill(); } ctx.restore();
-      glow(ctx, W / 2, 1180, 600, p.sun, .7); ctx.fillStyle = lin(ctx, 0, 950, 0, 1300, [shade(p.sun, .4), p.sun]); ctx.beginPath(); ctx.arc(W / 2, 1180, 230, 0, TAU); ctx.fill();
-      cloud(ctx, 170, 1130, 90, p.cloud, .9); cloud(ctx, 900, 1080, 70, p.cloud, .85); cloud(ctx, 220, 150, 60, p.cloud, .7); cloud(ctx, 870, 220, 50, p.cloud, .6);
+      const sx = W / 2 + (r() - .5) * 260;
+      glow(ctx, sx, 1180, 600, p.sun, .7); ctx.fillStyle = lin(ctx, 0, 950, 0, 1300, [shade(p.sun, .4), p.sun]); ctx.beginPath(); ctx.arc(sx, 1180, 200 + r() * 60, 0, TAU); ctx.fill();
+      for(let i = 0; i < 5; i++){ const top = i > 2; cloud(ctx, 80 + r() * (W - 160), top ? 110 + r() * 140 : 1060 + r() * 110, top ? 40 + r() * 30 : 60 + r() * 45, p.cloud, .6 + r() * .3); }
       ctx.fillStyle = rgba("#ffffff", .7); ctx.fillRect(0, H - 120, W, 120);
-      cup(ctx, 820, 1180, 120, p.cup);
+      const cl = r() < .5; cup(ctx, cl ? 230 + r() * 60 : 790 + r() * 60, 1180, 110 + r() * 25, p.cup);
+      for(let i = 0; i < 3; i++) butterfly(ctx, 120 + r() * (W - 240), 120 + r() * 120, 22 + r() * 10, ["#ff8fab", "#ffd166", "#bde0fe"][i], (r() - .5));
       return { area: [110, 200, 860, 680], title: p.title, name: p.name, body: p.body };
     } },
   night: { name: "Звёздная ночь", pals: [
@@ -915,10 +917,17 @@ const DESIGNS2 = {
       glow(ctx, W / 2, H / 2, 700, p.a, .16);
       const neon = (fn, col, w) => { ctx.save(); ctx.strokeStyle = col; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.shadowColor = col; [[w * 3, 40, .5], [w, 18, 1], [w * .4, 0, 1]].forEach(([lw, b, a], i) => { ctx.lineWidth = lw; ctx.shadowBlur = b; ctx.globalAlpha = a; if(i === 2) ctx.strokeStyle = "#ffffff"; fn(); ctx.stroke(); }); ctx.restore(); };
       neon(() => rr(ctx, 70, 70, W - 140, H - 140, 50), p.a, 8);
-      neon(() => heartPath(ctx, 190, 210, 150), p.b, 6);
-      neon(() => { ctx.beginPath(); for(let i = 0; i < 10; i++){ const rad = i % 2 ? 30 : 72, a = -Math.PI / 2 + i * Math.PI / 5; ctx.lineTo(880 + Math.cos(a) * rad, 220 + Math.sin(a) * rad); } ctx.closePath(); }, p.c, 6);
-      neon(() => { ctx.beginPath(); ctx.moveTo(150, 1140); for(let i = 0; i < 8; i++) ctx.quadraticCurveTo(150 + i * 50 + 25, 1100 + (i % 2) * 80, 150 + (i + 1) * 50, 1140); }, p.b, 5);
-      neon(() => { ctx.beginPath(); ctx.arc(880, 1130, 60, 0, TAU); ctx.moveTo(880, 1070); ctx.lineTo(880, 1190); ctx.moveTo(820, 1130); ctx.lineTo(940, 1130); }, p.c, 5);
+      const shapes = [
+        (x, y) => heartPath(ctx, x, y, 150),
+        (x, y) => { ctx.beginPath(); for(let i = 0; i < 10; i++){ const rad = i % 2 ? 30 : 72, a = -Math.PI / 2 + i * Math.PI / 5; ctx.lineTo(x + Math.cos(a) * rad, y + Math.sin(a) * rad); } ctx.closePath(); },
+        (x, y) => { ctx.beginPath(); ctx.moveTo(x - 160, y); for(let i = 0; i < 6; i++) ctx.quadraticCurveTo(x - 160 + i * 54 + 27, y - 40 + (i % 2) * 80, x - 160 + (i + 1) * 54, y); },
+        (x, y) => { ctx.beginPath(); ctx.arc(x, y, 60, 0, TAU); ctx.moveTo(x, y - 60); ctx.lineTo(x, y + 60); ctx.moveTo(x - 60, y); ctx.lineTo(x + 60, y); },
+        (x, y) => { ctx.beginPath(); ctx.moveTo(x - 70, y + 40); ctx.lineTo(x - 70, y - 30); ctx.lineTo(x - 35, y); ctx.lineTo(x, y - 50); ctx.lineTo(x + 35, y); ctx.lineTo(x + 70, y - 30); ctx.lineTo(x + 70, y + 40); ctx.closePath(); },
+        (x, y) => { ctx.beginPath(); ctx.moveTo(x - 50, y + 60); ctx.lineTo(x - 50, y - 50); ctx.lineTo(x + 50, y - 70); ctx.lineTo(x + 50, y + 40); ctx.moveTo(x - 50, y - 15); ctx.lineTo(x + 50, y - 35); ctx.arc(x - 70, y + 60, 20, 0, TAU); ctx.moveTo(x + 50, y + 40); ctx.arc(x + 30, y + 40, 20, 0, TAU); },
+        (x, y) => { ctx.beginPath(); for(let i = 0; i < 4; i++){ const a = i * Math.PI / 2; ctx.moveTo(x, y); ctx.lineTo(x + Math.cos(a) * 70, y + Math.sin(a) * 70); } ctx.moveTo(x + 30, y); ctx.arc(x, y, 30, 0, TAU); }
+      ];
+      const order = shapes.map((f, i) => [r(), f]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
+      [[200, 220], [880, 220], [220, 1130], [860, 1130]].forEach(([x, y], i) => neon(() => order[i](x + (r() - .5) * 30, y + (r() - .5) * 30), [p.b, p.c, p.a][Math.floor(r() * 3)], 6));
       return { area: [150, 340, 780, 700], title: p.title, name: p.name, body: p.body, glow: 1 };
     } },
   luxe: { name: "Золото на чёрном", pals: [
@@ -940,10 +949,12 @@ const DESIGNS2 = {
     draw(ctx, r, p){
       ctx.fillStyle = p.bg; ctx.fillRect(0, 0, W, H);
       ctx.strokeStyle = rgba(p.line, .5); ctx.lineWidth = 2; ctx.strokeRect(60, 60, W - 120, H - 120);
-      ctx.fillStyle = rgba(p.acc, .35); ctx.beginPath(); ctx.arc(230, 1130, 140, 0, TAU); ctx.fill();
-      lineFlower(ctx, 200, 1290, 250, p.line, 4); lineFlower(ctx, 290, 1290, 170, p.line, 3.5);
-      ctx.save(); ctx.translate(W - 170, 240); ctx.scale(-1, 1); lineFlower(ctx, 0, 140, 180, rgba(p.line, .7), 3); ctx.restore();
+      const flip = r() < .5; ctx.save(); if(flip){ ctx.translate(W, 0); ctx.scale(-1, 1); }
+      ctx.fillStyle = rgba(p.acc, .35); ctx.beginPath(); ctx.arc(200 + r() * 70, 1100 + r() * 60, 110 + r() * 50, 0, TAU); ctx.fill();
+      lineFlower(ctx, 180 + r() * 40, 1290, 210 + r() * 60, p.line, 4); lineFlower(ctx, 280 + r() * 30, 1290, 140 + r() * 50, p.line, 3.5);
+      ctx.save(); ctx.translate(W - 170 + (r() - .5) * 40, 240); ctx.scale(-1, 1); lineFlower(ctx, 0, 140, 150 + r() * 50, rgba(p.line, .7), 3); ctx.restore();
       for(let i = 0; i < 3; i++){ ctx.fillStyle = p.acc; ctx.beginPath(); ctx.arc(W - 150 + i * 26, H - 150, 6, 0, TAU); ctx.fill(); }
+      ctx.restore();
       return { area: [180, 270, 720, 650], title: p.title, name: p.name, body: p.body };
     } },
   papercut: { name: "Бумажные слои", pals: [
@@ -1030,14 +1041,14 @@ const DESIGNS2 = {
     { sky: ["#8ecae6", "#cdeefc", "#fff6e5"], sea: ["#219ebc", "#126782", "#023047"], sand: "#f5deb3", title: "#023047", name: "#fb8500", body: "#14343f" },
     { sky: ["#ffafcc", "#ffd6a5", "#fff1d6"], sea: ["#5fa8d3", "#1b4965", "#0d2c40"], sand: "#f6d7b0", title: "#1b4965", name: "#e85d75", body: "#2b2d42" } ],
     draw(ctx, r, p){
-      vbg(ctx, p.sky); glow(ctx, 820, 160, 240, "#fff3b0", .8); ctx.fillStyle = "#ffe066"; ctx.beginPath(); ctx.arc(820, 160, 70, 0, TAU); ctx.fill();
-      cloud(ctx, 220, 180, 50, "#ffffff", .85);
-      ctx.strokeStyle = "#2b2d42"; ctx.lineWidth = 4; ctx.lineCap = "round"; [[300, 300, 30], [380, 260, 22], [640, 330, 26]].forEach(([x, y, s]) => { ctx.beginPath(); ctx.moveTo(x - s, y); ctx.quadraticCurveTo(x - s / 2, y - s / 2, x, y); ctx.quadraticCurveTo(x + s / 2, y - s / 2, x + s, y); ctx.stroke(); });
+      const sunx = r() < .5 ? 160 + r() * 140 : 760 + r() * 140; vbg(ctx, p.sky); glow(ctx, sunx, 160, 240, "#fff3b0", .8); ctx.fillStyle = "#ffe066"; ctx.beginPath(); ctx.arc(sunx, 160, 60 + r() * 20, 0, TAU); ctx.fill();
+      for(let i = 0; i < 3; i++) cloud(ctx, 100 + r() * (W - 200), 120 + r() * 160, 35 + r() * 25, "#ffffff", .7 + r() * .2);
+      ctx.strokeStyle = "#2b2d42"; ctx.lineWidth = 4; ctx.lineCap = "round"; Array.from({ length: 2 + Math.floor(r() * 3) }, () => [150 + r() * (W - 300), 250 + r() * 100, 20 + r() * 14]).forEach(([x, y, s]) => { ctx.beginPath(); ctx.moveTo(x - s, y); ctx.quadraticCurveTo(x - s / 2, y - s / 2, x, y); ctx.quadraticCurveTo(x + s / 2, y - s / 2, x + s, y); ctx.stroke(); });
       p.sea.forEach((c, i) => { const y0 = 900 + i * 80; ctx.fillStyle = lin(ctx, 0, y0, 0, y0 + 200, [c, shade(c, -.2)]); ctx.beginPath(); ctx.moveTo(0, H); for(let x = 0; x <= W; x += 20) ctx.lineTo(x, y0 + Math.sin(x / 90 + i * 2) * 14); ctx.lineTo(W, H); ctx.fill();
         ctx.strokeStyle = "rgba(255,255,255,.5)"; ctx.lineWidth = 3; ctx.beginPath(); for(let x = 0; x <= W; x += 20) ctx.lineTo(x, y0 + Math.sin(x / 90 + i * 2) * 14); ctx.stroke(); });
       ctx.fillStyle = lin(ctx, 0, 1150, 0, H, [shade(p.sand, .2), p.sand]); ctx.beginPath(); ctx.moveTo(0, H); ctx.lineTo(0, 1200); ctx.quadraticCurveTo(W * .5, 1110, W, 1180); ctx.lineTo(W, H); ctx.fill();
-      ctx.save(); ctx.translate(820, 1260); ctx.rotate(.3); star5(ctx, 0, 0, 52, "#f77f00"); ctx.fillStyle = "#fcbf49"; for(let i = 0; i < 5; i++){ const a = -Math.PI / 2 + i * TAU / 5; ctx.beginPath(); ctx.arc(Math.cos(a) * 26, Math.sin(a) * 26, 4, 0, TAU); ctx.fill(); } ctx.restore();
-      ctx.save(); ctx.translate(250, 1270); ctx.fillStyle = "#ffcdb2"; ctx.beginPath(); ctx.moveTo(0, 20); for(let i = 0; i <= 8; i++){ const a = Math.PI + i * Math.PI / 8; ctx.lineTo(Math.cos(a) * 46, Math.sin(a) * 46); } ctx.closePath(); ctx.fill(); ctx.strokeStyle = "#e5989b"; ctx.lineWidth = 3; for(let i = 1; i < 8; i++){ const a = Math.PI + i * Math.PI / 8; ctx.beginPath(); ctx.moveTo(0, 18); ctx.lineTo(Math.cos(a) * 44, Math.sin(a) * 44); ctx.stroke(); } ctx.restore();
+      const left = r() < .5; ctx.save(); ctx.translate(left ? 230 + r() * 80 : 780 + r() * 80, 1250 + r() * 30); ctx.rotate(r() * TAU); star5(ctx, 0, 0, 52, "#f77f00"); ctx.fillStyle = "#fcbf49"; for(let i = 0; i < 5; i++){ const a = -Math.PI / 2 + i * TAU / 5; ctx.beginPath(); ctx.arc(Math.cos(a) * 26, Math.sin(a) * 26, 4, 0, TAU); ctx.fill(); } ctx.restore();
+      ctx.save(); ctx.translate(left ? 780 + r() * 80 : 230 + r() * 80, 1265 + r() * 20); ctx.rotate((r() - .5) * .6); ctx.fillStyle = "#ffcdb2"; ctx.beginPath(); ctx.moveTo(0, 20); for(let i = 0; i <= 8; i++){ const a = Math.PI + i * Math.PI / 8; ctx.lineTo(Math.cos(a) * 46, Math.sin(a) * 46); } ctx.closePath(); ctx.fill(); ctx.strokeStyle = "#e5989b"; ctx.lineWidth = 3; for(let i = 1; i < 8; i++){ const a = Math.PI + i * Math.PI / 8; ctx.beginPath(); ctx.moveTo(0, 18); ctx.lineTo(Math.cos(a) * 44, Math.sin(a) * 44); ctx.stroke(); } ctx.restore();
       return { area: [110, 370, 860, 500], title: p.title, name: p.name, body: p.body };
     } },
   rainbow: { name: "Радуга", pals: [
