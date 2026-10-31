@@ -22,6 +22,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Lobster&family=Marck+Script&family=Bad+Script&family=Caveat:wght@500;700&family=Playfair+Display:ital,wght@0,400;1,400;1,700&family=Comfortaa:wght@500;700&family=Amatic+SC:wght@700&family=Kurale&family=Pacifico&family=Great+Vibes&family=Comforter&family=Yeseva+One&family=Poiret+One&family=Ruslan+Display&family=Pangolin&family=Underdog&family=Rubik+Doodle+Shadow&family=Ponomar&family=Prata&family=Lora:ital@0;1&family=PT+Serif:ital@0;1&family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Alice&family=Philosopher&family=Montserrat:wght@500&family=Neucha&family=Marmelad&family=Shantell+Sans:wght@500&display=swap">
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.min.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
 <script src="cards.js"></script>
 <script src="video.js"></script>
 <style>
@@ -126,6 +127,23 @@ body{overflow-x:hidden}
   .shx-box{width:100%;border-radius:26px 26px 0 0;padding-bottom:calc(22px + env(safe-area-inset-bottom,0px));max-height:94dvh}
 }
 
+/* style picker */
+.sthead{padding:22px 0 6px}
+.sthead h1{font:400 clamp(30px,6vw,42px)/1.1 Lobster,cursive;color:var(--plum);margin:0 0 6px}
+.sthead p{margin:0;color:var(--muted);font-size:16px}
+.stgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;padding:16px 0 40px}
+.st{position:relative;border:0;padding:0;background:none;text-align:left}
+.st .pv2{aspect-ratio:1080/1350;border-radius:18px;overflow:hidden;background:var(--soft);box-shadow:0 10px 26px rgba(90,30,60,.18);display:grid;place-items:center;color:var(--muted);font-weight:700;font-size:13px}
+.st .pv2 canvas{width:100%;height:100%;display:block}
+.st b{display:block;margin:9px 2px 0;font:900 17px Nunito}
+.st small{display:block;margin:1px 2px 0;color:var(--muted);font-size:13px;font-weight:600}
+.st .badge{position:absolute;top:10px;left:10px;padding:4px 10px;border-radius:999px;background:var(--grad);color:#fff;font:900 12px Nunito;box-shadow:0 4px 10px rgba(255,95,143,.35)}
+.gtabs{display:flex;gap:8px;overflow-x:auto;padding:0 0 10px;scrollbar-width:none}
+.gtabs::-webkit-scrollbar{display:none}
+.gtabs button{flex:none;padding:9px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);font-weight:800;font-size:14px;white-space:nowrap}
+.gtabs button[aria-pressed="true"]{background:var(--plum);border-color:var(--plum);color:#fff}
+@media (min-width:821px){ .stgrid{grid-template-columns:repeat(3,1fr)} }
+
 /* home extras */
 .cod{display:grid;grid-template-columns:132px 1fr;gap:16px;align-items:center;padding:14px;border-radius:22px;background:var(--card);border:1px solid var(--line);box-shadow:0 8px 24px rgba(120,50,70,.08);margin-top:18px}
 .cod .th{border-radius:14px;overflow:hidden;box-shadow:0 6px 16px rgba(90,30,60,.18)}
@@ -214,6 +232,11 @@ body{overflow-x:hidden}
   <div class="foot">Бесплатно и без рекламы · <a href="#" id="tellFriends">Рассказать друзьям</a></div>
 </main>
 
+<main class="wrap" id="styles" hidden>
+  <section class="sthead"><h1 id="stTitle"></h1><p>Выберите стиль — внутри много вариантов</p></section>
+  <div class="stgrid" id="stgrid"></div>
+</main>
+
 <main class="wrap" id="editor" hidden>
   <div class="ed">
     <div class="pv"><canvas id="pv" width="1080" height="1350" aria-label="Предпросмотр открытки"></canvas></div>
@@ -225,8 +248,7 @@ body{overflow-x:hidden}
         <div class="row" style="margin-top:0"><button class="pill" id="addPhoto">📷 Добавить фото</button><button class="pill" id="delPhoto" hidden>Убрать фото</button></div>
         <input type="file" id="photoIn" accept="image/*" hidden></div>
       <div class="field"><label for="fFrom">От кого</label><input id="fFrom" placeholder="Например: Твоя Маша" maxlength="60" autocomplete="off"></div>
-      <div class="field"><span class="lbl">Оформление</span><div class="strip" id="designs"></div>
-        <div class="dots" id="pals"></div></div>
+      <div class="field"><span class="lbl">Стиль и вариант</span><div class="gtabs" id="gtabs"></div><div class="strip" id="designs"></div></div>
       <div class="field"><span class="lbl">Шрифт заголовка и имени</span><div class="fonts" id="fonts"></div></div>
       <div class="field"><span class="lbl">Шрифт поздравления</span><div class="fonts" id="bfonts"></div>
         <div class="row"><button class="pill" id="shuffle">🎲 Перемешать украшения</button></div></div>
@@ -256,44 +278,63 @@ function renderHome(){
   const soon = HOLIDAYS.map(h => ({ h, n: nextDate(h) })).filter(x => x.n).sort((a, b) => a.n.days - b.n.days).slice(0, 5);
   $("#soon").innerHTML = soon.map(({ h, n }) => `<button class="chip" data-h="${h.id}"><span class="e">${h.emoji}</span><span><b>${esc(h.name)}</b><small>${n.days === 0 ? "сегодня!" : n.days === 1 ? "завтра" : `${n.date.getDate()} ${MON[n.date.getMonth()]} · через ${n.days} ${plural(n.days, "день", "дня", "дней")}`}</small></span></button>`).join("");
   $("#grid").innerHTML = HOLIDAYS.map(h => `<button class="hol" data-h="${h.id}"><div class="th"></div><b>${h.emoji} ${esc(h.name)}</b></button>`).join("");
-  document.querySelectorAll("[data-h]").forEach(b => b.onclick = () => openEditor({ h: b.dataset.h }));
+  document.querySelectorAll("[data-h]").forEach(b => b.onclick = () => openStyles(b.dataset.h));
   const slots = [...document.querySelectorAll(".hol .th")];
-  let i = 0; const step = () => { if(i >= slots.length) return; const h = HOLIDAYS[i]; slots[i].appendChild(thumb({ h: h.id, d: h.designs[0], p: 0, s: 11, n: "", t: "", f: "lobster" }, 300)); i++; setTimeout(step, 0); };
+  let i = 0; const step = async () => { if(i >= slots.length) return; const h = HOLIDAYS[i], c = { h: h.id, d: h.designs[0], p: 0, s: 11, n: "", t: "", f: "lobster" }; await prepareCard(c, .3); slots[i].appendChild(thumb(c, 300)); i++; setTimeout(step, 0); };
   step();
 }
 
 /* ---------- editor ---------- */
-let card = null, wishIdx = 0, customText = false;
+let card = null, wishIdx = 0, customText = false, curGroup = "classic", editorFrom = "home", stylesH = null;
+
+/* ---------- style picker: holiday -> group ---------- */
+let stJob = 0;
+function openStyles(hid, push = true){
+  const h = HOL[hid] || HOLIDAYS[0]; stylesH = h.id;
+  $("#stTitle").textContent = h.emoji + " " + h.name;
+  const list = groupsFor(h.id), job = ++stJob;
+  $("#stgrid").innerHTML = list.map(({ g }) => { const ds = groupDesigns(h.id, g.id), n = ds.reduce((a, d) => a + DESIGNS[d].pals.length, 0);
+    return `<button class="st" data-g="${g.id}">${g.id === "3d" ? `<span class="badge">Новое</span>` : ""}<div class="pv2">${g.id === "3d" ? "Загружаю 3D…" : ""}</div><b>${g.emoji} ${esc(g.name)}</b><small>${esc(g.sub)} · ${n} ${plural(n, "вариант", "варианта", "вариантов")}</small></button>`; }).join("");
+  document.querySelectorAll(".st").forEach(b => b.onclick = () => { const g = b.dataset.g; openEditor({ h: h.id, d: groupDesigns(h.id, g)[0], p: 0 }, g, "styles"); });
+  show("styles"); if(push) history.pushState({ v: "styles" }, "", location.pathname);
+  document.title = h.name + " — выберите стиль";
+  const tiles = [...document.querySelectorAll(".st")];
+  (async () => { for(const t of tiles.sort((a, b) => (a.dataset.g === "3d") - (b.dataset.g === "3d"))){ if(job !== stJob) return;
+    const c = { h: h.id, d: groupDesigns(h.id, t.dataset.g)[0], p: 0, s: 11, n: "", t: "", f: "lobster" }; await prepareCard(c, .3); if(job !== stJob) return;
+    const pv = t.querySelector(".pv2"); pv.innerHTML = ""; pv.appendChild(renderCard(c, 360 / W)); } })();
+}
 const FONT_KEYS = Object.keys(FONTS);
-function openEditor(init){
+function openEditor(init, gid, from){
   const h = HOL[init.h] || HOLIDAYS[0];
   card = Object.assign({ h: h.id, d: h.designs[0], p: 0, s: 1 + Math.floor(Math.random() * 1e6), n: "", t: h.wishes[0], f: "lobster", bf: "", fr: store.get("from", "") }, init);
   wishIdx = Math.max(0, h.wishes.indexOf(card.t)); customText = false; card.img = null;
   $("#delPhoto").hidden = true; $("#addPhoto").textContent = "📷 Добавить фото";
   $("#fName").value = card.n; $("#fText").value = card.t; $("#fFrom").value = card.fr;
+  curGroup = gid || (DESIGNS[card.d] && DESIGNS[card.d].group) || "classic"; editorFrom = from || "home";
   show("editor"); history.pushState({ v: "editor" }, "", location.pathname);
   document.title = h.name + " — открытка с именем";
-  renderDesigns(); renderFonts(); renderPals(); draw(true);
+  renderGroupTabs(); renderDesigns(); renderFonts(); draw(true);
   if(matchMedia("(min-width:821px)").matches) $("#fName").focus();
 }
 let thumbJob = 0;
+function renderGroupTabs(){
+  $("#gtabs").innerHTML = groupsFor(card.h).map(({ g }) => `<button data-g="${g.id}" aria-pressed="${g.id === curGroup}">${g.emoji} ${esc(g.name)}</button>`).join("");
+  document.querySelectorAll("#gtabs button").forEach(b => b.onclick = () => { curGroup = b.dataset.g; document.querySelectorAll("#gtabs button").forEach(x => x.setAttribute("aria-pressed", x === b)); renderDesigns(); });
+}
 function renderDesigns(){
-  const h = HOL[card.h], own = h.designs, rest = Object.keys(DESIGNS).filter(k => !own.includes(k));
-  const box = $("#designs"); box.innerHTML = ""; const job = ++thumbJob, queue = [];
-  const add = k => { const b = document.createElement("button"); b.className = "dsg"; b.setAttribute("aria-pressed", k === card.d); b.dataset.d = k;
-    const ph = document.createElement("canvas"); ph.width = 172; ph.height = 215; b.appendChild(ph); b.append(DESIGNS[k].name); queue.push([ph, k]);
-    b.onclick = () => { card.d = k; card.p = 0; document.querySelectorAll(".dsg").forEach(x => x.setAttribute("aria-pressed", x === b)); renderPals(); draw(true); };
-    box.appendChild(b); };
-  own.forEach(add);
-  if(rest.length){ const sep = document.createElement("div"); sep.className = "dsep"; sep.textContent = "Все стили →"; box.appendChild(sep); rest.forEach(add); }
-  const step = async () => { if(job !== thumbJob || !queue.length) return; await ensureFonts(card); const [cv, k] = queue.shift(); const ctx = cv.getContext("2d"); ctx.scale(172 / W, 215 / H); drawCard(ctx, { h: card.h, d: k, p: 0, s: 5, n: "", t: "", f: card.f }, { wm: false }); setTimeout(step, 0); };
+  const ds = groupDesigns(card.h, curGroup), own = (HOL[card.h] || HOLIDAYS[0]).designs;
+  const box = $("#designs"); box.innerHTML = ""; const job = ++thumbJob, queue = []; let sepDone = false;
+  ds.forEach(k => {
+    if(!sepDone && !own.includes(k) && box.children.length){ const sep = document.createElement("div"); sep.className = "dsep"; sep.textContent = "Ещё в этом стиле →"; box.appendChild(sep); sepDone = true; }
+    DESIGNS[k].pals.forEach((_, i) => { const b = document.createElement("button"); b.className = "dsg"; b.dataset.d = k; b.dataset.p = i; b.setAttribute("aria-pressed", k === card.d && i === (card.p || 0));
+      const ph = document.createElement("canvas"); ph.width = 172; ph.height = 215; b.appendChild(ph); b.append(DESIGNS[k].name + (DESIGNS[k].pals.length > 1 ? " · " + (i + 1) : "")); queue.push([ph, k, i]);
+      b.onclick = () => { card.d = k; card.p = i; document.querySelectorAll(".dsg").forEach(x => x.setAttribute("aria-pressed", x === b)); draw(true); };
+      box.appendChild(b); });
+  });
+  const step = async () => { if(job !== thumbJob || !queue.length) return; const [cv, k, i] = queue.shift(); const tc = { h: card.h, d: k, p: i, s: 5, n: "", t: "", f: card.f, bf: card.bf };
+    await prepareCard(tc, .3); if(job !== thumbJob) return; const ctx = cv.getContext("2d"); ctx.setTransform(172 / W, 0, 0, 215 / H, 0, 0); drawCard(ctx, tc, { wm: false }); setTimeout(step, 0); };
   step();
   const sel = box.querySelector('[aria-pressed="true"]'); if(sel) setTimeout(() => sel.scrollIntoView({ block: "nearest", inline: "center" }), 50);
-}
-function renderPals(){
-  const d = DESIGNS[card.d];
-  $("#pals").innerHTML = d.pals.length < 2 ? "" : d.pals.map((p, i) => { const c = Array.isArray(p.bg) ? p.bg : p.sky ? p.sky : [p.bg, p.glow || p.a || p.line || (p.c && p.c[0]) || p.title]; return `<button class="dot" aria-label="Цвет ${i + 1}" aria-pressed="${i === card.p}" data-p="${i}" style="background:linear-gradient(135deg,${c[0]},${c[c.length - 1]})"></button>`; }).join("");
-  document.querySelectorAll(".dot").forEach(b => b.onclick = () => { card.p = +b.dataset.p; document.querySelectorAll(".dot").forEach(x => x.setAttribute("aria-pressed", x === b)); draw(true); });
 }
 function renderFonts(){
   $("#fonts").innerHTML = FONT_KEYS.map(k => `<button class="fnt" data-f="${k}" aria-pressed="${k === card.f}" style="font:${FONTS[k].t.replace("{s}", Math.round(26 * Math.min(1.15, FONTS[k].k)))}" title="${FONTS[k].n}">Нина</button>`).join("");
@@ -305,7 +346,7 @@ let drawT = 0;
 function draw(now){
   clearTimeout(drawT);
   const go = () => { const ctx = $("#pv").getContext("2d"); ctx.clearRect(0, 0, W, H); drawCard(ctx, { ...card, brand: brandOf() }); };
-  const run = () => ensureFonts(card).then(go);
+  const run = () => prepareCard(card, 1).then(go);
   now ? run() : (drawT = setTimeout(run, 90));
 }
 $("#fName").oninput = e => { card.n = e.target.value; draw(); };
@@ -361,7 +402,7 @@ function saveImage(b64, name, url){
 const cardLink = c => SITE + "?k=" + b64e({ h: c.h, d: c.d, p: c.p, s: c.s, n: c.n.trim(), t: c.t.trim(), f: c.f, bf: c.bf || "", fr: c.fr.trim() });
 const fileNameOf = c => "otkrytka-" + ((c.n || HOL[c.h].name).trim().replace(/[^\p{L}\p{N}]+/gu, "-") || "s-prazdnikom") + ".png";
 async function shareCard(c){
-  await ensureFonts(c);
+  await prepareCard(c, 1);
   const cv = renderCard({ ...c, brand: brandOf() }); const b64 = cv.toDataURL("image/png").split(",")[1];
   const blob = await new Promise(r => cv.toBlob(r, "image/png")); const fileName = fileNameOf(c);
   const file = new File([blob], fileName, { type: "image/png" });
@@ -380,7 +421,7 @@ $("#tellFriends").onclick = e => { e.preventDefault(); shareApp(); };
 /* ---------- viewer (what the recipient sees) ---------- */
 let fxRaf = 0;
 async function openViewer(c){
-  await ensureFonts(c);
+  await prepareCard(c, 1);
   const v = document.createElement("div"); v.className = "vw"; v.id = "viewer";
   const cv = renderCard(c);
   v.innerHTML = `<canvas class="fx"></canvas><h2>Вам открытка! 💌</h2>${c.fr ? `<p class="from">От: ${esc(c.fr)}</p>` : ""}
@@ -429,7 +470,7 @@ function modal(title, html){
 
 /* ---------- card of the day ---------- */
 async function renderCod(){
-  const c = cardOfDay(), h = HOL[c.h]; await ensureFonts(c);
+  const c = cardOfDay(), h = HOL[c.h]; await prepareCard(c, .3);
   $("#cod").innerHTML = `<div class="th"></div><div><small>Открытка дня</small><h3>${esc(h.title)}!</h3><button class="pill" id="codGo">Отправить</button></div>`;
   $("#cod .th").appendChild(renderCard(c, 264 / W));
   $("#cod").onclick = () => openEditor({ ...c, s: c.s, fr: store.get("from", "") });
@@ -596,19 +637,19 @@ $("#video").onclick = openVideo;
 
 /* ---------- navigation ---------- */
 function show(view){
-  $("#home").hidden = view !== "home"; $("#editor").hidden = view !== "editor";
+  $("#home").hidden = view !== "home"; $("#editor").hidden = view !== "editor"; $("#styles").hidden = view !== "styles";
   $("#back").hidden = view === "home"; scrollTo(0, 0);
   if(view === "home") document.title = "Открытки с именем — бесплатно";
 }
-$("#back").onclick = () => history.state && history.state.v === "editor" ? history.back() : show("home");
+function goBack(){ if(!$("#editor").hidden){ if(editorFrom === "styles" && stylesH){ show("styles"); document.title = HOL[stylesH].name + " — выберите стиль"; } else show("home"); return true; } if(!$("#styles").hidden){ show("home"); return true; } return false; }
+$("#back").onclick = () => history.state && (history.state.v === "editor" || history.state.v === "styles") ? history.back() : goBack();
 $("#logo").onclick = e => { e.preventDefault(); closeShare(); closeViewer(); show("home"); };
-addEventListener("popstate", () => { closeShare(); if(!$("#editor").hidden) show("home"); });
+addEventListener("popstate", () => { closeShare(); goBack(); });
 /* Android back button (APK shell): close the topmost thing; return true if something was closed */
 window.appBack = () => {
   if($("#shx")){ closeShare(); return true; }
   if($("#viewer")){ closeViewer(); show("home"); return true; }
-  if(!$("#editor").hidden){ show("home"); return true; }
-  return false;
+  return goBack();
 };
 addEventListener("keydown", e => { if(e.key === "Escape") window.appBack(); });
 

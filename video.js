@@ -49,7 +49,7 @@ function videoFrame(ctx, scene, L, c, ps, kind, t, dur){
 /* Records the video. onFrame(canvas) lets the caller show the live preview. */
 async function makeVideo(c, { music = "none", voice = null, onProgress, preview } = {}){
   const mime = pickMime(); if(!mime) throw new Error("no-recorder");
-  await ensureFonts(c);
+  await prepareCard(c, 1);
   const scene = document.createElement("canvas"); scene.width = W; scene.height = H;
   const L = drawScene(scene.getContext("2d"), c);
   const ac = new (window.AudioContext || window.webkitAudioContext)(); await ac.resume();

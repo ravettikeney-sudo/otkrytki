@@ -1137,3 +1137,183 @@ const DESIGNS3 = {
 Object.assign(DESIGNS, DESIGNS3);
 ["bday", "love", "friday", "weekend", "goodday", "thanks", "health", "baby", "feb14", "mar8", "monday", "housewarming"].forEach(h => { if(HOL[h] && !HOL[h].designs.includes("cats")) HOL[h].designs.splice(Math.min(2, HOL[h].designs.length), 0, "cats"); });
 ["night", "morning", "love", "health", "goodday", "weekend", "baby"].forEach(h => { if(HOL[h] && !HOL[h].designs.includes("catnap")) HOL[h].designs.splice(Math.min(1, HOL[h].designs.length), 0, "catnap"); });
+
+/* ---------- 3D styles (scenes in 3d.js, loaded on demand) ---------- */
+function bg3d(ctx, r, p){ vbg(ctx, p.bg); if(p.glow) glow(ctx, W / 2, H * .45, 760, p.glow, .45); if(p.bokeh) bokeh(ctx, r, 26, p.bokeh, 20, 110, .22); if(p.dark) vignette(ctx, .35); }
+function put3d(ctx, c){ const img = window.Card3D && Card3D.get(c, true); if(img){ ctx.drawImage(img, 0, 0, W, H); return img; } return null; }
+const DESIGNS4 = {
+  baubles3d: { name: "3D ёлочные шары", scene: "baubles3d", pals: [
+    { bg: ["#0f3d2e", "#03140d"], glow: "#2e8b57", bokeh: "#f6d38b", dark: 1, b: ["#b5121b", "#e7b65a", "#eef1f5", "#8c0b14", "#d4af37", "#b5121b"], k: 0, title: "#f6d38b", name: "#ffffff", body: "#eaf6ee" },
+    { bg: ["#0e1f45", "#040917"], glow: "#3a6fd8", bokeh: "#a9d6ff", dark: 1, b: ["#3a86ff", "#dfe3ea", "#8ecae6", "#e7b65a", "#1d4ed8", "#c0c7d6"], k: 1, title: "#cfe6ff", name: "#ffffff", body: "#eaf1ff" },
+    { bg: ["#5c0b1a", "#1a0307"], glow: "#c1121f", bokeh: "#ffd6a5", dark: 1, b: ["#e7b65a", "#1f6f50", "#f5f5f5", "#d4af37", "#2d6a4f", "#e7b65a"], k: 2, title: "#f6d38b", name: "#ffffff", body: "#ffeaea" } ],
+    draw(ctx, r, p, c){ bg3d(ctx, r, p); put3d(ctx, c); stars(ctx, r, 120, [0, 400, W, H - 400], "#fff3c4", [120, 600, 840, 660]); sparkles(ctx, r, 10, "#fff3c4", [0, 300, W, H - 300], 8, 20, [120, 600, 840, 660]);
+      return { area: [120, 610, 840, 660], title: p.title, name: p.name, body: p.body, shadow: "rgba(0,0,0,.5)" }; } },
+  gifts3d: { name: "3D подарки", scene: "gifts3d", pals: [
+    { bg: ["#fdf0f4", "#efd9e3"], g: ["#b5121b", "#f1d27a", "#1d3557", "#eef1f5", "#2a9d8f", "#ffd166"], title: "#b5121b", name: "#1d3557", body: "#3a2f3a" },
+    { bg: ["#14233f", "#060c19"], glow: "#2d4f8f", bokeh: "#f6d38b", dark: 1, g: ["#b5121b", "#f1d27a", "#eef1f5", "#b5121b", "#1f6f50", "#f1d27a"], title: "#f6d38b", name: "#ffffff", body: "#eef2ff" } ],
+    draw(ctx, r, p, c){ bg3d(ctx, r, p); if(!p.dark) bokeh(ctx, r, 14, "#ffffff", 40, 120, .5); put3d(ctx, c); if(p.dark) for(let i = 0; i < 70; i++){ ctx.fillStyle = rgba("#ffffff", .5 + r() * .5); ctx.beginPath(); ctx.arc(r() * W, r() * 900, 1 + r() * 3, 0, TAU); ctx.fill(); }
+      return { area: [110, 170, 860, 620], title: p.title, name: p.name, body: p.body, shadow: p.dark ? "rgba(0,0,0,.5)" : null }; } },
+  balloons3d: { name: "3D шары", scene: "balloons3d", pals: [
+    { bg: ["#ffe9f0", "#fff6ea"], b: ["#ff4d8d", "#ffb703", "#4cc9f0", "#9b5de5", "#06d6a0", "#ff7b54"], k: 0, str: "#e8c9d3", title: "#d6336c", name: "#5a189a", body: "#4a3546" },
+    { bg: ["#16142c", "#2d1d52"], glow: "#7b5cff", dark: 1, b: ["#e7b65a", "#e9a495", "#dfe3ea", "#e7b65a", "#e9a495", "#dfe3ea"], k: 0, str: "#d8d0ee", title: "#f6d38b", name: "#ffffff", body: "#efeaff" },
+    { bg: ["#e6f4ff", "#fffaf0"], b: ["#3a86ff", "#ff006e", "#ffbe0b", "#8338ec", "#fb5607", "#06d6a0"], k: 1, str: "#c6d4e6", title: "#3a0ca3", name: "#ff006e", body: "#2b2d42" } ],
+    draw(ctx, r, p, c){ bg3d(ctx, r, p); bokeh(ctx, r, 12, "#ffffff", 40, 120, p.dark ? .08 : .4); put3d(ctx, c); confetti(ctx, r, 70, p.b, [0, 600, W, 750], 1, [110, 660, 860, 600]);
+      return { area: [110, 660, 860, 600], title: p.title, name: p.name, body: p.body, shadow: p.dark ? "rgba(0,0,0,.4)" : null }; } },
+  hearts3d: { name: "3D сердца", scene: "hearts3d", pals: [
+    { bg: ["#5c0b1a", "#22040b"], glow: "#c1121f", dark: 1, h: ["#d00000", "#ff4d6d", "#9d0208"], k: 0, title: "#ffd6e0", name: "#ffffff", body: "#ffe5ec" },
+    { bg: ["#ffe5ec", "#ffc2d1"], h: ["#ff4d6d", "#ff8fab", "#c9184a"], k: 1, title: "#c9184a", name: "#800f2f", body: "#590d22" },
+    { bg: ["#111111", "#000000"], glow: "#7a5a2a", dark: 1, h: ["#b5121b", "#e7b65a", "#9d0208"], k: 1, title: "#f6d38b", name: "#ffffff", body: "#efe3c8" } ],
+    draw(ctx, r, p, c){ bg3d(ctx, r, p); put3d(ctx, c); sparkles(ctx, r, 10, "#fff1f4", [0, 0, W, H], 8, 18, [180, 380, 720, 620]);
+      return { area: [190, 380, 700, 600], title: p.title, name: p.name, body: p.body, shadow: p.dark ? "rgba(0,0,0,.5)" : null }; } },
+  numbers3d: { name: "3D золотые цифры", scene: "numbers3d", pals: [
+    { bg: ["#0b0b1a", "#1d1235"], glow: "#6a4c93", dark: 1, acc: "#e9a495", title: "#f6d38b", name: "#ffffff", body: "#efeaff" },
+    { bg: ["#06302c", "#011513"], glow: "#1f7a6a", dark: 1, acc: "#dfe3ea", title: "#f6d38b", name: "#ffffff", body: "#e6fff8" },
+    { bg: ["#fff6ec", "#f2e2d0"], acc: "#c9184a", title: "#9c6644", name: "#5c3d2e", body: "#4a3a30" } ],
+    draw(ctx, r, p, c){ bg3d(ctx, r, p); if(p.dark){ for(let i = 0; i < 300; i++){ ctx.fillStyle = rgba("#f6d38b", r() * .5); ctx.beginPath(); ctx.arc(r() * W, r() * H, .6 + r() * 2, 0, TAU); ctx.fill(); } } else bokeh(ctx, r, 14, "#ffffff", 40, 110, .6); put3d(ctx, c);
+      return { area: [110, 600, 860, 680], title: p.title, name: p.name, body: p.body, shadow: p.dark ? "rgba(0,0,0,.5)" : null }; } },
+  stars3d: { name: "3D звёзды", scene: "stars3d", pals: [
+    { bg: ["#0c1a3a", "#030814"], glow: "#2d4f8f", dark: 1, title: "#f6d38b", name: "#ffffff", body: "#e8eeff" },
+    { bg: ["#0b3d2e", "#03140d"], glow: "#2e8b57", dark: 1, title: "#f6d38b", name: "#ffffff", body: "#eaf6ee" },
+    { bg: ["#fbf6ee", "#efe3d3"], star: "#d9a441", title: "#7f5539", name: "#3d2c1e", body: "#4a3a2a" } ],
+    draw(ctx, r, p, c){ bg3d(ctx, r, p); if(p.dark) stars(ctx, r, 160, [0, 0, W, H], "#ffffff", [190, 380, 700, 620]); put3d(ctx, c);
+      return { area: [190, 380, 700, 620], title: p.title, name: p.name, body: p.body, shadow: p.dark ? "rgba(0,0,0,.5)" : null }; } },
+  cake3d: { name: "3D торт", scene: "cake3d", pals: [
+    { bg: ["#fff0f3", "#ffe1d4"], cream: "#fff8f0", t1: "#f497b6", t2: "#ffd6e0", berry: "#c1121f", cnd: ["#4cc9f0", "#ffd166", "#ff8fab", "#9b5de5"], title: "#c9184a", name: "#7b2cbf", body: "#5a3d4b" },
+    { bg: ["#2b2040", "#140d22"], glow: "#7b5cff", dark: 1, cream: "#ffe9f0", t1: "#5a3220", t2: "#7a4a30", berry: "#d00000", cnd: ["#f1d27a", "#ff8fab", "#8ecae6", "#f1d27a"], title: "#ffd166", name: "#ffffff", body: "#f3e8ff" } ],
+    draw(ctx, r, p, c){ bg3d(ctx, r, p); bokeh(ctx, r, 12, "#ffffff", 30, 100, p.dark ? .08 : .4); const img = put3d(ctx, c);
+      if(img && img.flames) img.flames.forEach(([x, y]) => { glow(ctx, x, y, 80, "#ffb347", .4); glow(ctx, x, y, 28, "#fff1c1", .8); });
+      return { area: [110, 140, 860, 560], title: p.title, name: p.name, body: p.body, shadow: p.dark ? "rgba(0,0,0,.5)" : null }; } },
+  rings3d: { name: "3D кольца", scene: "rings3d", pals: [
+    { bg: ["#fffaf3", "#efe3d6"], title: "#9c6644", name: "#6b4226", body: "#5c4a3d" },
+    { bg: ["#1f2a44", "#0a1120"], glow: "#4a5d8f", dark: 1, r2: "#dfe3ea", title: "#f6d38b", name: "#ffffff", body: "#ecebff" } ],
+    draw(ctx, r, p, c){ bg3d(ctx, r, p); bokeh(ctx, r, 14, p.dark ? "#f6d38b" : "#ffffff", 30, 110, p.dark ? .12 : .6); put3d(ctx, c);
+      return { area: [140, 640, 800, 600], title: p.title, name: p.name, body: p.body, shadow: p.dark ? "rgba(0,0,0,.4)" : null }; } }
+};
+Object.assign(DESIGNS, DESIGNS4);
+async function prepareCard(c, scale = 1){
+  await ensureFonts(c);
+  const d = DESIGNS[c.d];
+  if(d && d.scene){ try{ if(!window.Card3D) await import(new URL("3d.js", document.baseURI).href); await window.Card3D.prepare(c, scale); }catch(e){ console.warn("3D", e); } }
+}
+
+/* ---------- folk & retro styles ---------- */
+function brushPetal(ctx, x, y, len, ang, w, dark, light){
+  ctx.save(); ctx.translate(x, y); ctx.rotate(ang);
+  const g = ctx.createLinearGradient(0, -w, 0, w); g.addColorStop(0, dark); g.addColorStop(.55, dark); g.addColorStop(1, light);
+  ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(0, 0); ctx.bezierCurveTo(len * .3, -w * 1.2, len * .85, -w * .9, len, 0); ctx.bezierCurveTo(len * .8, w * .7, len * .3, w * .9, 0, 0); ctx.fill(); ctx.restore();
+}
+function gzhelRose(ctx, x, y, R, d, l){
+  for(let i = 0; i < 8; i++){ const a = i / 8 * TAU; brushPetal(ctx, x + Math.cos(a) * R * .25, y + Math.sin(a) * R * .25, R, a, R * .38, d, l); }
+  for(let i = 0; i < 6; i++){ const a = i / 6 * TAU + .4; brushPetal(ctx, x, y, R * .6, a, R * .26, d, l); }
+  ctx.fillStyle = d; ctx.beginPath(); ctx.arc(x, y, R * .16, 0, TAU); ctx.fill();
+  for(let i = 0; i < 9; i++){ const a = i / 9 * TAU; ctx.beginPath(); ctx.arc(x + Math.cos(a) * R * .28, y + Math.sin(a) * R * .28, R * .035, 0, TAU); ctx.fill(); }
+}
+function curl(ctx, x, y, s, ang, col, lw){ ctx.save(); ctx.translate(x, y); ctx.rotate(ang); ctx.strokeStyle = col; ctx.lineWidth = lw; ctx.lineCap = "round"; ctx.beginPath(); for(let t = 0; t < 14; t += .2){ const rr0 = s * (1 - t / 16), px = Math.cos(t) * rr0 * (t / 14), py = Math.sin(t) * rr0 * (t / 14); t ? ctx.lineTo(px + s * t / 14, py) : ctx.moveTo(px, py); } ctx.stroke(); ctx.restore(); }
+function gzhelBouquet(ctx, r, x, y, k, d, l){
+  for(let i = 0; i < 10; i++){ const a = r() * TAU; brushPetal(ctx, x, y, (90 + r() * 70) * k, a, 22 * k, d, l); }
+  for(let i = 0; i < 6; i++){ const a = r() * TAU; curl(ctx, x + Math.cos(a) * 120 * k, y + Math.sin(a) * 120 * k, 40 * k, a, d, 4 * k); }
+  gzhelRose(ctx, x, y, 95 * k, d, l); gzhelRose(ctx, x + 120 * k, y + 70 * k, 50 * k, d, l); gzhelRose(ctx, x - 90 * k, y + 110 * k, 42 * k, d, l);
+  for(let i = 0; i < 18; i++){ const a = r() * TAU, dd = (150 + r() * 60) * k; ctx.fillStyle = d; ctx.beginPath(); ctx.arc(x + Math.cos(a) * dd, y + Math.sin(a) * dd, (4 + r() * 5) * k, 0, TAU); ctx.fill(); }
+}
+function rowan(ctx, x, y, n, R, col, r){ for(let i = 0; i < n; i++){ const a = r() * TAU, d = Math.sqrt(r()) * R * 2.2, bx = x + Math.cos(a) * d, by = y + Math.sin(a) * d;
+  const g = ctx.createRadialGradient(bx - R * .3, by - R * .3, R * .1, bx, by, R); g.addColorStop(0, shade(col, .45)); g.addColorStop(.5, col); g.addColorStop(1, shade(col, -.45));
+  ctx.fillStyle = g; ctx.beginPath(); ctx.arc(bx, by, R, 0, TAU); ctx.fill(); ctx.fillStyle = "rgba(0,0,0,.45)"; ctx.beginPath(); ctx.arc(bx, by + R * .55, R * .14, 0, TAU); ctx.fill(); } }
+function khLeaf(ctx, x, y, len, ang, gold){ ctx.save(); ctx.translate(x, y); ctx.rotate(ang); ctx.fillStyle = gold; ctx.beginPath(); ctx.moveTo(0, 0); ctx.bezierCurveTo(len * .35, -len * .32, len * .8, -len * .2, len, 0); ctx.bezierCurveTo(len * .75, len * .12, len * .35, len * .2, 0, 0); ctx.fill();
+  ctx.strokeStyle = "rgba(60,20,0,.6)"; ctx.lineWidth = Math.max(1.5, len * .03); ctx.beginPath(); ctx.moveTo(len * .1, 0); ctx.quadraticCurveTo(len * .5, -len * .08, len * .9, 0); ctx.stroke(); ctx.restore(); }
+function khVine(ctx, r, pts, gold, red, k = 1){
+  ctx.strokeStyle = gold; ctx.lineWidth = 7 * k; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
+  for(let i = 1; i < pts.length - 1; i++){ const mx = (pts[i][0] + pts[i + 1][0]) / 2, my = (pts[i][1] + pts[i + 1][1]) / 2; ctx.quadraticCurveTo(pts[i][0], pts[i][1], mx, my); } ctx.lineTo(...pts[pts.length - 1]); ctx.stroke();
+  for(let i = 1; i < pts.length; i++){ const [x0, y0] = pts[i - 1], [x1, y1] = pts[i], mx = (x0 + x1) / 2, my = (y0 + y1) / 2, a = Math.atan2(y1 - y0, x1 - x0);
+    curl(ctx, mx, my, 55 * k, a + (i % 2 ? -1.2 : 1.2), gold, 4 * k); khLeaf(ctx, x0, y0, 70 * k, a + (i % 2 ? .9 : -.9), gold); khLeaf(ctx, mx, my, 55 * k, a + (i % 2 ? -1.6 : 1.6), gold);
+    for(let j = 0; j < 5; j++){ const t = r(); ctx.strokeStyle = gold; ctx.lineWidth = 2.5 * k; ctx.beginPath(); const sx = x0 + (x1 - x0) * t, sy = y0 + (y1 - y0) * t; ctx.moveTo(sx, sy); ctx.quadraticCurveTo(sx + (r() - .5) * 40 * k, sy - 30 * k, sx + (r() - .5) * 50 * k, sy - 50 * k); ctx.stroke(); }
+    if(i % 2) rowan(ctx, mx, my + 25 * k, 7, 14 * k, red, r); }
+}
+function paperTexture(ctx, r, n, col, a){ for(let i = 0; i < n; i++){ ctx.fillStyle = rgba(col, r() * a); ctx.fillRect(r() * W, r() * H, 1 + r() * 3, 1 + r() * 3); } }
+function halftone(ctx, col, a, step = 14){ ctx.fillStyle = rgba(col, a); for(let y = 0; y < H; y += step) for(let x = (y / step) % 2 ? step / 2 : 0; x < W; x += step){ const k = .5 + .5 * Math.sin(x / 140 + y / 210); ctx.beginPath(); ctx.arc(x, y, 1.2 + k * 1.8, 0, TAU); ctx.fill(); } }
+const DESIGNS5 = {
+  gzhel: { name: "Гжель", pals: [
+    { bg: ["#ffffff", "#eef3fb"], d: "#163d8f", l: "#a9c5f5", title: "#163d8f", name: "#0d2a6b", body: "#1c2f5a" },
+    { bg: ["#163d8f", "#0b2560"], d: "#ffffff", l: "#7fa8ee", title: "#ffffff", name: "#ffffff", body: "#e6eeff", inv: 1 } ],
+    draw(ctx, r, p){
+      vbg(ctx, p.bg);
+      ctx.strokeStyle = p.d; ctx.lineWidth = 12; ctx.strokeRect(40, 40, W - 80, H - 80); ctx.lineWidth = 3; ctx.strokeRect(62, 62, W - 124, H - 124);
+      ctx.fillStyle = p.d; for(let x = 90; x < W - 60; x += 46){ ctx.beginPath(); ctx.arc(x, 62, 9, 0, Math.PI); ctx.fill(); ctx.beginPath(); ctx.arc(x, H - 62, 9, Math.PI, 0); ctx.fill(); }
+      gzhelBouquet(ctx, r, 250, 250, 1.35, p.d, p.l); gzhelBouquet(ctx, r, W - 215, H - 215, 1.3, p.d, p.l);
+      for(let i = 0; i < 4; i++){ brushPetal(ctx, W - 160, 180 + i * 50, 80, -.6 + i * .3, 16, p.d, p.l); brushPetal(ctx, 170, H - 200 - i * 50, 80, 2.6 - i * .3, 16, p.d, p.l); }
+      return { area: [150, 470, 780, 440], title: p.title, name: p.name, body: p.body };
+    } },
+  khokhloma: { name: "Хохлома", pals: [
+    { bg: ["#1a100a", "#080402"], gold: "#e0a91f", red: "#c1121f", title: "#f1c24b", name: "#ffffff", body: "#f7e7c4" },
+    { bg: ["#8e1414", "#5a0808"], gold: "#f1c24b", red: "#1a0d08", title: "#ffd76a", name: "#ffffff", body: "#ffeccc" } ],
+    draw(ctx, r, p){
+      vbg(ctx, p.bg); vignette(ctx, .35);
+      const G = lin(ctx, 0, 0, W, H, ["#a8740f", p.gold, "#fff0b0", p.gold, "#a8740f"]);
+      ctx.strokeStyle = G; ctx.lineWidth = 6; rr(ctx, 46, 46, W - 92, H - 92, 30); ctx.stroke();
+      khVine(ctx, r, [[60, 300], [220, 210], [400, 260], [560, 170], [740, 240], [900, 160], [1040, 230]], G, p.red);
+      khVine(ctx, r, [[40, 1180], [220, 1110], [400, 1170], [580, 1090], [760, 1160], [940, 1080], [1060, 1130]], G, p.red);
+      [[200, 1140], [880, 1110]].forEach(([x, y]) => { for(let i = 0; i < 9; i++) brushPetal(ctx, x, y, 80, i / 9 * TAU, 26, p.red, shade(p.red, .35)); ctx.fillStyle = G; ctx.beginPath(); ctx.arc(x, y, 22, 0, TAU); ctx.fill(); });
+      return { area: [130, 380, 820, 620], title: p.title, name: p.name, body: p.body, shadow: "rgba(0,0,0,.5)" };
+    } },
+  retro: { name: "Ретро-открытка", pals: [
+    { paper: "#f1e3c6", c: ["#c8553d", "#2a7f8f", "#e0a83a", "#5b7f3a"], ray: "#e8c98f", title: "#b23a2a", name: "#2a5f6f", body: "#4a3a2a" },
+    { paper: "#e9eef0", c: ["#d1495b", "#00798c", "#edae49", "#30638e"], ray: "#cfdde3", title: "#00798c", name: "#d1495b", body: "#2f3b40" } ],
+    draw(ctx, r, p, c){
+      ctx.fillStyle = "#fbf6ea"; ctx.fillRect(0, 0, W, H); ctx.fillStyle = p.paper; rr(ctx, 36, 36, W - 72, H - 72, 18); ctx.fill();
+      ctx.save(); rr(ctx, 36, 36, W - 72, H - 72, 18); ctx.clip();
+      ctx.fillStyle = rgba(p.ray, .7); for(let i = 0; i < 24; i++){ ctx.beginPath(); ctx.moveTo(W / 2, 330); ctx.arc(W / 2, 330, 1700, i * TAU / 24, i * TAU / 24 + TAU / 48); ctx.fill(); }
+      halftone(ctx, p.c[0], .08);
+      const winter = ["ny", "xmas"].includes(c && c.h);
+      if(winter){ ctx.strokeStyle = "#2f5a3a"; ctx.lineWidth = 12; ctx.lineCap = "round"; for(let i = 0; i < 2; i++){ const x0 = i ? W - 40 : 40; ctx.beginPath(); ctx.moveTo(x0, 60); ctx.quadraticCurveTo(W / 2, 180, i ? 150 : W - 150, 70); ctx.stroke(); }
+        for(let i = 0; i < 300; i++){ const t = r(), side = r() < .5; const x = side ? 40 + t * (W - 190) : W - 40 - t * (W - 190), y = 60 + Math.sin(t * Math.PI) * 110 + (r() - .5) * 40; ctx.strokeStyle = r() < .5 ? "#2f5a3a" : "#45784f"; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + (r() - .5) * 30, y + 20 + r() * 20); ctx.stroke(); }
+        [[200, 230, 0], [420, 270, 1], [650, 260, 2], [870, 220, 3]].forEach(([x, y, i]) => { ctx.strokeStyle = "rgba(80,60,40,.6)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x, y - 90); ctx.lineTo(x, y - 40); ctx.stroke(); ctx.fillStyle = p.c[i]; ctx.beginPath(); ctx.arc(x, y, 40, 0, TAU); ctx.fill(); ctx.fillStyle = "rgba(255,255,255,.35)"; ctx.beginPath(); ctx.arc(x - 12, y - 12, 10, 0, TAU); ctx.fill(); ctx.fillStyle = "#c9a227"; ctx.fillRect(x - 10, y - 50, 20, 12); });
+        for(let i = 0; i < 40; i++){ const x = r() * W, y = 400 + r() * 900; if(inside(x, y, [140, 430, 800, 640])) continue; snowflake(ctx, x, y, 10 + r() * 14, "rgba(255,255,255,.9)", 3); } }
+      else { [[170, 220, 70], [300, 160, 50], [W - 180, 230, 72], [W - 310, 165, 48]].forEach(([x, y, s], i) => { ctx.save(); ctx.translate(x, y); for(let L = 0; L < 3; L++){ ctx.fillStyle = shade(p.c[i % 4], L * .18); for(let k = 0; k < 10; k++){ ctx.save(); ctx.rotate(k * TAU / 10 + L * .3); ctx.beginPath(); ctx.ellipse(0, -s * (1 - L * .28) * .55, s * .22 * (1 - L * .2), s * (1 - L * .28) * .5, 0, 0, TAU); ctx.fill(); ctx.restore(); } } ctx.fillStyle = "#e0a83a"; ctx.beginPath(); ctx.arc(0, 0, s * .2, 0, TAU); ctx.fill(); ctx.restore(); });
+        for(let i = 0; i < 6; i++) leaf(ctx, 120 + i * 30, 300 + (i % 2) * 20, 90, -.4 + i * .5, p.c[3]); }
+      ctx.fillStyle = p.c[0]; const by = H - 230; ctx.beginPath(); ctx.moveTo(120, by); ctx.lineTo(W - 120, by); ctx.lineTo(W - 160, by + 50); ctx.lineTo(W - 120, by + 100); ctx.lineTo(120, by + 100); ctx.lineTo(160, by + 50); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = shade(p.c[0], -.3); [[120, by + 100, 160, by + 120], [W - 120, by + 100, W - 160, by + 120]].forEach(([a, b2, c2, d2]) => { ctx.beginPath(); ctx.moveTo(a, b2); ctx.lineTo(c2, b2); ctx.lineTo(c2, d2); ctx.closePath(); ctx.fill(); });
+      ctx.fillStyle = "#fbf3df"; ctx.font = "700 44px 'PT Serif', Georgia, serif"; ctx.textAlign = "center"; ctx.fillText((HOL[c && c.h] || HOLIDAYS[0]).title.toUpperCase(), W / 2, by + 65, W - 360);
+      paperTexture(ctx, r, 1600, "#5a4630", .12); ctx.restore();
+      ctx.strokeStyle = "rgba(120,90,60,.35)"; ctx.lineWidth = 2; rr(ctx, 36, 36, W - 72, H - 72, 18); ctx.stroke();
+      return { area: [140, 420, 800, 620], title: p.title, name: p.name, body: p.body };
+    } },
+  vintage: { name: "Винтаж", pals: [
+    { paper: ["#f3e7d3", "#e6d2b5"], f: ["#c98b8b", "#e3b5a4", "#b56576", "#efd9c6"], leaf: "#7d8b6a", ink: "#7a4e2d", title: "#8a3b2e", name: "#4a2c1e", body: "#4a3a2a" },
+    { paper: ["#e9e4d6", "#d6cdb8"], f: ["#9aa5b8", "#c9b1bd", "#7d8597", "#e8ddd0"], leaf: "#6b7b6a", ink: "#4a5568", title: "#4a5568", name: "#2d3748", body: "#3b3b3b" } ],
+    draw(ctx, r, p){
+      vbg(ctx, p.paper); paperTexture(ctx, r, 2600, "#6b5338", .1);
+      const v = ctx.createRadialGradient(W / 2, H / 2, H * .3, W / 2, H / 2, H * .8); v.addColorStop(0, "rgba(120,80,40,0)"); v.addColorStop(1, "rgba(120,80,40,.35)"); ctx.fillStyle = v; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = "rgba(255,255,255,.55)"; for(let x = 0; x < W; x += 36){ ctx.beginPath(); ctx.arc(x + 18, 0, 22, 0, Math.PI); ctx.fill(); ctx.beginPath(); ctx.arc(x + 18, H, 22, Math.PI, 0); ctx.fill(); }
+      ctx.fillStyle = "rgba(255,255,255,.4)"; for(let x = 0; x < W; x += 36){ ctx.beginPath(); ctx.arc(x + 18, 30, 5, 0, TAU); ctx.fill(); ctx.beginPath(); ctx.arc(x + 18, H - 30, 5, 0, TAU); ctx.fill(); }
+      ctx.strokeStyle = p.ink; ctx.lineWidth = 2; rr(ctx, 80, 80, W - 160, H - 160, 12); ctx.stroke(); [[96, 96, 1, 1], [W - 96, 96, -1, 1], [96, H - 96, 1, -1], [W - 96, H - 96, -1, -1]].forEach(([x, y, a, b]) => flourish(ctx, x, y, a * .8, b * .8, p.ink));
+      ctx.save(); ctx.globalAlpha = .9; bouquet(ctx, r, W / 2, 250, 120, 7, p.f, p.leaf, ["rose", "rose", "blossom"], .9); bouquet(ctx, r, W / 2, H - 230, 110, 6, p.f, p.leaf, ["rose", "blossom"], .8); ctx.restore();
+      ctx.fillStyle = "rgba(240,225,200,.25)"; ctx.fillRect(0, 0, W, H);
+      return { area: [160, 420, 760, 560], title: p.title, name: p.name, body: p.body };
+    } }
+};
+Object.assign(DESIGNS, DESIGNS5);
+
+/* ---------- style groups: holiday -> group -> variants ---------- */
+const GROUPS = [
+  { id: "3d", name: "3D", emoji: "✨", sub: "Объёмные, как настоящие", designs: ["baubles3d", "gifts3d", "balloons3d", "hearts3d", "numbers3d", "stars3d", "cake3d", "rings3d"] },
+  { id: "classic", name: "Рисованные", emoji: "🎨", sub: "Яркие иллюстрации", designs: ["balloons", "cake", "party", "gifts", "roses", "winter", "baubles", "fireworks", "hearts", "tulips", "emblem", "sunrise", "night", "wedding", "easter", "wreath", "frame", "meadow", "school", "pancakes", "house", "garland"] },
+  { id: "soft", name: "Нежные", emoji: "🌸", sub: "Акварель, пастель, природа", designs: ["watercolor", "minimal", "sakura", "lavender", "autumn", "sea", "papercut"] },
+  { id: "glam", name: "Гламур", emoji: "💎", sub: "Золото, неон, огни", designs: ["luxe", "neon", "lights", "champagne", "candles"] },
+  { id: "folk", name: "Народные и ретро", emoji: "🪆", sub: "Гжель, хохлома, винтаж", designs: ["gzhel", "khokhloma", "retro", "vintage"] },
+  { id: "cute", name: "Милые", emoji: "🐱", sub: "Котики и малыши", designs: ["cats", "catnap", "rainbow", "baby"] }
+];
+GROUPS.forEach(g => g.designs.forEach(d => { if(DESIGNS[d]) DESIGNS[d].group = g.id; }));
+const GROUP = Object.fromEntries(GROUPS.map(g => [g.id, g]));
+/* which 3D and folk styles suit which holiday (others stay reachable under "Все стили этой группы") */
+const MORE2 = {
+  ny: ["baubles3d", "numbers3d", "gifts3d", "stars3d", "gzhel", "khokhloma", "retro"], xmas: ["baubles3d", "stars3d", "gifts3d", "vintage", "gzhel", "retro"],
+  bday: ["balloons3d", "cake3d", "gifts3d", "hearts3d", "khokhloma", "gzhel", "retro", "vintage"], feb14: ["hearts3d", "rings3d", "vintage"], love: ["hearts3d", "rings3d", "vintage"],
+  wedding: ["rings3d", "hearts3d", "vintage", "gzhel"], anniv: ["rings3d", "hearts3d", "stars3d", "vintage"], mar8: ["numbers3d", "hearts3d", "gzhel", "retro", "vintage"],
+  feb23: ["numbers3d", "stars3d", "retro"], jubilee: ["stars3d", "balloons3d", "gifts3d", "cake3d", "khokhloma", "vintage"], sep1: ["numbers3d", "balloons3d", "retro"],
+  grad: ["stars3d", "balloons3d"], baby: ["balloons3d", "hearts3d"], friday: ["balloons3d"], family: ["hearts3d", "khokhloma", "gzhel"], mom: ["hearts3d", "gzhel", "vintage"],
+  easter: ["gzhel", "khokhloma", "vintage"], maslenitsa: ["khokhloma", "gzhel", "retro"], thanks: ["gzhel", "vintage", "hearts3d"], housewarming: ["khokhloma", "gifts3d"],
+  elders: ["vintage", "gzhel"], teacher: ["vintage", "retro"], angel: ["vintage", "stars3d"], medic: ["hearts3d"], builder: ["stars3d", "retro"], goodday: ["retro"], morning: ["retro"]
+};
+Object.entries(MORE2).forEach(([h, ds]) => { if(HOL[h]) ds.forEach(d => { if(DESIGNS[d] && !HOL[h].designs.includes(d)) HOL[h].designs.push(d); }); });
+/* variants of a group for a holiday: the holiday's own designs first, then the rest of the group; each design × each colour */
+function groupDesigns(hid, gid){ const own = (HOL[hid] || HOLIDAYS[0]).designs.filter(d => DESIGNS[d] && DESIGNS[d].group === gid); return own.concat(GROUP[gid].designs.filter(d => DESIGNS[d] && !own.includes(d))); }
+function groupsFor(hid){ return GROUPS.map(g => ({ g, own: (HOL[hid] || HOLIDAYS[0]).designs.filter(d => DESIGNS[d] && DESIGNS[d].group === g.id).length })).sort((a, b) => (b.own > 0) - (a.own > 0)); }

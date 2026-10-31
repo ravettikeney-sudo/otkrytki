@@ -2,3 +2,4 @@ android/local.properties
 android/.gradle/
 android/build/
 android/app/build/
+_*.html
