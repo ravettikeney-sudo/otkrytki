@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/wroot" android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@drawable/widget_bg" android:padding="6dp">
+    <ImageView android:id="@+id/wimg" android:layout_width="match_parent" android:layout_height="match_parent"
+        android:scaleType="centerCrop" android:src="@mipmap/ic_launcher" android:contentDescription="Открытка дня" />
+    <TextView android:id="@+id/wtxt" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_gravity="bottom" android:background="#CC5B2A62" android:gravity="center"
+        android:padding="8dp" android:text="💌 Открытка дня — отправить" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+</FrameLayout>

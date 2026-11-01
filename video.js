@@ -42,8 +42,8 @@ function drawParticles(ctx, kind, ps, w, h, alpha = 1){
 function videoFrame(ctx, scene, L, c, ps, kind, t, dur){
   const z = 1 + .05 * Math.min(1, t / dur);
   ctx.save(); ctx.translate(W / 2, H / 2); ctx.scale(z, z); ctx.drawImage(scene, -W / 2, -H / 2); ctx.restore();
-  drawParticles(ctx, kind, ps, W, H, Math.min(1, t / .6));
-  drawText(ctx, JSON.parse(JSON.stringify(L)), c, t);
+  if(ps.live) liveDraw(ctx, ps.live, 1 / 30, Math.min(1, t / .6)); else drawParticles(ctx, kind, ps, W, H, Math.min(1, t / .6));
+  drawText(ctx, L, c, t);
   const shine = (t % 4) / 4; if(t > 2){ const g = ctx.createLinearGradient(W * (shine * 2 - .5), 0, W * (shine * 2 - .2), H); g.addColorStop(0, "rgba(255,255,255,0)"); g.addColorStop(.5, "rgba(255,255,255,.10)"); g.addColorStop(1, "rgba(255,255,255,0)"); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
   if(WATERMARK && !c.nowm) drawWatermark(ctx);
 }
@@ -58,7 +58,7 @@ async function makeVideo(c, opts = {}){
     const L = drawScene(scene.getContext("2d", { willReadFrequently: true }), c);
     let voiceBuf = null; if(voice){ try{ voiceBuf = await new OfflineAudioContext(2, 1, MP4_SR).decodeAudioData(await voice.arrayBuffer()); }catch(e){} }
     const dur = Math.min(40, Math.max(8, voiceBuf ? voiceBuf.duration + 3.2 : 8));
-    const kind = particleKind(c), ps = makeParticles(kind, kind === "snow" ? 80 : 55, W, H); ps.k = 2;
+    const kind = particleKind(c), ps = makeParticles(kind, kind === "snow" ? 80 : 55, W, H); ps.k = 2; if(window.liveInit) ps.live = liveInit(liveKind(c), (c.s || 1) * 7 + 3);
     return await encodeMp4({ sup, dur, onProgress, preview,
       draw: (ctx, t) => videoFrame(ctx, scene, L, c, ps, kind, t, dur),
       buildAudio: async ac => { const mg = ac.createGain(); mg.gain.value = voiceBuf ? .28 : .9; mg.connect(ac.destination);

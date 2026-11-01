@@ -603,35 +603,35 @@ const HOLIDAYS = [
   { id: "baby", name: "Рождение малыша", emoji: "🍼", title: "С рождением малыша", designs: ["baby", "balloons", "garland"], wishes: [
     "Поздравляем с появлением маленького чуда! Пусть малыш растёт здоровым, счастливым и радует каждый день.",
     "Пусть в доме всегда звучит детский смех, а сердце будет наполнено любовью!" ] },
-  { id: "morning", name: "Доброе утро", emoji: "☀️", title: "Доброе утро", designs: ["sunrise", "meadow", "wreath"], wishes: [
+  { id: "morning", cat: "daily", name: "Доброе утро", emoji: "☀️", title: "Доброе утро", designs: ["sunrise", "meadow", "wreath"], wishes: [
     "Пусть этот день будет лёгким, светлым и удачным! Улыбнись — у тебя всё получится.",
     "Шлю тебе солнечный привет и чашечку хорошего настроения! Прекрасного дня!",
     "Проснись, открой глаза скорей —\nТебя встречает новый день,\nПусть будет он светлей, теплей,\nА все заботы — в тень!" ] },
-  { id: "night", name: "Спокойной ночи", emoji: "🌙", title: "Спокойной ночи", designs: ["night", "winter", "baby"], wishes: [
+  { id: "night", cat: "daily", name: "Спокойной ночи", emoji: "🌙", title: "Спокойной ночи", designs: ["night", "winter", "baby"], wishes: [
     "Пусть ночь будет тихой, а сны — сладкими и добрыми. Отдыхай и набирайся сил!",
     "Закрывай глазки, пусть приснится что-то очень хорошее. Сладких снов!" ] },
-  { id: "evening", name: "Добрый вечер", emoji: "🌇", title: "Добрый вечер", designs: ["night", "sunrise", "candles"], wishes: [
+  { id: "evening", cat: "daily", name: "Добрый вечер", emoji: "🌇", title: "Добрый вечер", designs: ["night", "sunrise", "candles"], wishes: [
     "Пусть этот вечер будет тёплым и уютным, а все заботы останутся позади. Отдыхай!",
     "Добрый вечер! Пусть он подарит тишину, приятные разговоры и хорошее настроение." ] },
-  { id: "weekend", name: "Хороших выходных", emoji: "🌼", title: "Хороших выходных", designs: ["meadow", "sunrise", "garland"], wishes: [
+  { id: "weekend", cat: "daily", name: "Хороших выходных", emoji: "🌼", title: "Хороших выходных", designs: ["meadow", "sunrise", "garland"], wishes: [
     "Пусть выходные будут тёплыми, спокойными и радостными. Отдыхай и наслаждайся каждой минутой!",
     "Желаю отличных выходных: хорошей погоды, приятных встреч и много поводов для улыбки!" ] },
-  { id: "love", name: "Люблю", emoji: "❤️", title: "Я тебя люблю", nameFirst: true, designs: ["hearts", "roses", "night", "wreath"], wishes: [
+  { id: "love", cat: "just", name: "Люблю", emoji: "❤️", title: "Я тебя люблю", nameFirst: true, designs: ["hearts", "roses", "night", "wreath"], wishes: [
     "Ты делаешь каждый мой день светлее. Спасибо, что ты рядом!",
     "Просто хочу напомнить: ты — самый важный человек в моей жизни." ] },
-  { id: "thanks", name: "Спасибо", emoji: "🙏", title: "Спасибо", nameFirst: true, designs: ["wreath", "frame", "meadow", "roses"], wishes: [
+  { id: "thanks", cat: "just", name: "Спасибо", emoji: "🙏", title: "Спасибо", nameFirst: true, designs: ["wreath", "frame", "meadow", "roses"], wishes: [
     "От всего сердца спасибо за доброту, помощь и внимание! Это очень ценно для меня.",
     "Благодарю за то, что ты есть! Пусть добро, которое ты даришь, всегда возвращается." ] },
-  { id: "health", name: "Выздоравливай", emoji: "🌻", title: "Выздоравливай", nameFirst: true, designs: ["meadow", "sunrise", "wreath"], wishes: [
+  { id: "health", cat: "just", name: "Выздоравливай", emoji: "🌻", title: "Выздоравливай", nameFirst: true, designs: ["meadow", "sunrise", "wreath"], wishes: [
     "Скорее поправляйся! Пусть силы и хорошее настроение возвращаются с каждым днём.",
     "Желаю крепкого здоровья и бодрости. Береги себя и возвращайся в строй с новыми силами!" ] },
-  { id: "goodday", name: "Хорошего дня", emoji: "🌤", daily: true, title: "Хорошего дня", designs: ["meadow", "sunrise", "wreath", "garland"], wishes: [
+  { id: "goodday", cat: "daily", name: "Хорошего дня", emoji: "🌤", daily: true, title: "Хорошего дня", designs: ["meadow", "sunrise", "wreath", "garland"], wishes: [
     "Пусть сегодня всё получается легко, а настроение будет солнечным с утра до вечера!",
     "Желаю спокойного, светлого и удачного дня. Пусть он принесёт только хорошие новости!" ] },
-  { id: "monday", name: "Хорошей недели", emoji: "🗓", daily: true, title: "Хорошей недели", designs: ["sunrise", "meadow", "garland"], wishes: [
+  { id: "monday", cat: "daily", name: "Хорошей недели", emoji: "🗓", daily: true, title: "Хорошей недели", designs: ["sunrise", "meadow", "garland"], wishes: [
     "Пусть неделя начнётся легко и пройдёт успешно. Удачи во всех делах и побольше приятных моментов!",
     "Новая неделя — новые возможности! Пусть всё задуманное сбудется." ] },
-  { id: "friday", name: "С пятницей", emoji: "🎉", daily: true, title: "С пятницей", designs: ["party", "garland", "sunrise"], wishes: [
+  { id: "friday", cat: "daily", name: "С пятницей", emoji: "🎉", daily: true, title: "С пятницей", designs: ["party", "garland", "sunrise"], wishes: [
     "Ура, пятница! Пусть вечер будет весёлым, а выходные — тёплыми и радостными.",
     "Неделя позади — впереди отдых! Хорошего настроения и приятных планов на выходные." ] },
   { id: "jubilee", name: "Юбилей", emoji: "🏆", title: "С юбилеем", designs: ["frame", "fireworks", "roses", "balloons"], wishes: [
@@ -666,7 +666,91 @@ const HOLIDAYS = [
     "Масленица идёт — блины несёт! Пусть все печали уйдут вместе с зимой." ] },
   { id: "elders", name: "День пожилых людей", emoji: "🌷", date: [10, 1], title: "С Днём пожилых людей", designs: ["wreath", "meadow", "roses"], wishes: [
     "Крепкого здоровья, бодрости духа и любви родных. Спасибо за вашу мудрость и тепло!",
-    "Пусть каждый день будет светлым и спокойным, а рядом всегда будут близкие." ] }
+    "Пусть каждый день будет светлым и спокойным, а рядом всегда будут близкие." ] },
+  { id: "miss", cat: "just", name: "Скучаю", emoji: "🥺", title: "Я скучаю", nameFirst: true, designs: ["hearts", "night", "watercolor"], wishes: [
+    "Очень скучаю по тебе! Считаю дни до нашей встречи и обнимаю крепко-крепко.",
+    "Без тебя всё не так. Просто хочу сказать: я скучаю и очень жду встречи." ] },
+  { id: "hug", cat: "just", name: "Обнимаю", emoji: "🤗", title: "Обнимаю тебя", nameFirst: true, designs: ["hearts", "watercolor", "lavender"], wishes: [
+    "Отправляю тебе самые тёплые объятия! Пусть они согреют и поднимут настроение.",
+    "Крепко обнимаю! Пусть сегодня тебе будет тепло, спокойно и радостно." ] },
+  { id: "sorry", cat: "just", name: "Прости", emoji: "🙏", title: "Прости меня", nameFirst: true, designs: ["roses", "watercolor", "minimal"], wishes: [
+    "Прости меня, пожалуйста. Мне очень жаль — ты очень дорогой для меня человек.",
+    "Мне жаль, что так вышло. Давай забудем обиды и снова будем улыбаться." ] },
+  { id: "cheer", cat: "just", name: "Не грусти", emoji: "🌈", title: "Не грусти", nameFirst: true, designs: ["rainbow", "sunrise", "meadow"], wishes: [
+    "Не грусти! Всё обязательно наладится, а я всегда рядом и верю в тебя.",
+    "Пусть все тучи разойдутся, а впереди будет только солнце. Улыбнись!" ] },
+  { id: "proud", cat: "just", name: "Горжусь тобой", emoji: "🏆", title: "Я горжусь тобой", nameFirst: true, designs: ["luxe", "fireworks", "emblem"], wishes: [
+    "Ты большой молодец! Я так горжусь тобой и твоими успехами.",
+    "У тебя получилось! Это настоящая победа, и она заслуженная. Горжусь!" ] },
+  { id: "firstsnow", cat: "just", name: "С первым снегом", emoji: "❄️", title: "С первым снегом", designs: ["winter", "night", "minimal"], wishes: [
+    "С первым снегом! Пусть он принесёт свежесть, волшебство и предвкушение праздников.",
+    "Первый снег — к чуду! Загадай желание, пока падают снежинки." ] },
+  { id: "newcar", cat: "just", name: "С новой машиной", emoji: "🚗", title: "С новой машиной", designs: ["luxe", "fireworks", "neon"], wishes: [
+    "Поздравляю с новой машиной! Пусть дороги будут ровными, а каждая поездка — приятной.",
+    "Ровных дорог, зелёного света и полного бака! Пусть машина служит долго и радует каждый день." ] },
+  { id: "retire", cat: "just", name: "С выходом на пенсию", emoji: "🌻", title: "С выходом на пенсию", designs: ["meadow", "sunrise", "wreath"], wishes: [
+    "Поздравляем с заслуженным отдыхом! Пусть впереди будет много свободного времени, здоровья и радостных дней.",
+    "Начинается новая счастливая глава! Время для себя, семьи, путешествий и любимых дел." ] },
+  { id: "grandchild", cat: "just", name: "С рождением внука", emoji: "👶", title: "С рождением внука", designs: ["baby", "balloons", "rainbow"], wishes: [
+    "Поздравляем с рождением внука! Пусть малыш растёт здоровым и приносит много радости.",
+    "Теперь вы бабушка и дедушка — самое тёплое звание на свете! Счастья вашей большой семье." ] },
+  { id: "metday", cat: "just", name: "День знакомства", emoji: "💞", title: "С днём нашего знакомства", designs: ["hearts", "candles", "night"], wishes: [
+    "Ровно в этот день мы встретились — и моя жизнь стала ярче. Спасибо, что ты есть!",
+    "С днём нашего знакомства! Пусть впереди будет ещё много счастливых лет вместе." ] },
+  { id: "oldny", name: "Старый Новый год", emoji: "🎄", date: [1, 14], title: "Со Старым Новым годом", designs: ["winter", "baubles", "fireworks"], wishes: [
+    "Со Старым Новым годом! Пусть праздник продлится, а все добрые желания сбудутся.",
+    "Ещё один повод загадать желание! Счастья, здоровья и удачи в новом году." ] },
+  { id: "epiphany", name: "Крещение", emoji: "🕊", date: [1, 19], title: "С Крещением Господним", designs: ["winter", "night", "frame"], wishes: [
+    "С Крещением Господним! Пусть этот светлый праздник очистит душу и принесёт благодать в дом.",
+    "Мира, здоровья и Божьей помощи во всех добрых делах! Со светлым праздником Крещения." ] },
+  { id: "tatiana", name: "Татьянин день", emoji: "🎓", date: [1, 25], title: "С Татьяниным днём", designs: ["wreath", "school", "winter"], wishes: [
+    "С Татьяниным днём! Всем Татьянам — счастья и любви, а студентам — лёгкой сессии!",
+    "С Днём студента! Пусть знания даются легко, а студенческие годы будут яркими." ] },
+  { id: "apr1", name: "1 апреля", emoji: "🤡", date: [4, 1], title: "С Днём смеха", designs: ["party", "balloons", "rainbow"], wishes: [
+    "С Днём смеха! Пусть улыбок будет больше, чем серьёзных дел, а шутки — только добрыми!",
+    "Смейся чаще — это бесплатно и очень полезно для здоровья!" ] },
+  { id: "may1", name: "1 Мая", emoji: "🌷", date: [5, 1], title: "С 1 Мая", designs: ["tulips", "meadow", "sunrise"], wishes: [
+    "С Праздником весны и труда! Пусть работа приносит радость, а весна — вдохновение.",
+    "Мир, труд, май! Тёплых дней, хорошего отдыха и весеннего настроения." ] },
+  { id: "victory", name: "День Победы", emoji: "🎖", date: [5, 9], title: "С Днём Победы", designs: ["fireworks", "emblem", "frame"], wishes: [
+    "С Днём Победы! Вечная память героям и мирного неба над головой.",
+    "Низкий поклон ветеранам и светлая память всем, кто подарил нам мир. С праздником Победы!" ] },
+  { id: "trinity", name: "Троица", emoji: "🌿", easterOffset: 49, title: "Со Святой Троицей", designs: ["meadow", "wreath", "sunrise"], wishes: [
+    "Со Святой Троицей! Пусть в доме будут мир, любовь и согласие, а душа наполнится светом.",
+    "Светлого праздника Троицы! Здоровья, тепла и Божьей благодати вам и вашим близким." ] },
+  { id: "children", name: "День защиты детей", emoji: "🧸", date: [6, 1], title: "С Днём защиты детей", designs: ["balloons", "rainbow", "baby"], wishes: [
+    "С Днём защиты детей! Пусть каждый ребёнок растёт в любви, заботе и счастье.",
+    "Пусть детство будет ярким, беззаботным и полным чудес!" ] },
+  { id: "independence", name: "День Независимости", emoji: "🇧🇾", date: [7, 3], title: "С Днём Независимости", designs: ["fireworks", "emblem", "luxe"], wishes: [
+    "С Днём Независимости! Мира, благополучия и процветания нашей родной земле.",
+    "Пусть над родной землёй всегда будет мирное небо, а в каждом доме — счастье и достаток." ] },
+  { id: "kupala", name: "Купалье", emoji: "🔥", date: [7, 7], title: "С Купальем", designs: ["meadow", "night", "wreath"], wishes: [
+    "С праздником Купалья! Пусть найдётся свой цветок папоротника, а все мечты сбудутся.",
+    "Тёплой летней ночи, ярких костров и самых смелых желаний!" ] },
+  { id: "honeyspas", name: "Медовый Спас", emoji: "🍯", date: [8, 14], title: "С Медовым Спасом", designs: ["meadow", "autumn", "sunrise"], wishes: [
+    "С Медовым Спасом! Пусть жизнь будет сладкой, как мёд, а здоровье — крепким.",
+    "Сладкой жизни, тёплых встреч и мира в доме!" ] },
+  { id: "applespas", name: "Яблочный Спас", emoji: "🍎", date: [8, 19], title: "С Яблочным Спасом", designs: ["autumn", "meadow", "wreath"], wishes: [
+    "С Яблочным Спасом! Пусть урожай будет богатым, а жизнь — сладкой и наливной.",
+    "Здоровья, достатка и мира вашему дому в этот светлый праздник!" ] },
+  { id: "unity", name: "День народного единства", emoji: "🤝", date: [9, 17], title: "С Днём народного единства", designs: ["emblem", "sunrise", "luxe"], wishes: [
+    "С Днём народного единства! Мира, согласия и благополучия каждому дому.",
+    "Пусть нас объединяют добро, уважение и любовь к родной земле!" ] },
+  { id: "pokrov", name: "Покров", emoji: "⛪", date: [10, 14], title: "С Покровом Пресвятой Богородицы", designs: ["autumn", "frame", "wreath"], wishes: [
+    "С Покровом Пресвятой Богородицы! Пусть Её покров хранит вас и ваших близких.",
+    "Мира, любви и благодати вашему дому в этот светлый праздник!" ] },
+  { id: "father", name: "День отца", emoji: "👨", date: [10, 21], title: "С Днём отца", designs: ["emblem", "luxe", "sunrise"], wishes: [
+    "Папа, с Днём отца! Спасибо за твою силу, заботу и мудрость. Ты лучший!",
+    "Поздравляем всех пап! Крепкого здоровья, терпения и радости за своих детей." ] },
+  { id: "oct7", name: "7 ноября", emoji: "🎉", date: [11, 7], title: "С праздником 7 ноября", designs: ["fireworks", "emblem", "luxe"], wishes: [
+    "С праздником 7 ноября! Мира, тепла и хорошего настроения.",
+    "Пусть праздничный день будет наполнен радостью, встречами и добрыми словами!" ] },
+  { id: "cxmas", name: "Рождество (25 декабря)", emoji: "🎅", date: [12, 25], title: "С Рождеством Христовым", designs: ["baubles", "winter", "frame"], wishes: [
+    "С Рождеством! Пусть этот светлый праздник принесёт в дом мир, любовь и чудо.",
+    "Веселого Рождества! Тепла, уюта и исполнения самых добрых желаний." ] },
+  { id: "ceaster", name: "Пасха (католическая)", emoji: "🐣", ceaster: true, title: "С Пасхой", designs: ["easter", "tulips", "meadow"], wishes: [
+    "С Пасхой! Пусть этот праздник принесёт весеннюю радость, надежду и мир в каждый дом.",
+    "Светлой Пасхи! Любви, тепла и добра вам и вашим близким." ] }
 ];
 const HOL = Object.fromEntries(HOLIDAYS.map(h => [h.id, h]));
 
@@ -738,8 +822,8 @@ function drawText(ctx, L, c, reveal){
   const fnt = (tpl, s) => tpl.replace("{s}", Math.round(s));
   const blocks = [];
   titleLines(h, c.n).forEach(ln => {
-    if(ln.k === "name"){ let s = 150 * F.k * (L.ts || 1); ctx.font = fnt(F.t, s); while(ctx.measureText(ln.t).width > aw && s > 50){ s -= 4; ctx.font = fnt(F.t, s); } blocks.push({ font: ctx.font, lines: [ln.t], lh: s * 1.12, col: L.name }); }
-    else { let s = 88 * F.k * (L.ts || 1); ctx.font = fnt(F.t, s); let lines = wrap(ctx, ln.t, aw); while(lines.length > 2 && s > 50){ s -= 4; ctx.font = fnt(F.t, s); lines = wrap(ctx, ln.t, aw); } blocks.push({ font: ctx.font, lines, lh: s * 1.14, col: L.title }); }
+    if(ln.k === "name"){ let s = 150 * F.k * (L.ts || 1); ctx.font = fnt(F.t, s); while(ctx.measureText(ln.t).width > aw && s > 50){ s -= 4; ctx.font = fnt(F.t, s); } blocks.push({ font: ctx.font, lines: [ln.t], lh: s * 1.12, col: L.name, hand: 1 }); }
+    else { let s = 88 * F.k * (L.ts || 1); ctx.font = fnt(F.t, s); let lines = wrap(ctx, ln.t, aw); while(lines.length > 2 && s > 50){ s -= 4; ctx.font = fnt(F.t, s); lines = wrap(ctx, ln.t, aw); } blocks.push({ font: ctx.font, lines, lh: s * 1.14, col: L.title, hand: 1 }); }
   });
   const used = blocks.reduce((a, b) => a + b.lh * b.lines.length, 0);
   const body = (c.t || "").trim(), from = (c.fr || "").trim();
@@ -756,14 +840,19 @@ function drawText(ctx, L, c, reveal){
     if(L.tape){ ctx.save(); ctx.translate(cx, y - 50); ctx.rotate(-.04); ctx.fillStyle = "rgba(240,160,180,.78)"; ctx.fillRect(-110, -24, 220, 48); ctx.fillStyle = "rgba(255,255,255,.35)"; for(let i = -100; i < 110; i += 26) ctx.fillRect(i, -24, 10, 48); ctx.restore(); } }
   ctx.save();
   if(L.shadow){ ctx.shadowColor = L.shadow; ctx.shadowBlur = 14; ctx.shadowOffsetY = 3; }
+  let rT = 0;
   blocks.forEach((b, bi) => {
     y += b.gap || 0; if(b.div && typeof phDivider === "function" && (reveal == null || reveal > 1.2)){ ctx.save(); ctx.shadowColor = "transparent"; phDivider(ctx, cx, y - b.gap / 2 + 6, L.divider); ctx.restore(); } ctx.font = b.font; ctx.fillStyle = b.col;
     if(L.glow && typeof b.col === "string"){ ctx.shadowColor = b.col; ctx.shadowBlur = 26; ctx.shadowOffsetY = 0; }
     b.lines.forEach(t => { y += b.lh;
       if(reveal == null){ ctx.fillText(t, cx, y - b.lh * .24); return; }
-      const k = Math.max(0, Math.min(1, (reveal - .35 - bi * .55) / .7)); if(k <= 0) return;
-      const e = 1 - Math.pow(1 - k, 3), sc = bi < 2 ? .6 + .4 * e + Math.sin(k * Math.PI) * .08 : 1;
-      ctx.save(); ctx.globalAlpha = e; ctx.translate(cx, y - b.lh * .24 + (1 - e) * 30); ctx.scale(sc, sc); ctx.fillText(t, 0, 0); ctx.restore(); });
+      const dur = b.hand ? .9 : .45, k = Math.max(0, Math.min(1, (reveal - .25 - rT) / dur)); rT += b.hand ? .8 : .3; if(k <= 0) return;
+      if(b.hand){ const tw = ctx.measureText(t).width + 60, x0 = cx - tw / 2, e = k < 1 ? k * (2 - k) : 1;
+        ctx.save(); ctx.beginPath(); ctx.rect(x0 - 20, y - b.lh * 1.3, tw * e + 20, b.lh * 1.6); ctx.clip(); ctx.fillText(t, cx, y - b.lh * .24); ctx.restore();
+        if(k < 1){ ctx.save(); const px = x0 + tw * e, py = y - b.lh * .55; const g = ctx.createRadialGradient(px, py, 0, px, py, 34); g.addColorStop(0, "rgba(255,250,220,.95)"); g.addColorStop(1, "rgba(255,230,150,0)"); ctx.fillStyle = g; ctx.shadowColor = "transparent"; ctx.beginPath(); ctx.arc(px, py, 34, 0, 6.283); ctx.fill(); ctx.restore(); }
+        return; }
+      const e = 1 - Math.pow(1 - k, 3);
+      ctx.save(); ctx.globalAlpha = e; ctx.fillText(t, cx, y - b.lh * .24 + (1 - e) * 24); ctx.restore(); });
   });
   ctx.restore();
 }
@@ -796,7 +885,7 @@ function drawBrand(ctx, b){
 function drawScene(ctx, c){
   const d = designOf(c), p = d.pals[(c.p || 0) % d.pals.length], r = rng32(c.s || 1);
   ctx.save(); ctx.textAlign = "left"; const L = d.draw(ctx, r, p, c); ctx.restore();
-  if(c.img) drawPhoto(ctx, L, c.img);
+  if(c.img && !d.frame) drawPhoto(ctx, L, c.img);
   if(c.brand && (c.brand.logo || c.brand.name)){ drawBrand(ctx, c.brand); L.area = [L.area[0], L.area[1], L.area[2], Math.min(L.area[3], 1200 - L.area[1])]; }
   return L;
 }
@@ -838,6 +927,8 @@ function nextDate(h, now = new Date()){
 function nthWeekday(y, m, wd, n){ const d = new Date(y, m - 1, 1); const add = (wd - d.getDay() + 7) % 7; d.setDate(1 + add + (n - 1) * 7); return d; }
 function holidayDate(h, y){
   if(h.easter) return orthodoxEaster(y);
+  if(h.easterOffset){ const e = orthodoxEaster(y); e.setDate(e.getDate() + h.easterOffset); return e; }
+  if(h.ceaster){ const a = y % 19, b = Math.floor(y / 100), c = y % 100, d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3), hh = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - hh - k) % 7, m = Math.floor((a + 11 * hh + 22 * l) / 451), mo = Math.floor((hh + l - 7 * m + 114) / 31), da = (hh + l - 7 * m + 114) % 31 + 1; return new Date(y, mo - 1, da); }
   if(h.maslenitsa){ const e = orthodoxEaster(y); e.setDate(e.getDate() - 55); return e; }
   if(h.nth) return nthWeekday(y, h.nth[0], h.nth[1], h.nth[2]);
   if(h.date) return new Date(y, h.date[0] - 1, h.date[1]);

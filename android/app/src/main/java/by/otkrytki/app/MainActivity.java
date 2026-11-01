@@ -154,6 +154,14 @@ public class MainActivity extends Activity {
                 }
             } catch (Exception ignored) { }
         }
+        @JavascriptInterface public void setWidget(String b64, String title, String hid) {
+            try {
+                byte[] b = android.util.Base64.decode(b64, android.util.Base64.DEFAULT);
+                try (FileOutputStream out = new FileOutputStream(Widget.file(MainActivity.this))) { out.write(b); }
+                Reminders.prefs(MainActivity.this).edit().putString("wt", title).putString("wh", hid).apply();
+                Widget.refresh(MainActivity.this);
+            } catch (Exception ignored) { }
+        }
         @JavascriptInterface public String muxAudio(String videoB64, String pcmB64, int sr, int ch) {
             try {
                 byte[] r = Mux.addAudio(new File(getCacheDir(), "mux"), android.util.Base64.decode(videoB64, android.util.Base64.DEFAULT), android.util.Base64.decode(pcmB64, android.util.Base64.DEFAULT), sr, ch);

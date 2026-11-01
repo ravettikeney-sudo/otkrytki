@@ -21,7 +21,9 @@ public class Reminders extends BroadcastReceiver {
 
     static void save(Context c, String json){ prefs(c).edit().putString("rem", json).apply(); schedule(c); }
 
+    static final String MORNING = "by.otkrytki.app.MORNING";
     static void schedule(Context c){
+        scheduleMorning(c);
         AlarmManager am = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
         PendingIntent pi = PendingIntent.getBroadcast(c, 1, new Intent(c, Reminders.class), PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         am.cancel(pi);
@@ -29,6 +31,21 @@ public class Reminders extends BroadcastReceiver {
             JSONObject o = new JSONObject(prefs(c).getString("rem", "{}"));
             if (o.optJSONArray("items") == null || o.optJSONArray("items").length() == 0) return;
             String[] hm = o.optString("time", "09:00").split(":");
+            Calendar t = Calendar.getInstance();
+            t.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hm[0])); t.set(Calendar.MINUTE, Integer.parseInt(hm[1])); t.set(Calendar.SECOND, 0); t.set(Calendar.MILLISECOND, 0);
+            if (t.getTimeInMillis() <= System.currentTimeMillis() + 1000) t.add(Calendar.DAY_OF_YEAR, 1);
+            am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, t.getTimeInMillis(), pi);
+        } catch (Exception ignored) { }
+    }
+
+    static void scheduleMorning(Context c){
+        AlarmManager am = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pi = PendingIntent.getBroadcast(c, 2, new Intent(c, Reminders.class).setAction(MORNING), PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        am.cancel(pi);
+        try {
+            JSONObject o = new JSONObject(prefs(c).getString("rem", "{}"));
+            String mt = o.optString("morning", ""); if (mt.isEmpty()) return;
+            String[] hm = mt.split(":");
             Calendar t = Calendar.getInstance();
             t.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hm[0])); t.set(Calendar.MINUTE, Integer.parseInt(hm[1])); t.set(Calendar.SECOND, 0); t.set(Calendar.MILLISECOND, 0);
             if (t.getTimeInMillis() <= System.currentTimeMillis() + 1000) t.add(Calendar.DAY_OF_YEAR, 1);
@@ -45,6 +62,22 @@ public class Reminders extends BroadcastReceiver {
     }
 
     @Override public void onReceive(Context c, Intent in){
+        if (in != null && MORNING.equals(in.getAction())) {
+            try {
+                JSONObject o = new JSONObject(prefs(c).getString("rem", "{}"));
+                String who = o.optString("mname", "").trim();
+                ensureChannel(c);
+                String url = MainActivity.HOME + "?h=morning" + (who.isEmpty() ? "" : "&n=" + java.net.URLEncoder.encode(who, "UTF-8"));
+                Intent open = new Intent(c, MainActivity.class).putExtra("url", url).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                PendingIntent pi = PendingIntent.getActivity(c, 90, open, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                Notification.Builder nb = Build.VERSION.SDK_INT >= 26 ? new Notification.Builder(c, CH) : new Notification.Builder(c);
+                nb.setSmallIcon(R.drawable.ic_notify).setContentTitle("☀️ Доброе утро!")
+                  .setContentText(who.isEmpty() ? "Порадуйте близких — открытка «Доброе утро» уже готова" : "Отправьте открытку «Доброе утро»: " + who + " — она уже готова")
+                  .setContentIntent(pi).setAutoCancel(true).setColor(0xffe2557a);
+                try { ((NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE)).notify(900, nb.build()); } catch (SecurityException ignored) { }
+            } catch (Exception ignored) { }
+            scheduleMorning(c); return;
+        }
         try {
             JSONObject o = new JSONObject(prefs(c).getString("rem", "{}"));
             JSONArray items = o.optJSONArray("items"); boolean before = o.optBoolean("before", true);

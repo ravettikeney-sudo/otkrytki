@@ -3,7 +3,7 @@
    Used both for the sent video and for the interactive page that opens from a link. */
 "use strict";
 const ENV_OPEN = 1.3;   // seconds of closed envelope before it opens (video thumbnail = closed envelope)
-const ENV_DUR = 9.5;    // total video length
+const ENV_DUR = 11;     // total video length
 
 function envTheme(c){
   const h = c.h, d = c.d || "";
@@ -29,8 +29,8 @@ const ENV_STYLE = {
 const easeOut = k => 1 - Math.pow(1 - Math.max(0, Math.min(1, k)), 3), easeIO = k => { k = Math.max(0, Math.min(1, k)); return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
 
 function envState(c, cardImg){
-  const theme = envTheme(c), S = ENV_STYLE[theme];
-  return { c, theme, S, card: cardImg, ps: [], bursts: { seal: false, open: false }, last: 0, rnd: rng32((c.s || 1) * 13 + 5) };
+  const theme = envTheme(c), S = ENV_STYLE[theme], parts = cardParts(c), op = OPENERS[c.op] ? c.op : "env";
+  return { c, theme, S, op, card: cardImg, bg: parts.bg, L: parts.L, live: liveInit(liveKind(c), (c.s || 1) * 7 + 3), ps: [], bursts: { seal: false, open: false }, last: 0, rnd: rng32((c.s || 1) * 13 + 5) };
 }
 /* ---------- particles ---------- */
 const PCOL = { confetti: ["#ff5d8f", "#ffd166", "#4cc9f0", "#9b5de5", "#06d6a0", "#ff9f1c"], hearts: ["#ff4d6d", "#ff8fab", "#c9184a", "#ffffff"], petals: ["#ffafcc", "#ffc8dd", "#ffffff", "#ffd6a5"], leaves: ["#e76f51", "#f4a261", "#e9c46a", "#d62828"], snow: ["#ffffff"], stars: ["#ffe8a3", "#ffffff"], gold: ["#f6d38b", "#fff1c1", "#e7b65a"] };
@@ -78,13 +78,9 @@ function themedBurst(st, x, y, big){
 
 /* ---------- envelope drawing ---------- */
 const EW = 820, EH = 560, EX = (W - EW) / 2, EY = 560;
-function drawEnvelopeFrame(ctx, st, t, opts = {}){
-  const S = st.S, c = st.c, dt = Math.max(0, Math.min(.1, t - st.last)); st.last = t;
-  const o = t - ENV_OPEN;                          // time since opening started (<0: closed)
+function drawEnvObj(ctx, st, t, o, opts){
+  const S = st.S, c = st.c;
   const flapK = easeIO(o / .7), slideK = easeOut((o - .55) / 1.0), zoomK = easeIO((o - 1.45) / 1.0);
-  if(o >= .05 && !st.bursts.seal){ st.bursts.seal = true; themedBurst(st, W / 2, EY + EH * .52, false); }
-  if(o >= 2.2 && !st.bursts.open){ st.bursts.open = true; themedBurst(st, W / 2, H * .55, true); }
-  stepParticles(st, dt);
   vbg(ctx, S.bg); glow(ctx, W / 2, EY + EH / 2, 640, "#ffffff", .25);
   const r0 = rng32(7); for(let i = 0; i < 60; i++){ ctx.fillStyle = rgba("#ffffff", .15 + r0() * .25); ctx.beginPath(); ctx.arc(r0() * W, r0() * H, 1 + r0() * 3, 0, 6.283); ctx.fill(); }
   // headline (fades when opening)
@@ -105,7 +101,7 @@ function drawEnvelopeFrame(ctx, st, t, opts = {}){
   if(flapUp) drawFlap();
   // card inside (slides up)
   const cw = 740, ch = cw * H / W, cy = EY + 40 - slideK * 640;
-  if(slideK > 0 || flapUp){ ctx.save(); ctx.beginPath(); ctx.rect(EX - 200, -2000, EW + 400, EY + EH * .5 + 2000); ctx.clip(); ctx.shadowColor = "rgba(0,0,0,.25)"; ctx.shadowBlur = 24; ctx.drawImage(st.card, W / 2 - cw / 2, cy, cw, ch); ctx.restore(); }
+  if(slideK > 0 || flapUp){ ctx.save(); ctx.beginPath(); ctx.rect(EX - 200, -2000, EW + 400, EY + EH * .5 + 2000); ctx.clip(); ctx.shadowColor = "rgba(0,0,0,.25)"; ctx.shadowBlur = 24; ctx.drawImage(st.bg, W / 2 - cw / 2, cy, cw, ch); ctx.restore(); }
   // front pocket
   ctx.fillStyle = lin(ctx, 0, EY + EH * .35, 0, EY + EH, [S.env, shade(S.env, -.08)]);
   ctx.beginPath(); ctx.moveTo(EX, EY + 14); ctx.lineTo(W / 2, EY + EH * .58); ctx.lineTo(EX + EW, EY + 14); ctx.lineTo(EX + EW, EY + EH - 18); ctx.arcTo(EX + EW, EY + EH, EX + EW - 18, EY + EH, 18); ctx.lineTo(EX + 18, EY + EH); ctx.arcTo(EX, EY + EH, EX, EY + EH - 18, 18); ctx.closePath(); ctx.fill();
@@ -122,9 +118,17 @@ function drawEnvelopeFrame(ctx, st, t, opts = {}){
   ctx.restore();
   // the card zooming to full screen
   if(zoomK > 0){ const sc = cw / W + (1 - cw / W) * zoomK, x = W / 2 - W * sc / 2, y0 = cy + (1 - zoomK) * 0, y = y0 + (0 - y0) * zoomK;
-    ctx.save(); ctx.shadowColor = "rgba(0,0,0,.3)"; ctx.shadowBlur = 40 * (1 - zoomK); ctx.drawImage(st.card, x, y, W * sc, H * sc); ctx.restore(); }
-  // shine sweep over the opened card
-  if(o > 2.6){ const k = ((o - 2.6) % 3.2) / 3.2; const g = ctx.createLinearGradient(W * (k * 2.4 - .9), 0, W * (k * 2.4 - .5), H); g.addColorStop(0, "rgba(255,255,255,0)"); g.addColorStop(.5, "rgba(255,255,255,.14)"); g.addColorStop(1, "rgba(255,255,255,0)"); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+    ctx.save(); ctx.shadowColor = "rgba(0,0,0,.3)"; ctx.shadowBlur = 40 * (1 - zoomK); ctx.drawImage(st.bg, x, y, W * sc, H * sc); ctx.restore(); }
+}
+function drawEnvelopeFrame(ctx, st, t, opts = {}){
+  const dt = Math.max(0, Math.min(.1, t - st.last)); st.last = t;
+  const o = t - ENV_OPEN, R = OPENERS[st.op].reveal;
+  if(o >= .05 && !st.bursts.seal){ st.bursts.seal = true; if(st.op !== "scratch") themedBurst(st, W / 2, st.op === "env" ? EY + EH * .52 : H * .55, false); }
+  if(o >= R - .25 && !st.bursts.open){ st.bursts.open = true; themedBurst(st, W / 2, H * .55, true); }
+  stepParticles(st, dt);
+  if(o >= R) drawFinal(ctx, st, o - R, dt);
+  else if(st.op === "env") drawEnvObj(ctx, st, t, o, opts);
+  else ({ gift: drawGift, balloon: drawBalloon, scroll: drawScroll, scratch: drawScratch })[st.op](ctx, st, t, o, opts);
   st.ps.forEach(p => drawParticle(ctx, p));
 }
 
