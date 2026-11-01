@@ -600,7 +600,7 @@ async function openViewer(c){
   let lastDraw = 0;
   const loop = now => { if(!$("#envView")) return; const t = ENV_OPEN + offset + (now - opened) / 1000;
     if(now - lastDraw > 28){ lastDraw = now; drawEnvelopeFrame(ctx, st, t); }
-    if(t > ENV_OPEN + R + 2.6) $("#vActs").hidden = false;
+    if(t > ENV_OPEN + R + 1.2) $("#vActs").hidden = false;
     fxRaf = requestAnimationFrame(loop); };
   const open = (from = 0) => { if(opened != null) return; opened = performance.now(); offset = from; st.last = ENV_OPEN + from; canvas.classList.remove("wiggle"); canvas.style.cursor = "default"; fxRaf = requestAnimationFrame(loop); };
   if(st.op === "scratch"){
