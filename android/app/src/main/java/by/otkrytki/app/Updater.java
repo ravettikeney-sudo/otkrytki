@@ -33,7 +33,7 @@ final class Updater {
     private static String pendingApk = null;
 
     static void check(Activity a) {
-        if (busy) return;
+        if (!BuildConfig.SELF_UPDATE || busy) return;
         new Thread(() -> {
             try {
                 JSONObject v = new JSONObject(get(BASE + "version.json?t=" + System.currentTimeMillis()));
@@ -57,6 +57,7 @@ final class Updater {
 
     /** Called from onResume: if the user just allowed installs from this app, continue the update. */
     static void resume(Activity a) {
+        if (!BuildConfig.SELF_UPDATE) return;
         if (waitingForPermission && pendingApk != null && canInstall(a)) {
             waitingForPermission = false;
             start(a, pendingApk);

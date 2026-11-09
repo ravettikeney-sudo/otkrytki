@@ -20,5 +20,11 @@ android {
     buildTypes {
         release { minifyEnabled false; signingConfig signingConfigs.release }
     }
+    buildFeatures { buildConfig true }
+    flavorDimensions "store"
+    productFlavors {
+        site { dimension "store"; buildConfigField "boolean", "SELF_UPDATE", "true" }
+        rustore { dimension "store"; buildConfigField "boolean", "SELF_UPDATE", "false" }
+    }
     compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
 }
