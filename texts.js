@@ -420,7 +420,7 @@ elders: [
 /* Подбор текстов: сначала точные совпадения, затем «всем», затем стандартные пожелания праздника */
 function pickTexts(hid, who, tone, kind){
   const all = (TEXTS[hid] || []).map(([r, t, k, s]) => ({ r, t, k, s }));
-  const ok = x => (!tone || x.t === tone) && (!kind || x.k === kind);
+  const ok = x => (!tone || x.t === tone) && (kind ? x.k === kind : x.k !== "t" && x.k !== "s");
   let list = all.filter(x => ok(x) && (who === "a" ? true : x.r.includes(who)));
   if(!list.length && who !== "a") list = all.filter(x => ok(x) && x.r.includes("a"));
   if(!list.length) list = all.filter(x => x.r.includes(who) || x.r.includes("a"));
